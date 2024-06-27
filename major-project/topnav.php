@@ -1,13 +1,31 @@
+<?php
+
+session_start();
+
+
+// Check if user is logged in
+if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
+    header("Location: login.php");
+    exit();
+}
+
+// Fetch user information if needed
+$username = $_SESSION["username"];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Top Navigation with Dropdowns</title>
+    <title>User Main</title>
     <style>
         /* Basic styling for the navigation */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            background-color: #000; /* Set background color to black */
+            color: #000; /* Adjust text color for visibility */
         }
         .topnav {
             background-color: #333;
@@ -73,24 +91,59 @@
             background-color: #4CAF50;
             color: white;
         }
+        /* Profile picture styling */
+        .profile-picture img {
+            border-radius: 50%;
+        }
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="topnav">
-    <a href="homepage.php">Home</a>
-    <!-- Content dropdown -->
+    <a href="#">Home</a>
     <div class="dropdown">
         <button class="dropbtn">Content 
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="#">Courses</a>
+            <a href="contentpage.php">Courses</a>
             <a href="#">Tutorials</a>
             <a href="#">Articles</a>
         </div>
     </div>
-    <!-- Assessments dropdown -->
     <div class="dropdown">
         <button class="dropbtn">Assessments 
             <i class="fa fa-caret-down"></i>
@@ -103,8 +156,25 @@
     </div>
     <a href="#">Contact</a>
     <a href="#">About</a>
+    <div class="dropdown" style="float: right;">
+        <button class="dropbtn">
+            <img src="majorproject1\pictures" alt="" width="30" height="30" style="border-radius: 50%;">
+            <?= htmlspecialchars($username) ?> 
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" style="right: 0; left: auto;">
+            <a href="#">Profile</a>
+            <a href="#">Settings</a>
+            <a href="logout.php">Logout</a>
+        </div>
+    </div>
 </div>
 
+<div class="content home">
+    <!-- Additional content can be placed here -->
+</div>
 </body>
 </html>
+
+
 
