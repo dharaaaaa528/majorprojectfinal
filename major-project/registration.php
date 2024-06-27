@@ -38,6 +38,7 @@ if (isset($_POST["submit"])) {
         if ($insertQuery->execute()) {
             // Registration successful, redirect to usermain.php
             $_SESSION["login"] = true; // Set login session
+            $_SESSION["username"] = $username;
             header("Location: usermain.php");
             exit();
         } else {
