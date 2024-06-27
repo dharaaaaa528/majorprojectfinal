@@ -33,6 +33,9 @@ $google_picture = $account['picture'];
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            background-color: #000; /* Set background color to black */
+            color: #000; /* Adjust text color for visibility */
+            
         }
         .topnav {
             background-color: #333;
@@ -102,6 +105,43 @@ $google_picture = $account['picture'];
         .profile-picture img {
             border-radius: 50%;
         }
+        
+         .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
+
+        
     </style>
 </head>
 <body>
@@ -113,7 +153,7 @@ $google_picture = $account['picture'];
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="#">Courses</a>
+            <a href="contentpage.php">Courses</a>
             <a href="#">Tutorials</a>
             <a href="#">Articles</a>
         </div>
@@ -148,5 +188,45 @@ $google_picture = $account['picture'];
     <!-- Additional content can be placed here -->
 </div>
 
+
+
+
+
+
+<!-- The Modal -->
+<div id="welcomeModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h1>Welcome, <?= htmlspecialchars($google_name) ?>!</h1>
+  </div>
+</div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("welcomeModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the page loads, open the modal
+    window.onload = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
 </body>
 </html>
+
+
