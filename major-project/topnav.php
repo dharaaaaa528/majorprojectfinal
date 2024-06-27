@@ -133,7 +133,10 @@ $username = $_SESSION["username"];
 <body>
 
 <div class="topnav">
-    <a href="#">Home</a>
+	<img src="majorprojectfinal\major-project\pictures\logo1.jpg">
+	
+	<a href="usermain.php" class="inj3ct-practice">Inj3ctPractice</a>
+    <a href="usermain.php">Home</a>
     <div class="dropdown">
         <button class="dropbtn">Content 
             <i class="fa fa-caret-down"></i>
