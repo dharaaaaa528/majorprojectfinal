@@ -31,6 +31,14 @@ $username = $_SESSION["username"];
             background-color: #333;
             overflow: hidden;
         }
+        
+        .topnav img.logo {
+            margin-right: 10px; /* Adjust margin as needed */
+            width: 100px; /* Adjust width as needed */
+            height: 25px; /* Adjust height as needed */
+            border-radius: 0%; /* Make the image circular */
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
         .topnav a {
             float: left;
             display: block;
@@ -38,6 +46,13 @@ $username = $_SESSION["username"];
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
+        }
+        
+        .topnav a.inj3ct-practice {
+            font-weight: bold; /* Make the text bold */
+            font-size: 16px; /* Adjust font size as needed */
+            margin-left: 180px; /* Adjust margin as needed */
+            margin-top: 10px;
         }
         .topnav a:hover {
             background-color: #ddd;
@@ -133,9 +148,13 @@ $username = $_SESSION["username"];
 <body>
 
 <div class="topnav">
-	<img src="majorprojectfinal\major-project\pictures\logo1.jpg">
+
+	<a href="#">
+        <img src="logo1.jpg" alt="Logo" class="logo">
+        <span class="inj3ct-practice">Inj3ctPractice</span>
+    </a>
 	
-	<a href="usermain.php" class="inj3ct-practice">Inj3ctPractice</a>
+	
     <a href="usermain.php">Home</a>
     <div class="dropdown">
         <button class="dropbtn">Content 
