@@ -4,9 +4,9 @@ require_once 'server.php';
 // Initialize the session
 session_start();
 // Update the following variables
-$google_oauth_client_id = '277042704945-gvu76oti0mma94btk7gavtl5cmv61ggu.apps.googleusercontent.com';
-$google_oauth_client_secret = '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';
-$google_oauth_redirect_uri = 'http://localhost/major-project/google-oauth.php';
+$google_oauth_client_id = '277042704945-445qenkddmcfif22rmi2t1js475019u1.apps.googleusercontent.com';
+$google_oauth_client_secret = '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';
+$google_oauth_redirect_uri = 'http://localhost/majorprojectfinal/major-project/google-oauth.php';
 $google_oauth_version = 'v3';
 
 
