@@ -52,7 +52,7 @@ $username = $_SESSION["username"];
             font-weight: bold; /* Make the text bold */
             font-size: 16px; /* Adjust font size as needed */
             margin-left: 180px; /* Adjust margin as needed */
-            margin-top: 10px;
+            margin-top: 5px;
         }
         .topnav a:hover {
             background-color: #ddd;
@@ -180,7 +180,7 @@ $username = $_SESSION["username"];
     <a href="#">About</a>
     <div class="dropdown" style="float: right;">
         <button class="dropbtn">
-            <img src="majorproject1\pictures" alt="" width="30" height="30" style="border-radius: 50%;">
+            <img src="profile.png" alt="" width="30" height="30" style="border-radius: 50%;">
             <?= htmlspecialchars($username) ?> 
             <i class="fa fa-caret-down"></i>
         </button>
