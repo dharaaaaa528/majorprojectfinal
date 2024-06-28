@@ -153,7 +153,7 @@ $google_picture = $account['picture'];
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="contentpage2.php">Courses</a>
+            <a href="contentpage.php">Courses</a>
             <a href="#">Tutorials</a>
             <a href="#">Articles</a>
         </div>
