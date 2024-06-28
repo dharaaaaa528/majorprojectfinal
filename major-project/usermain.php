@@ -44,6 +44,18 @@ $username = $_SESSION["username"];
             float: left;
             overflow: hidden;
         }
+        .topnav img.logo {
+            margin-right: 10px; /* Adjust margin as needed */
+            width: 50px; /* Adjust width as needed */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 0%; /* Make the image circular */
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
+        .topnav a.inj3ct-practice {
+            font-weight: bold; /* Make the text bold */
+            font-size: 25px; /* Adjust font size as needed */
+            margin-left: 0px; /* Adjust margin as needed */
+        }
         /* Style the dropdown button */
         .topnav .dropdown .dropbtn {
             font-size: 16px;  
@@ -129,6 +141,10 @@ $username = $_SESSION["username"];
 <body>
 
 <div class="topnav">
+	<a href="#" class="branding">
+        <img src="logo1.jpg" alt="Logo"  class="logo">
+        <span class="inj3ct-practice" style="font-size: 24px; margin-left: 0px" >Inj3ctPractice</span>
+    </a>
     <a href="#">Home</a>
     <div class="dropdown">
         <button class="dropbtn">Content 
