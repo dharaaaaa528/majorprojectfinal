@@ -168,6 +168,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </span>
             Login with Google
         </a>
+        <br><br>
+        <a href="reset_request.php">Forgot Password?</a> <!-- Forgot Password link added -->
     </div>
 </body>
-</html
+</html>
+
