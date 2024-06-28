@@ -14,11 +14,16 @@ if (isset($_POST["submit"])) {
     $email = trim($_POST["email"]);
     $password = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
     $phoneno = trim($_POST["phoneno"]);
-
+    
+    // Validate phone number
+    if (!preg_match('/^\d{8}$/', $phoneno)) {
+        echo "<script>alert('Phone number must be exactly 8 digits');</script>";
+    } else {
     // Check for duplicate entries
     $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ?");
     if ($duplicate === false) {
         die("MySQL prepare statement error (duplicate): " . $conn->error);
+    }
     }
 
     $duplicate->bind_param("sss", $username, $email, $phoneno);
@@ -137,7 +142,7 @@ if (isset($_POST["submit"])) {
             </div>
             <div>
                 <label for="phoneno">Phone Number:</label>
-                <input type="text" name="phoneno" id="phoneno" required>
+                <input type="text" name="phoneno" id="phoneno" required pattern="\d{8}" title="Phone number must be exactly 8 digits">
             </div>
             <button type="submit" name="submit">Register</button>
         </form>
