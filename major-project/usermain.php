@@ -134,7 +134,7 @@ $username = $_SESSION["username"];
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="#">Courses</a>
+            <a href="contentpage.php">Courses</a>
             <a href="#">Tutorials</a>
             <a href="#">Articles</a>
         </div>
