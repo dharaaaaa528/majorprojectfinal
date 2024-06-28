@@ -147,7 +147,7 @@ $google_picture = $account['picture'];
 <body>
 
 <div class="topnav">
-    <a href="#">Home</a>
+    <a href="homepage.php">Home</a>
     <div class="dropdown">
         <button class="dropbtn">Content 
             <i class="fa fa-caret-down"></i>

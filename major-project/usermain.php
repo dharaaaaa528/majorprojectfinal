@@ -21,6 +21,7 @@ $username = $_SESSION["username"];
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            background: black;
         }
         .topnav {
             background-color: #333;
