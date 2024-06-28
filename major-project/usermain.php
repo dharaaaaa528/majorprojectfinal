@@ -154,7 +154,7 @@ $username = $_SESSION["username"];
     <a href="#">About</a>
     <div class="dropdown" style="float: right;">
         <button class="dropbtn">
-            <img src="majorproject1\pictures" alt="" width="30" height="30" style="border-radius: 50%;">
+            <img src="profile.png" alt="" width="30" height="30" style="border-radius: 50%;">
             <?= htmlspecialchars($username) ?> 
             <i class="fa fa-caret-down"></i>
         </button>
