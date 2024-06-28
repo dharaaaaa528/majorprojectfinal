@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
+    header("Location: login.php");
+    exit();
+}
+
+// Fetch user information if needed
+$username = $_SESSION["username"];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,6 +81,10 @@
         .topnav .dropdown:hover .dropdown-content {
             display: block;
         }
+        /* Profile picture styling */
+        .profile-picture img {
+            border-radius: 50%;
+        }
         /* Style the active dropdown link */
         .topnav .dropdown-content a.active {
             background-color: #4CAF50;
@@ -103,6 +120,18 @@
     </div>
     <a href="#">Contact</a>
     <a href="#">About</a>
+    <div class="dropdown" style="float: right;">
+        <button class="dropbtn">
+            <img src="profile.png" alt="" width="30" height="30" style="border-radius: 50%;">
+            <?= htmlspecialchars($username) ?> 
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" style="right: 0; left: auto;">
+            <a href="#">Profile</a>
+            <a href="#">Settings</a>
+            <a href="logout.php">Logout</a>
+        </div>
+    </div>
 </div>
 
 </body>
