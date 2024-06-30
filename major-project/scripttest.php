@@ -40,13 +40,13 @@
     }
 
     .container h1 {
-        font-size: 3em; /* Increase font size */
+        font-size: 2em; /* Increase font size */
         font-weight: bold;
         margin-bottom: 20px; /* Increase margin */
     }
 
     .container label {
-        font-size: 1.3em; /* Increase font size */
+        font-size: 1em; /* Increase font size */
         font-weight: bold;
     }
 
@@ -75,14 +75,17 @@
     </nav>
     <div class="main-content">
         <div class="container">
-            <h1>TEST</h1>
-            <form action="sqltest.php" method="post">
-                <label for="test">Select a test you would like to take:</label>
+            <h1> SCRIPT TECHNIQUE TEST</h1>
+            <form action="scriptbasic.php" method="post">
+                <label for="test">Select a level you would like to attempt:</label>
                 <br>
-                <button type="submit" name="test" value="SQL Injection">SQL Injection</button>
+                <button type="submit" name="test" value="basic">BASIC</button>
              </form>
-             <form action="scripttest.php" method="post">
-                <button type="submit" name="test" value="Script Techniques">Script Techniques</button>
+             <form action="scriptintermidiate.php" method="post">
+                <button type="submit" name="test" value="intermidiate">INTERMIDIATE</button>
+            </form>
+            <form action="scriptadvanced.php" method="post">
+                <button type="submit" name="test" value="advanced">ADVANCED</button>
             </form>
         </div>
     </div>

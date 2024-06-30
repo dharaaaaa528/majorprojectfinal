@@ -138,8 +138,7 @@ $username = $_SESSION["username"];
             <a href="#">Exams</a>
         </div>
     </div>
-    <a href="#">Contact</a>
-    <a href="#">About</a>
+   
     <div class="dropdown" style="float: right;">
         <button class="dropbtn">
             <img src="profile.png" alt="" width="30" height="30" style="border-radius: 50%;">
