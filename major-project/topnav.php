@@ -1,5 +1,8 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 // Check if user is logged in
 if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
@@ -131,7 +134,7 @@ $username = $_SESSION["username"];
         </button>
         <div class="dropdown-content">
             <a href="#">Quizzes</a>
-            <a href="#">Tests</a>
+            <a href="test.php">Tests</a>
             <a href="#">Exams</a>
         </div>
     </div>
