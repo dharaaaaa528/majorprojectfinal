@@ -83,7 +83,13 @@
 
             switch (technique) {
                 case "SQL Technique 1":
-                    url = "tech1quiz.php";
+                    url = "sql1quiz.php";
+                    break;
+                case "SQL Technique 2":
+                    url = "sql2quiz.php";
+                    break;
+                case "SQL Technique 1":
+                    url = "sql1quiz.php";
                     break;
                 case "XS Script Technique 1":
                     url = "stech1quiz.php";
