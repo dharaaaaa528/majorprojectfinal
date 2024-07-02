@@ -51,7 +51,7 @@
     <?php include 'topnav.php'; ?>
     <div class="content">
         <div class="quiz-details">
-            <h1>SQL TECHNIQUE 1 QUIZ</h1>
+            <h1>SQL TECHNIQUE 3 QUIZ</h1>
             <div class="details">
             	<h3>Pleae read the below details carefully!</h3>
                 <p>1. Duration: 60 Minutes</p>

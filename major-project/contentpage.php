@@ -47,11 +47,11 @@
                 <h2>SQL Technique 3</h2>
                 <p>[Description]</p>
                 <div class="button-group">
-                    <form action="sql_technique1_quiz.html" method="get" style="margin: 0;">
-                        <button type="submit">Attempt Quiz</button>
-                    </form>
-                    <form action="sql_technique1_editor.html" method="get" style="margin: 0;">
+                    <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
+                    </form>
+                    <form action="sql3.php" method="get" style="margin: 0;">
+                        <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
             </div>
@@ -59,11 +59,11 @@
                 <h2>SQL Technique 4</h2>
                 <p>[Description]</p>
                 <div class="button-group">
-                    <form action="sql_technique1_quiz.html" method="get" style="margin: 0;">
-                        <button type="submit">Attempt Quiz</button>
-                    </form>
-                    <form action="sql_technique1_editor.html" method="get" style="margin: 0;">
+                    <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
+                    </form>
+                    <form action="sql4.php" method="get" style="margin: 0;">
+                        <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
             </div>
