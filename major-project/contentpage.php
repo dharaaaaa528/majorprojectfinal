@@ -25,7 +25,8 @@
                     <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
                     </form>
-                    <form action="sql1.php" method="get" style="margin: 0;">
+                    <form action="quizstart.php" method="get" style="margin: 0;">
+                    	<input type="hidden" name="technique" value="SQL Technique 1">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>

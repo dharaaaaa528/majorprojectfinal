@@ -21,26 +21,52 @@
             <div class="technique" id="technique1">
                 <h2>XS Script Technique 1</h2>
                 <p>[Description]</p>
-                <button>Attempt Quiz</button>
-                <button>Editor</button>
+                <div class="button-group">
+                    <form action="#" method="get" style="margin: 0;">
+                    	<input type="hidden" name="technique" value="XS Script Technique 1">
+                        <button type="submit">Editor</button>
+                    </form>
+                    <form action="quizstart.php" method="get" style="margin: 0;">
+                    	<input type="hidden" name="technique" value="XS Script Technique 1">
+                        <button type="submit">Attempt Quiz</button>
+                    </form>
+                </div>
             </div>
             <div class="technique" id="technique2">
                 <h2>XS Script Technique 2</h2>
                 <p>[Description]</p>
-                <button>Attempt Quiz</button>
-                <button>Editor</button>
+                <div class="button-group">
+                    <form action="#" method="get" style="margin: 0;">
+                        <button type="submit">Editor</button>
+                    </form>
+                    <form action="script2.php" method="get" style="margin: 0;">
+                        <button type="submit">Attempt Quiz</button>
+                    </form>
+                </div>
             </div>
             <div class="technique" id="technique3">
                 <h2>XS Script Technique 3</h2>
                 <p>[Description]</p>
-                <button>Attempt Quiz</button>
-                <button>Editor</button>
+                <div class="button-group">
+                    <form action="#" method="get" style="margin: 0;">
+                        <button type="submit">Editor</button>
+                    </form>
+                    <form action="script3.php" method="get" style="margin: 0;">
+                        <button type="submit">Attempt Quiz</button>
+                    </form>
+                </div>
             </div>
             <div class="technique" id="technique4">
                 <h2>XS Script Technique 4</h2>
                 <p>[Description]</p>
-                <button>Attempt Quiz</button>
-                <button>Editor</button>
+                <div class="button-group">
+                    <form action="#" method="get" style="margin: 0;">
+                        <button type="submit">Editor</button>
+                    </form>
+                    <form action="script4.php" method="get" style="margin: 0;">
+                        <button type="submit">Attempt Quiz</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
