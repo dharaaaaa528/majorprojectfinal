@@ -177,7 +177,7 @@ $google_picture = $account['picture'];
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content" style="right: 0; left: auto;">
-            <a href="#">Profile</a>
+            <a href="profile.php">Profile</a>
             <a href="#">Settings</a>
             <a href="logout.php">Logout</a>
         </div>
