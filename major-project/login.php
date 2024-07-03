@@ -86,7 +86,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             justify-content: center;
             height: 100vh;
             margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover; /* Makes the image cover the entire page */
+            background-size: cover; /* Makes the image cover the entire page */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-position: center; /* Centers the image */
+            background-attachment: fixed; /* Fixes the image while scrolling */
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+    
         }
+        
+        html, body {
+        height: 100%;
+        }
+        
         .container {
             background-color: #1e1e1e;
             padding: 20px;

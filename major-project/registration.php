@@ -72,9 +72,26 @@ if (isset($_POST["submit"])) {
             justify-content: center;
             height: 100vh;
             margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover; /* Makes the image cover the entire page */
+            background-size: cover; /* Makes the image cover the entire page */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-position: center; /* Centers the image */
+            background-attachment: fixed; /* Fixes the image while scrolling */
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+    
         }
+        
+        html, body {
+        height: 100%;
+        }
+        
         .container {
-            background-color: #1e1e1e;
+            background-color: black ;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -83,7 +100,10 @@ if (isset($_POST["submit"])) {
         }
         .container h1 {
             margin-bottom: 20px;
+            color: white;
+            
         }
+        
         .container form {
             display: flex;
             flex-direction: column;
@@ -99,6 +119,7 @@ if (isset($_POST["submit"])) {
             width: 120px;
             text-align: right;
             margin-right: 10px;
+            color: white;
         }
         .container input {
             margin-bottom: 10px;
@@ -120,8 +141,24 @@ if (isset($_POST["submit"])) {
             background-color: #3700b3;
         }
         .container a {
-            color: #bb86fc;
+            color: white;
         }
+        
+        .container a {
+            color:#ff6ff9; /* Change the color of the hyperlink */
+            text-decoration: none; /* Optional: remove underline */
+            
+        }
+
+        .container a:hover {
+            color: #ff6ff9; /* Change the color when hovered over */
+        }
+        
+        .google-login-btn .icon svg {
+            fill: white; /* Change the color of the Google icon */
+        }
+
+        
     </style>
 </head>
 <body>

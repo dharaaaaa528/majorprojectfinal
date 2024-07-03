@@ -1,6 +1,8 @@
 <?php
 require_once 'topnav.php';
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Check if user is logged in
 if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
@@ -22,8 +24,24 @@ $username = $_SESSION["username"];
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background: black;
+            background-image: url('background.jpg');
+            background-size: cover; /* Makes the image cover the entire page */
+            background-size: cover; /* Makes the image cover the entire page */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-position: center; /* Centers the image */
+            background-attachment: fixed; /* Fixes the image while scrolling */
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+    
         }
+        
+        html, body {
+        height: 100%;
+        }
+        
 /*         
         /* Modal styles */
         .modal {
@@ -40,12 +58,17 @@ $username = $_SESSION["username"];
             padding-top: 60px; 
         }
         .modal-content {
-            background-color: #fefefe;
+            background-color: white;
             margin: 5% auto; 
             padding: 20px;
             border: 1px solid #888;
             width: 80%; 
         }
+        
+        .modal-content h1 {
+            color: black; /* Change the color of the heading text */
+        }
+        
         .close {
             color: #aaa;
             float: right;

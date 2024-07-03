@@ -9,11 +9,25 @@ require_once 'server.php';
     <title>Top Navigation with Dropdowns</title>
     <style>
         /* Basic styling for the navigation */
-        body {
+       body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #000; /* Change page background color to black */
-            color: #f2f2f2; /* Change text color to light */
+            background-image: url('background.jpg');
+            background-size: cover; /* Makes the image cover the entire page */
+            background-size: cover; /* Makes the image cover the entire page */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-position: center; /* Centers the image */
+            background-attachment: fixed; /* Fixes the image while scrolling */
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+    
+        }
+        
+        html, body {
+        height: 100%;
         }
         .topnav {
             background-color: #333;
