@@ -128,7 +128,7 @@ $google_picture = $account['picture'];
         <img src="logo3.jpg" alt="Logo"  class="logo">
         
     </a>
-    <a href="homepage.php">Home</a>
+    <a href="googlehomepage.php">Home</a>
     <!-- Content dropdown -->
     <div class="dropdown">
         <button class="dropbtn">Content 
