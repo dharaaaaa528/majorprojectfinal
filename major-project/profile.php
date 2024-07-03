@@ -1,41 +1,69 @@
 <?php
 session_start();
-include 'db.php';
-
-// Assume user is logged in and user ID is stored in session
-$userId = $_SESSION['userid'];
-
-// Fetch user details
-$stmt = $conn->prepare("SELECT * FROM userinfo WHERE id = :id");
-$stmt->bindParam(':id', $userId);
-$stmt->execute();
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Inj3ctPractice User Profile</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+      <title>User Profile</title>
+          <style>
+        /* Basic styling for the navigation */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #000; /* Set background color to black */
+            color: #000; /* Adjust text color for visibility */
+        }
+        
+        /* Profile picture styling */
+        .profile-picture img {
+            border-radius: 50%;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            color: #fff;
+         }
+
+         .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+            
+         }
+
+         .sidebar a:hover {
+            background-color: #575757;
+         }
+         
+         .sidebar a.profile-link {
+            color: #56C2DD; 
+        }
+        
+        .content {
+            margin-left: 200px;
+            padding: 20px;
+            width: 100%;
+            color: #F6EEEE;
+        }
+         
+
+    </style>
 <body>
-<?php include 'topnav.php'; ?>
-    <div class="container">
-        <div class="sidebar">
-            <ul>
-                <li><a href="#">Profile<style>background-color:#56C2DD</style></a></li>
-                <li><a href="#">Progress</a></li>
-                <li><a href="#">Certifications</a></li>
-                <li><a href="#">Tests</a></li>
-            </ul>
-        </div>
-</body>
-<body>
-    <h1><?php echo htmlspecialchars($user['username']); ?>'s Profile</h1>
-    <?php if ($user['profile_picture']): ?>
-        <img src="uploads/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture">
-    <?php endif; ?>
-    <a href="updateprofile.php">Edit Profile</a>
+    <div class="sidebar">
+        <a href="profile.php" class="profile-link"><u>Profile</u></a>
+        <a href="#"><u>Progress</u></a>
+        <a href="#"><u>Certifications</u></a>
+    </div>
+    <div class="content">
+        <h1>Welcome to your profile!</h1>
+        <p>This is your profile content area.</p>
+    </div>
 </body>
 </html>
