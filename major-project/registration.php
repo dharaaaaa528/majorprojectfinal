@@ -12,48 +12,50 @@ if (isset($_SESSION["login"]) && $_SESSION["login"] === true) {
 if (isset($_POST["submit"])) {
     $username = trim($_POST["username"]);
     $email = trim($_POST["email"]);
-    $password = password_hash(trim($_POST["password"]), PASSWORD_DEFAULT);
+    $password = trim($_POST["password"]);
     $phoneno = trim($_POST["phoneno"]);
-    
+
     // Validate phone number
     if (!preg_match('/^\d{8}$/', $phoneno)) {
         echo "<script>alert('Phone number must be exactly 8 digits');</script>";
+    } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\W).{8,}$/', $password)) {
+        echo "<script>alert('Password must be at least 8 characters long and include at least one uppercase letter and one special character');</script>";
     } else {
-    // Check for duplicate entries
-    $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ?");
-    if ($duplicate === false) {
-        die("MySQL prepare statement error (duplicate): " . $conn->error);
-    }
-    }
-
-    $duplicate->bind_param("sss", $username, $email, $phoneno);
-    $duplicate->execute();
-    $duplicate->store_result();
-
-    if ($duplicate->num_rows > 0) {
-        echo "<script>alert('Username or Email or PhoneNo Is Already Taken');</script>";
-    } else {
-        // Insert new user
-        $insertQuery = $conn->prepare("INSERT INTO userinfo (username, password, email, phoneno) VALUES (?, ?, ?, ?)");
-        if ($insertQuery === false) {
-            die("MySQL prepare statement error (insert): " . $conn->error);
+        // Check for duplicate entries
+        $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ?");
+        if ($duplicate === false) {
+            die("MySQL prepare statement error (duplicate): " . $conn->error);
         }
+        $duplicate->bind_param("sss", $username, $email, $phoneno);
+        $duplicate->execute();
+        $duplicate->store_result();
 
-        $insertQuery->bind_param("ssss", $username, $password, $email, $phoneno);
-        if ($insertQuery->execute()) {
-            // Registration successful, redirect to usermain.php
-            $_SESSION["login"] = true; // Set login session
-            $_SESSION["username"] = $username;
-            header("Location: usermain.php");
-            exit();
+        if ($duplicate->num_rows > 0) {
+            echo "<script>alert('Username or Email or PhoneNo Is Already Taken');</script>";
         } else {
-            die("Error executing query: " . $insertQuery->error);
-        }
+            // Insert new user
+            $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
+            $insertQuery = $conn->prepare("INSERT INTO userinfo (username, password, email, phoneno) VALUES (?, ?, ?, ?)");
+            if ($insertQuery === false) {
+                die("MySQL prepare statement error (insert): " . $conn->error);
+            }
 
-        $insertQuery->close();
+            $insertQuery->bind_param("ssss", $username, $passwordHashed, $email, $phoneno);
+            if ($insertQuery->execute()) {
+                // Registration successful, redirect to usermain.php
+                $_SESSION["login"] = true; // Set login session
+                $_SESSION["username"] = $username;
+                header("Location: usermain.php");
+                exit();
+            } else {
+                die("Error executing query: " . $insertQuery->error);
+            }
+
+            $insertQuery->close();
+        }
+        $duplicate->close();
+        $conn->close();
     }
-    $duplicate->close();
-    $conn->close();
 }
 ?>
 
@@ -74,24 +76,13 @@ if (isset($_POST["submit"])) {
             margin: 0;
             background-image: url('background.jpg');
             background-size: cover; /* Makes the image cover the entire page */
-            background-size: cover; /* Makes the image cover the entire page */
             background-repeat: no-repeat; /* Prevents the image from repeating */
             background-position: center; /* Centers the image */
             background-attachment: fixed; /* Fixes the image while scrolling */
-            color: white;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-    
         }
-        
-        html, body {
-        height: 100%;
-        }
-        
+
         .container {
-            background-color: black ;
+            background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -100,10 +91,8 @@ if (isset($_POST["submit"])) {
         }
         .container h1 {
             margin-bottom: 20px;
-            color: white;
-            
         }
-        
+
         .container form {
             display: flex;
             flex-direction: column;
@@ -119,7 +108,6 @@ if (isset($_POST["submit"])) {
             width: 120px;
             text-align: right;
             margin-right: 10px;
-            color: white;
         }
         .container input {
             margin-bottom: 10px;
@@ -141,24 +129,21 @@ if (isset($_POST["submit"])) {
             background-color: #3700b3;
         }
         .container a {
-            color: white;
-        }
-        
-        .container a {
-            color:#ff6ff9; /* Change the color of the hyperlink */
+            color: #ff6ff9; /* Change the color of the hyperlink */
             text-decoration: none; /* Optional: remove underline */
-            
         }
-
         .container a:hover {
             color: #ff6ff9; /* Change the color when hovered over */
         }
-        
         .google-login-btn .icon svg {
             fill: white; /* Change the color of the Google icon */
         }
-
-        
+        .requirements {
+            font-size: 12px;
+            color: #bbb;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -175,7 +160,10 @@ if (isset($_POST["submit"])) {
             </div>
             <div>
                 <label for="password">Password:</label>
-                <input type="password" name="password" id="password" required>
+                <input type="password" name="password" id="password" required pattern="(?=.*[A-Z])(?=.*\W).{8,}" title="Password must be at least 8 characters long and include at least one uppercase letter and one special character">
+<!--                 <div class="requirements"> -->
+<!--                     Password must be at least 8 characters long and include at least one uppercase letter and one special character. -->
+<!--                 </div> -->
             </div>
             <div>
                 <label for="phoneno">Phone Number:</label>
