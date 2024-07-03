@@ -124,7 +124,7 @@ $google_picture = $account['picture'];
 <body>
 
 <div class="topnav">
-	 <a href="#" class="branding">
+	 <a href="googlehomepage.php" class="branding">
         <img src="logo3.jpg" alt="Logo"  class="logo">
         
     </a>

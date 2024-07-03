@@ -6,7 +6,7 @@
     <title>Select Test</title>
     <style>
     body {
-        font-family: Arial, sans-serif;
+       font-family: Arial, sans-serif;
         background-color: black;
         color: white;
         margin: 0;
@@ -48,13 +48,13 @@
     }
 
     .container h1 {
-        font-size: 3em; /* Increase font size */
+        font-size: 2em; /* Increase font size */
         font-weight: bold;
         margin-bottom: 20px; /* Increase margin */
     }
 
     .container label {
-        font-size: 1.3em; /* Increase font size */
+        font-size: 1em; /* Increase font size */
         font-weight: bold;
     }
 
@@ -83,14 +83,20 @@
     </nav>
     <div class="main-content">
         <div class="container">
-            <h1>TEST</h1>
-            <form action="sqltest1.php" method="post">
-                <label for="test">Select a test you would like to take:</label>
+            <h1> SQL INJECTION TEST</h1>
+            <form action="sqlbasic.php" method="post">
+                <label for="test">Select a level you would like to attempt:</label>
                 <br>
-                <button type="submit" name="test" value="SQL Injection">SQL Injection</button>
+                <button type="submit" name="test" value="basic">BASIC</button>
              </form>
-             <form action="scripttest1.php" method="post">
-                <button type="submit" name="test" value="Script Techniques">Script Techniques</button>
+             <form action="sqlintermidiate.php" method="post">
+                <button type="submit" name="test" value="intermidiate">INTERMIDIATE</button>
+            </form>
+            <form action="sqladvanced.php" method="post">
+                <button type="submit" name="test" value="advanced">ADVANCED</button>
+            </form>
+            <form action="sqlallinone.php" method="post">
+                <button type="submit" name="test" value="advanced">ALL IN ONE</button>
             </form>
         </div>
     </div>

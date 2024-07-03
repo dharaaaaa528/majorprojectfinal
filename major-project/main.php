@@ -138,14 +138,14 @@ require_once 'server.php';
         <img src="logo3.jpg" alt="Logo"  class="logo">
         
     </a>
-    <a href="homepage.php">Home</a>
+    <a href="main.php">Home</a>
     <!-- Content dropdown -->
     <div class="dropdown">
         <button class="dropbtn">Content 
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="contentpage.php">Courses</a>
+            <a href="contentpagemain.php">Courses</a>
             <a href="#">Tutorials</a>
             <a href="#">Articles</a>
         </div>
@@ -155,8 +155,8 @@ require_once 'server.php';
     <a href="about.php">About</a>
     <!-- Registration and Login buttons -->
      <div class="right-nav">
-        <a href="login.php" class="button">Login</a>
         <a href="registration.php" class="button">Register</a>
+        <a href="login.php" class="button">Login</a>
     </div>
 </div>
 
