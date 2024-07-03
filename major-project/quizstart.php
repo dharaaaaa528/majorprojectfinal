@@ -88,11 +88,23 @@
                 case "SQL Technique 2":
                     url = "sql2quiz.php";
                     break;
-                case "SQL Technique 1":
-                    url = "sql1quiz.php";
+                case "SQL Technique 3":
+                    url = "sql3quiz.php";
+                    break;
+                case "SQL Technique 4":
+                    url = "sql4quiz.php";
                     break;
                 case "XS Script Technique 1":
-                    url = "stech1quiz.php";
+                    url = "script1quiz.php";
+                    break;
+                case "XS Script Technique 2":
+                    url = "script2quiz.php";
+                    break;
+                case "XS Script Technique 3":
+                    url = "script3quiz.php";
+                    break;
+                case "XS Script Technique 4":
+                    url = "script4quiz.php";
                     break;
                 // Add more cases as needed for other techniques
                 default:
