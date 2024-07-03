@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         
         .container {
-            background-color: #1e1e1e;
+            background-color: black;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -114,6 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         .container h1 {
             margin-bottom: 20px;
+            color: white;
         }
         .container form {
             display: flex;
@@ -130,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             width: 120px;
             text-align: right;
             margin-right: 15px;
-            color: #ffffff;
+            color: white;
         }
         .container input {
             flex: 1;
@@ -154,9 +155,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             background-color: #3700b3;
         }
         .container a {
-            color: #bb86fc;
+            color: #ff6ff9;
             text-decoration: none;
             margin-top: 10px;
+        }
+        .container a:hover {
+            color: #ff6ff9; /* Change the color when hovered over */
+        }
+        
+        .google-login-btn .icon svg {
+            fill: white; /* Change the color of the Google icon */
         }
     </style>
 </head>
