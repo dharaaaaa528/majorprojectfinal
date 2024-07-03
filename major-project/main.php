@@ -32,27 +32,27 @@ require_once 'server.php';
         .topnav {
             background-color: #333;
             overflow: hidden;
+            display: flex;
+            align-items: center; 
+        }
+        .topnav img.logo {
+            margin-right: 20px; /* Adjust margin as needed */
+            width: 80px; /* Increase width */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 0%; /* Make the image circular */
+            object-fit: cover; /* Ensure the image covers the circle */
         }
         .topnav a {
             float: left;
             display: block;
             color: #f2f2f2;
             text-align: center;
-            padding: 14px 16px;
+            padding: 14px 20px;
             text-decoration: none;
+             font-size: 20px;
         }
-        .topnav img.logo {
-            margin-right: 10px; /* Adjust margin as needed */
-            width: 50px; /* Adjust width as needed */
-            height: auto; /* Maintain aspect ratio */
-            border-radius: 0%; /* Make the image circular */
-            object-fit: cover; /* Ensure the image covers the circle */
-        }
-        .topnav a.inj3ct-practice {
-            font-weight: bold; /* Make the text bold */
-            font-size: 25px; /* Adjust font size as needed */
-            margin-left: 0px; /* Adjust margin as needed */
-        }
+     
+        
         .topnav a:hover {
             background-color: #ddd;
             color: black;
@@ -61,14 +61,15 @@ require_once 'server.php';
         .topnav .dropdown {
             float: left;
             overflow: hidden;
+            margin-left: 50px;
         }
         /* Style the dropdown button */
         .topnav .dropdown .dropbtn {
-            font-size: 16px;  
+            font-size: 20px;  
             border: none;
             outline: none;
             color: #f2f2f2;
-            padding: 14px 16px;
+            padding: 14px 20px;
             background-color: inherit;
             font-family: inherit;
             margin: 0;
@@ -120,14 +121,22 @@ require_once 'server.php';
         .topnav .button:hover {
             background-color: #3700b3;
         }
+        
+        .topnav a[href="about.php"] {
+            margin-left: 50px; /* Adjust as needed */
+        }
+        .right-nav {
+            margin-left: auto; /* Pushes the content to the right */
+            display: flex;
+        }
     </style>
 </head>
 <body>
 
 <div class="topnav">
 	<a href="#" class="branding">
-        <img src="logo1.jpg" alt="Logo"  class="logo">
-        <span class="inj3ct-practice" style="font-size: 24px; margin-left: 0px" >Inj3ctPractice</span>
+        <img src="logo3.jpg" alt="Logo"  class="logo">
+        
     </a>
     <a href="homepage.php">Home</a>
     <!-- Content dropdown -->
@@ -142,11 +151,13 @@ require_once 'server.php';
         </div>
     </div>
     <!-- Group Contact and About links -->
-    <a href="#">Contact</a>
-    <a href="#">About</a>
+    
+    <a href="about.php">About</a>
     <!-- Registration and Login buttons -->
-    <a href="login.php" class="button">Login</a>
-    <a href="registration.php" class="button">Register</a>
+     <div class="right-nav">
+        <a href="login.php" class="button">Login</a>
+        <a href="registration.php" class="button">Register</a>
+    </div>
 </div>
 
 </body>
