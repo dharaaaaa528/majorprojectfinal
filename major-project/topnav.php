@@ -18,7 +18,7 @@ $username = $_SESSION["username"];
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Top Navigation with Dropdowns</title>
+   
     <style>
         /* Basic styling for the navigation */
         body {
@@ -160,7 +160,7 @@ $username = $_SESSION["username"];
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content" style="right: 0; left: auto;">
-            <a href="#">Profile</a>
+            <a href="profile.php">Profile</a>
             <a href="#">Settings</a>
             <a href="logout.php">Logout</a>
         </div>
