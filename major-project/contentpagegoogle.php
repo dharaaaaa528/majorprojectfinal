@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inj3ctPractice</title>
     <link rel="stylesheet" href="contentpage.css">
+    <style>
+        body {
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
+
 <body>
     <?php include 'topnavgoogle.php'; ?>
     <div class="container">
@@ -71,5 +83,7 @@
         </div>
     </div>
     <script src="scripts.js"></script>
+    
 </body>
+
 </html>

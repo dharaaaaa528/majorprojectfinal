@@ -29,6 +29,18 @@ $google_picture = $account['picture'];
     <meta charset="UTF-8">
     <title>Profile</title>
     <style>
+        body {
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Additional styles can be added for other elements as needed */
+        
         /* Basic styling for the navigation */
         body {
             font-family: Arial, sans-serif;
