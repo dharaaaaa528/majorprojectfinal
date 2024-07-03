@@ -62,7 +62,7 @@ $username = $_SESSION["username"];
 .topnav .dropdown {
     float: left;
     overflow: hidden;
-    margin-left: 40px; /* Add margin between dropdowns */
+    margin-left: 50px; /* Add margin between dropdowns */
 }
 
 /* Style the dropdown button */
@@ -118,6 +118,10 @@ $username = $_SESSION["username"];
     background-color: #4CAF50;
     color: white;
 }
+
+.topnav a[href="about.php"] {
+        margin-left: 50px; /* Adjust as needed */
+}
         
         
     </style>
@@ -152,6 +156,8 @@ $username = $_SESSION["username"];
             <a href="#">Exams</a>
         </div>
     </div>
+    
+    <a href="about.php">About</a>
    
     <div class="dropdown" style="margin-left: auto;">
         <button class="dropbtn">

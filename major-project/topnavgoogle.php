@@ -3,7 +3,9 @@ require_once 'server.php';
 
 
 // Initialize the session - is required to check the login state.
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['google_loggedin'])) {
     header('Location: login.php');
@@ -31,14 +33,17 @@ $google_picture = $account['picture'];
             font-family: Arial, sans-serif;
             margin: 0;
             background-colour: black;
+            color: white;
         }
         .topnav {
             background-color: #333;
             overflow: hidden;
+            display: flex;
+            align-items: center; /* Center items vertically */
         }
         .topnav img.logo {
-            margin-right: 10px; /* Adjust margin as needed */
-            width: 50px; /* Adjust width as needed */
+            margin-right: 20px; /* Adjust margin as needed */
+            width: 80px; /* Adjust width as needed */
             height: auto; /* Maintain aspect ratio */
             border-radius: 0%; /* Make the image circular */
             object-fit: cover; /* Ensure the image covers the circle */
@@ -48,14 +53,11 @@ $google_picture = $account['picture'];
             display: block;
             color: #f2f2f2;
             text-align: center;
-            padding: 14px 16px;
+            padding: 14px 20px;
             text-decoration: none;
+            font-size: 20px; /* Increase font size */
         }
-         .topnav a.inj3ct-practice {
-            font-weight: bold; /* Make the text bold */
-            font-size: 25px; /* Adjust font size as needed */
-            margin-left: 0px; /* Adjust margin as needed */
-        }
+         
         .topnav a:hover {
             background-color: #ddd;
             color: black;
@@ -64,14 +66,15 @@ $google_picture = $account['picture'];
         .topnav .dropdown {
             float: left;
             overflow: hidden;
+            margin-left: 50px; /* Add margin between dropdowns */
         }
         /* Style the dropdown button */
         .topnav .dropdown .dropbtn {
-            font-size: 16px;  
+            font-size: 20px;  
             border: none;
             outline: none;
             color: #f2f2f2;
-            padding: 14px 16px;
+            padding: 14px 20px;
             background-color: inherit;
             font-family: inherit;
             margin: 0;
@@ -112,14 +115,18 @@ $google_picture = $account['picture'];
             background-color: #4CAF50;
             color: white;
         }
+        
+        .topnav a[href="about.php"] {
+        margin-left: 50px; /* Adjust as needed */
+        }
     </style>
 </head>
 <body>
 
 <div class="topnav">
 	 <a href="#" class="branding">
-        <img src="logo1.jpg" alt="Logo"  class="logo">
-        <span class="inj3ct-practice" style="font-size: 24px; margin-left: 0px" >Inj3ctPractice</span>
+        <img src="logo3.jpg" alt="Logo"  class="logo">
+        
     </a>
     <a href="homepage.php">Home</a>
     <!-- Content dropdown -->
@@ -128,7 +135,7 @@ $google_picture = $account['picture'];
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="contentpage.php">Courses</a>
+            <a href="contentpagegoogle.php">Courses</a>
             <a href="#">Tutorials</a>
             <a href="#">Articles</a>
         </div>
@@ -144,8 +151,10 @@ $google_picture = $account['picture'];
             <a href="#">Exams</a>
         </div>
     </div>
+    
+    <a href="about.php">About</a>
    
-    <div class="dropdown" style="float: right;">
+    <div class="dropdown" style="margin-left: auto;">
         <button class="dropbtn">
             <img src="<?=$google_picture?>" alt="<?=$google_name?>" width="30" height="30" style="border-radius: 50%;">
             <?=$google_name?>
