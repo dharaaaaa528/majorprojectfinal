@@ -147,7 +147,7 @@ $google_picture = $account['picture'];
         </button>
         <div class="dropdown-content">
             <a href="#">Quizzes</a>
-            <a href="test.php">Tests</a>
+            <a href="googletest.php">Tests</a>
             <a href="#">Exams</a>
         </div>
     </div>

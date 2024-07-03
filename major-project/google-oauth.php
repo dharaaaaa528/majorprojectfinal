@@ -61,7 +61,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
             $_SESSION['google_loggedin'] = TRUE;
             $_SESSION['google_id'] = $id;
             // Redirect to profile page
-            header('Location: homepage.php');
+            header('Location: googlehomepage.php');
             exit;
         } else {
             exit('Could not retrieve profile information! Please try again later!');

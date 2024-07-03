@@ -129,7 +129,7 @@ $username = $_SESSION["username"];
 <body>
 
 <div class="topnav">
-	 <a href="#" class="branding">
+	 <a href="usermain.php" class="branding">
         <img src="logo3.jpg" alt="Logo"  class="logo">
         
     </a>

@@ -14,6 +14,14 @@
         display: flex;
         flex-direction: column;
         height: 100vh;
+        font-family: Arial, sans-serif;
+        background-image: url('background.jpg');
+        background-size: cover; /* Makes the image cover the entire page */
+        background-size: cover; /* Makes the image cover the entire page */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
+        background-position: center; /* Centers the image */
+        background-attachment: fixed; /* Fixes the image while scrolling */       
+    
     }
 
     nav {
@@ -86,6 +94,9 @@
             </form>
             <form action="scriptadvanced.php" method="post">
                 <button type="submit" name="test" value="advanced">ADVANCED</button>
+            </form>
+            <form action="scriptallinone.php" method="post">
+                <button type="submit" name="test" value="advanced">ALL IN ONE</button>
             </form>
         </div>
     </div>
