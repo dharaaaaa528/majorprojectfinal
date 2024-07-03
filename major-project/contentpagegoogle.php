@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inj3ctPractice</title>
     <link rel="stylesheet" href="contentpage.css">
-    <style>
+        <style>
         body {
             background-image: url('background.jpg');
             background-size: cover;
@@ -17,7 +17,6 @@
         }
     </style>
 </head>
-
 <body>
     <?php include 'topnavgoogle.php'; ?>
     <div class="container">
@@ -51,7 +50,8 @@
                     <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
                     </form>
-                    <form action="sql2.php" method="get" style="margin: 0;">
+                    <form action="quizstart2.php" method="get" style="margin: 0;">
+                    	<input type="hidden" name="technique" value="SQL Technique 2">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
@@ -63,7 +63,8 @@
                     <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
                     </form>
-                    <form action="sql3.php" method="get" style="margin: 0;">
+                    <form action="quizstart2.php" method="get" style="margin: 0;">
+                    	<input type="hidden" name="technique" value="SQL Technique 3">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
@@ -75,7 +76,8 @@
                     <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
                     </form>
-                    <form action="sql4.php" method="get" style="margin: 0;">
+                    <form action="quizstart2.php" method="get" style="margin: 0;">
+                    	<input type="hidden" name="technique" value="SQL Technique 4">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
@@ -83,7 +85,5 @@
         </div>
     </div>
     <script src="scripts.js"></script>
-    
 </body>
-
 </html>
