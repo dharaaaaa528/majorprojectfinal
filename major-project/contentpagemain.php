@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <?php include 'main.php'; ?>
+    <?php include 'topnavmain.php'; ?>
     <div class="container">
     	<div class="sidebar">
             <ul>

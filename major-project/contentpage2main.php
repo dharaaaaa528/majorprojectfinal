@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="contentpage.css">
 </head>
 <body>
-    <?php include 'main.php'; ?>
+    <?php include 'topnavmain.php'; ?>
     <div class="container">
         <div class="sidebar">
             <ul>
                 <li><a href="#">Profile</a></li>
-                <li><a href="contentpage.php">SQL techniques</a></li>
-                <li><a href="contentpage2.php">XSScript techniques</a></li>
+                <li><a href="contentpagemain.php">SQL techniques</a></li>
+                <li><a href="contentpage2main.php">XSScript techniques</a></li>
                 
             </ul>
         </div>
