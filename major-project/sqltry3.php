@@ -21,22 +21,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
     $password = $_POST["password"];
 
-    // SQL query (vulnerable to SQL injection)
-    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    // Vulnerable SQL query allowing batched statements
+    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password';";
 
     // Execute the query
-    $query_result = $conn->query($sql);
+    if ($conn->multi_query($sql)) {
+        $result .= "<h2>SQL Injection - Batched SQL Statements</h2><br>";
+        $result .= "<p>Injected SQL: <code>$sql</code></p><br>";
 
-    if ($query_result && $query_result->num_rows > 0) {
-        // Display user data if login successful
-        $result = "<h2>Login Successful</h2><br><table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
-        while ($row = $query_result->fetch_assoc()) {
-            $result .= "<tr><td>" . $row["id"] . "</td><td>" . $row["username"] . "</td><td>" . $row["password"] . "</td></tr>";
-        }
-        $result .= "</table>";
+        do {
+            if ($query_result = $conn->store_result()) {
+                if ($query_result->num_rows > 0) {
+                    $result .= "<table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
+                    while ($row = $query_result->fetch_assoc()) {
+                        $result .= "<tr><td>" . $row["id"] . "</td><td>" . $row["username"] . "</td><td>" . $row["password"] . "</td></tr>";
+                    }
+                    $result .= "</table>";
+                } else {
+                    $result .= "<p>No records found for the injected query.</p>";
+                }
+                $query_result->free();
+            }
+        } while ($conn->more_results() && $conn->next_result());
     } else {
-        // Display error message if login fails
-        $result = "<h2>Login Failed</h2>";
+        // Display error message if query execution fails
+        $result = "Error: " . $conn->error;
     }
 }
 
@@ -48,7 +57,7 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SQL Injection Testing</title>
+    <title>SQL Injection - Batched SQL Statements</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -59,9 +68,18 @@ $conn->close();
             justify-content: center;
             height: 100vh;
             margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover; 
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
             color: black;
+            padding: 0;
         }
 
+        html, body {
+            height: 100%;
+        }
         .container {
             background-color: #fff;
             padding: 20px;
@@ -119,8 +137,8 @@ $conn->close();
 </head>
 <body>
     <div class="container">
-        <h1>SQL Injection Testing</h1>
-        <form action="sqltry2.php" method="post">
+        <h1>SQL Injection - Batched SQL Statements</h1>
+        <form action="sqltry3.php" method="post">
             <input type="text" name="username" placeholder="Username"><br>
             <input type="password" name="password" placeholder="Password"><br>
             <button type="submit">Login</button>
