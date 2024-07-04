@@ -65,6 +65,7 @@
         }
         .button-group button {
             margin-right: 10px;
+            margin-bottom: 10px; /* Add margin bottom for spacing */
             padding: 10px 20px;
             border: none;
             background-color: #007BFF;
@@ -265,4 +266,5 @@ SELECT * FROM Users WHERE username = 'admin' /* login bypass */;
     </div>
 </body>
 </html>
+
 
