@@ -1,18 +1,17 @@
 body {
- 
-            margin: 0;
-            padding: 0;
-            background-image: url('background.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-attachment: fixed;
-            height: 100vh;
-        }
-        
+    margin: 0;
+    padding: 0;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #fff; /* Ensure text is visible on dark background */
+}
+
 html, body {
     height: 100%;
-       
 }
 
 nav {
@@ -23,17 +22,23 @@ nav {
 
 .container {
     display: flex;
+    min-height: 100vh; /* Ensure the container spans the full height of the viewport */
 }
 
 .sidebar {
     width: 200px;
     background-color: #222;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ensure the sidebar spans the full height of the viewport */
 }
 
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
+    flex-grow: 1;
 }
 
 .sidebar li {
@@ -48,6 +53,10 @@ nav {
 .content {
     flex-grow: 1;
     padding: 20px;
+    color: #000; /* Ensure text is visible on light background */
+    background-color: rgba(255, 255, 255, 0.9); /* Light background for content area */
+    border-radius: 10px;
+    margin: 20px;
 }
 
 .technique {
@@ -62,11 +71,5 @@ button {
     border: none;
     color: white;
     padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-}
+    text-align:
+
