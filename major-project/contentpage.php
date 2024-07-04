@@ -33,8 +33,8 @@
                 <h2>SQL Technique 1</h2>
                 <p>[Description]</p>
                 <div class="button-group">
-                    <form action="#" method="get" style="margin: 0;">
-                        <button type="submit">Editor</button>
+                    <form action="sqltry1.php" method="get" style="margin: 0;">
+                        <button type="submit">Try It Now!</button>
                     </form>
                     <form action="quizstart.php" method="get" style="margin: 0;">
                     	<input type="hidden" name="technique" value="SQL Technique 1">
