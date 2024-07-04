@@ -122,6 +122,22 @@ $conn->close();
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -136,5 +152,6 @@ $conn->close();
             <?php echo $result; ?>
         </div>
     </div>
+    <a href="contentpage.php" class="back-button">Go Back to Content</a>
 </body>
 </html>

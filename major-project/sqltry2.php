@@ -58,9 +58,18 @@ $conn->close();
             justify-content: center;
             height: 100vh;
             margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover; 
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
             color: black;
+            padding: 0;
         }
 
+        html, body {
+            height: 100%;
+        }
         .container {
             background-color: #fff;
             padding: 20px;
@@ -114,6 +123,23 @@ $conn->close();
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+        
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -128,5 +154,6 @@ $conn->close();
             <?php echo $result; ?>
         </div>
     </div>
+     <a href="contentpage.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
