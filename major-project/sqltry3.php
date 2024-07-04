@@ -1,17 +1,6 @@
 <?php
 // Database connection
-$servername = "localhost"; // Replace with your MySQL server host
-$username = "root"; // Replace with your MySQL username
-$password = ""; // Replace with your MySQL password
-$dbname = "majorproject";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'config.php';
 
 $result = "";
 
