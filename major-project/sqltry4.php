@@ -38,7 +38,7 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Comment-Based SQL Injection</title>
+    <title>Comment-Based SQL Injection </title>
     <style>
         body {
             font-family: Arial, sans-serif;
