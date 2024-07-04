@@ -108,7 +108,7 @@ txtSQL = "SELECT * FROM Users WHERE UserId = " + txtUserId;
 
 If 'txtUserId' is set to '105 OR 1=1', the query becomes:
 
-SELECT * FROM Users WHERE UserId = 105 OR 1=1;
+SELECT * FROM users WHERE '1'='1';
                     </code></pre>
                 </div>
                 <div class="button-group">
