@@ -1,26 +1,11 @@
 <?php
-<<<<<<< Updated upstream
-// Database connection
-$servername = "localhost"; // Replace with your MySQL server host
-$username = "root"; // Replace with your MySQL username
-$password = ""; // Replace with your MySQL password
-$dbname = "majorproject";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-=======
 // Enable error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once 'config.php';
->>>>>>> Stashed changes
 
+// Function to simulate getting request parameters (for demonstration)
 $result = "";
 
 // Handle form submission
@@ -28,20 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get username and password from form inputs
     $username = $_POST["username"];
     $password = $_POST["password"];
-<<<<<<< Updated upstream
-
-    // SQL query (vulnerable to SQL injection)
-    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-
-    // Execute the query
-    $query_result = $conn->query($sql);
-
-    if ($query_result && $query_result->num_rows > 0) {
-        // Display user data if login successful
-        $result = "<h2>Login Successful</h2><br><table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
-        while ($row = $query_result->fetch_assoc()) {
-            $result .= "<tr><td>" . $row["id"] . "</td><td>" . $row["username"] . "</td><td>" . $row["password"] . "</td></tr>";
-=======
     
     // Vulnerable SQL query
     $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
@@ -61,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Display error message if login fails
             $result .= "<h2>Login Failed</h2>";
->>>>>>> Stashed changes
         }
     } else {
         // Display SQL error
@@ -160,7 +130,3 @@ $conn->close();
     </div>
 </body>
 </html>
-
-
-
-
