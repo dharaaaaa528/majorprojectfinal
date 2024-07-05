@@ -65,9 +65,9 @@ $email = $_SESSION['email'];
          
          .sidebar a.profile-link {
             color: #56C2DD; 
-        }
+         }
         
-        .content {
+         .content {
             color: white ;
             margin-left: 200px;
             padding: 20px;
@@ -85,11 +85,40 @@ $email = $_SESSION['email'];
         .content-inner {
             text-align: center; /* Center text within the content area */
         }
-         
+        .profile-info {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            width: 300px; /* Adjust width as needed */
+            text-align: left;
+        }
 
+        .profile-info p {
+            margin: 5px 0;
+            color: black;
+        }
+        .profile-edit {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            margin-left: 70px;
+            width: 150px; /* Adjust width as needed */
+            text-align: centre;
+        }
+        .profile-edit a {
+            color: #56C2DD;
+            text-decoration: none;
+        }
+
+        .profile-edit a:hover {
+            text-decoration: underline;
+        }
     </style>
+</head>
 <body>
- <div class="sidebar">
+    <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
         <a href="#"><u>Progress</u></a>
         <a href="#"><u>Certifications</u></a>
@@ -100,11 +129,17 @@ $email = $_SESSION['email'];
             <div class="profile-picture">
                 <img src="profile.png" alt="User Profile Picture">
             </div>
-            <p>Name: <?php echo $username; ?></p>
-            <p>Email: <?php echo $email; ?></p>
+          
+            <div class="profile-info">
+                <p><strong>Name:</strong> <?php echo $username; ?></p>
+            </div>
+            <div class="profile-info">
+                <p><strong>Email:</strong> <?php echo $email; ?></p>
+            </div>
+            <div class="profile-edit">
+                <a href="updateprofile.php">Edit Profile</a>
+            </div>
         </div>
     </div>
-
-</div>
 </body>
 </html>
