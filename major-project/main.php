@@ -9,46 +9,65 @@ require_once 'topnavmain.php';
     <meta charset="UTF-8">
     <title>Inj3ctPractice</title>
     <style>
-        /* Basic styling for the navigation */
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-image: url('background2.jpg');
+    background-size: cover; /* Makes the image cover the entire page */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-position: center; /* Centers the image */
+    background-attachment: fixed; /* Fixes the image while scrolling */
+    color: white;
+    padding: 0;
+    height: 100vh;
+    position: relative; /* Required for positioning elements inside */
+}
+
+html, body {
+    height: 100%;
+}
+
+.content {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for better readability */
+    border-radius: 10px;
+    max-width: 550px;
+    margin-left: 0px; /* Adjust this value to move the content to the left */
+    color: #f2f2f2;
+    text-align: center; /* Center the text inside the content */
+    position: relative;
+}
+
+.content h1 {
+    margin-bottom: 20px;
+}
+
+.content p {
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-start; /* Align the button to the left */
+    position: absolute;
+    bottom: 150px; /* Position the button 150px from the bottom of the page */
+    width: 100%;
+    padding-left: 0px; /* Add padding to create some space from the left edge */
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 50px;
+    color: white;
+    background-color: grey;
+    text-decoration: none;
+    border-radius: 30px;
+}
+
+.button:hover {
+    background-color: darkgrey;
+}
         
-        .content {
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for better readability */
-            border-radius: 10px;
-            max-width: 800px;
-            margin: 20px auto;
-            color: #f2f2f2;
-            text-align: center; /* Center the text inside the content */
-        }
-        
-        .content h1 {
-            margin-bottom: 20px;
-        }
-
-        .content p {
-            margin-bottom: 20px;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center; /* Center the button horizontally */
-            position: absolute;
-            bottom: 150px; /* Position the button 20px from the bottom of the page */
-            width: 100%;
-        }
-
-        .button {
-            padding: 10px 20px;
-            font-size: 50px;
-            color: white;
-            background-color: grey;
-            text-decoration: none;
-            border-radius: 30px;
-        }
-
-        .button:hover {
-            background-color: darkgrey;
-        }
     </style>
 </head>
 <body>
