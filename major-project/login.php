@@ -21,24 +21,20 @@ if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= 5) {
     }
 }
 
-// Debugging: Form submission check
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $usernameemail = $_POST["usernameemail"];
     $password = $_POST["password"];
-
-    // Debugging: Display input values
-    echo "Username/Email: $usernameemail<br>";
-    echo "Password: $password<br>";
 
     $stmt = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ?");
     $stmt->bind_param("ss", $usernameemail, $usernameemail);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Debugging: Check if user exists
+    // Check if user exists
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        // Debugging: Verify password
+        // Verify password
         if (password_verify($password, $row["password"])) {
             $_SESSION["login"] = true;
             $_SESSION["userid"] = $row["userid"];
@@ -48,30 +44,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             unset($_SESSION['login_attempts']);
             unset($_SESSION['lockout_time']);
             
-            // Debugging: Before redirection
-            echo "Login successful. Redirecting to usermain.php...";
+            // Redirect to main page after successful login
             header("Location: usermain.php");
             exit();
         } else {
             $_SESSION['login_attempts'] = isset($_SESSION['login_attempts']) ? $_SESSION['login_attempts'] + 1 : 1;
             $error_message = 'Wrong Password';
-            echo $error_message;
         }
     } else {
         $_SESSION['login_attempts'] = isset($_SESSION['login_attempts']) ? $_SESSION['login_attempts'] + 1 : 1;
         $error_message = 'User Not Registered';
-        echo $error_message;
     }
 
     // Lock the user out for 10 minutes after 5 failed attempts
     if ($_SESSION['login_attempts'] >= 5) {
         $_SESSION['lockout_time'] = time() + 600; // Lockout for 600 seconds (10 minutes)
         $error_message = 'Too many failed login attempts. Account locked. Please try again after 10 minutes.';
-        echo $error_message;
         exit();
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
