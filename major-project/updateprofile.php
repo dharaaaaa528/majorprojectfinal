@@ -1,34 +1,44 @@
 <?php
+require_once 'server.php';
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 // Check if user is logged in
-if (!isset($_SESSION['username']) || !isset($_SESSION['email'])) {
+if (!isset($_SESSION['userid'])) {
     // Redirect to login page or handle unauthorized access
     header("Location: login.php");
     exit();
 }
 
 // Get current user info
+$userId = $_SESSION['userid'];
 $username = $_SESSION['username'];
 $email = $_SESSION['email'];
 
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Validate input and update session variables
+    // Validate input
     $new_username = !empty($_POST['username']) ? trim($_POST['username']) : $username;
     $new_email = !empty($_POST['email']) ? trim($_POST['email']) : $email;
+
+    // Update user info in the database
+    $query = $conn->prepare("UPDATE userinfo SET username = ?, email = ? WHERE userid = ?");
+    $query->bind_param("ssi", $new_username, $new_email, $userId);
     
-    // Update session variables
-    $_SESSION['username'] = $new_username;
-    $_SESSION['email'] = $new_email;
-    
-    // Optionally, update user info in the database here
-    
-    // Redirect back to profile page
-    header("Location: profile.php");
-    exit();
+    if ($query->execute()) {
+        // Update session variables
+        $_SESSION['username'] = $new_username;
+        $_SESSION['email'] = $new_email;
+        
+        // Redirect back to profile page
+        header("Location: profile.php");
+        exit();
+    } else {
+        die("Error updating record: " . $conn->error);
+    }
+    $query->close();
 }
 ?>
 
@@ -43,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background: url('background.jpg') no-repeat center center; /* Add background image */
-            background-size: cover; /* Cover the entire content area */
+            background: url('background.jpg') no-repeat center center;
+            background-size: cover;
             color: white;
             display: flex;
             justify-content: center;
@@ -103,7 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .form-container .cancel-button:hover {
             background-color: #c9302c;
         }
-
     </style>
 </head>
 <body>
@@ -118,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="button-container">
                 <button type="submit">Save Changes</button>
-                <a href="profile.php" class="cancel-button" style="text-decoration: none; padding: 10px 20px; border-radius: 4px; color: white; display: inline-block; background-color: #d9534f; text-align: centre;">Cancel</a>
+                <a href="profile.php" class="cancel-button" style="text-decoration: none; padding: 10px 20px; border-radius: 4px; color: white; display: inline-block; background-color: #d9534f; text-align: center;">Cancel</a>
             </div>
         </form>
     </div>

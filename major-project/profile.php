@@ -1,18 +1,30 @@
 <?php
+require_once 'server.php';
 require_once 'topnav.php';
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 // Check if user is logged in
-if (!isset($_SESSION['username']) || !isset($_SESSION['email'])) {
-    // Redirect to login page or handle unauthorized access
+if (!isset($_SESSION['userid'])) {
     header("Location: login.php");
     exit();
 }
 
-$username = $_SESSION['username'];
-$email = $_SESSION['email'];
+// Get current user info from the database
+$userId = $_SESSION['userid'];
+
+$query = $conn->prepare("SELECT username, email FROM userinfo WHERE userid = ?");
+$query->bind_param("i", $userId);
+$query->execute();
+$query->bind_result($username, $email);
+$query->fetch();
+$query->close();
+
+// Update session variables
+$_SESSION['username'] = $username;
+$_SESSION['email'] = $email;
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +33,7 @@ $email = $_SESSION['email'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-          <style>
+    <style>
         /* Basic styling for the navigation */
         body {
             font-family: Arial, sans-serif;
@@ -131,10 +143,10 @@ $email = $_SESSION['email'];
             </div>
           
             <div class="profile-info">
-                <p><strong>Name:</strong> <?php echo $username; ?></p>
+                <p><strong>Name:</strong> <?php echo htmlspecialchars($username); ?></p>
             </div>
             <div class="profile-info">
-                <p><strong>Email:</strong> <?php echo $email; ?></p>
+                <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
             <div class="profile-edit">
                 <a href="updateprofile.php">Edit Profile</a>
@@ -143,3 +155,7 @@ $email = $_SESSION['email'];
     </div>
 </body>
 </html>
+
+
+
+
