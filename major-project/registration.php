@@ -20,6 +20,8 @@ if (isset($_POST["submit"])) {
         echo "<script>alert('Phone number must be exactly 8 digits');</script>";
     } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\W).{8,}$/', $password)) {
         echo "<script>alert('Password must be at least 8 characters long and include at least one uppercase letter and one special character');</script>";
+    } elseif (strlen($username) < 8) {
+        echo "<script>alert('Username must be at least 8 characters long');</script>";
     } else {
         // Check for duplicate entries
         $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ?");
@@ -152,7 +154,7 @@ if (isset($_POST["submit"])) {
         <form action="registration.php" method="post" autocomplete="off">
             <div>
                 <label for="username">Username:</label>
-                <input type="text" name="username" id="username" required>
+                <input type="text" name="username" id="username" required minlength="8">
             </div>
             <div>
                 <label for="email">Email:</label>
@@ -161,9 +163,6 @@ if (isset($_POST["submit"])) {
             <div>
                 <label for="password">Password:</label>
                 <input type="password" name="password" id="password" required pattern="(?=.*[A-Z])(?=.*\W).{8,}" title="Password must be at least 8 characters long and include at least one uppercase letter and one special character">
-<!--                 <div class="requirements"> -->
-<!--                     Password must be at least 8 characters long and include at least one uppercase letter and one special character. -->
-<!--                 </div> -->
             </div>
             <div>
                 <label for="phoneno">Phone Number:</label>
@@ -182,3 +181,4 @@ if (isset($_POST["submit"])) {
     </div>
 </body>
 </html>
+
