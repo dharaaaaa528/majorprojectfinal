@@ -1,6 +1,9 @@
 <?php
+
+require_once 'checkfile.php';
 // Database connection
 require_once 'config.php';
+
 
 $result = "";
 

@@ -12,6 +12,14 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
 
 // Fetch user information if needed
 $username = $_SESSION["username"];
+
+// Check if the modal has been shown in this session
+$modalShown = isset($_SESSION['modal_shown']) && $_SESSION['modal_shown'];
+
+// If the modal hasn't been shown yet, mark it as shown
+if (!$modalShown) {
+    $_SESSION['modal_shown'] = true;
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,65 +33,65 @@ $username = $_SESSION["username"];
             font-family: Arial, sans-serif;
             margin: 0;
             background-image: url('background.jpg');
-            background-size: cover; /* Makes the image cover the entire page */
-            background-size: cover; /* Makes the image cover the entire page */
-            background-repeat: no-repeat; /* Prevents the image from repeating */
-            background-position: center; /* Centers the image */
-            background-attachment: fixed; /* Fixes the image while scrolling */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
             color: white;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             height: 100vh;
-    
         }
-        
+
         html, body {
-        height: 100%;
+            height: 100%;
         }
-        
-/*         
+
         /* Modal styles */
         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1; 
+            display: none;
+            position: fixed;
+            z-index: 1;
             left: 0;
             top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgb(0,0,0); 
-            background-color: rgba(0,0,0,0.4); 
-            padding-top: 60px; 
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
         }
+
         .modal-content {
             background-color: white;
-            margin: 5% auto; 
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; 
+            width: 80%;
         }
-        
+
         .modal-content h1 {
-            color: black; /* Change the color of the heading text */
+            color: black;
         }
-        
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         .content {
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for better readability */
+            background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             max-width: 800px;
             margin: 20px auto;
@@ -92,14 +100,17 @@ $username = $_SESSION["username"];
     </style>
 </head>
 
+<body>
 
 <!-- The Modal -->
-<div id="welcomeModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h1>Welcome, <?= htmlspecialchars($username) ?>!</h1>
-  </div>
-</div>
+<?php if (!$modalShown): ?>
+    <div id="welcomeModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Welcome, <?= htmlspecialchars($username) ?>!</h1>
+      </div>
+    </div>
+<?php endif; ?>
 
 <script>
     // Get the modal
@@ -108,9 +119,11 @@ $username = $_SESSION["username"];
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    // When the page loads, open the modal
+    // When the page loads, open the modal if it hasn't been shown yet
     window.onload = function() {
-        modal.style.display = "block";
+        <?php if (!$modalShown): ?>
+            modal.style.display = "block";
+        <?php endif; ?>
     }
 
     // When the user clicks on <span> (x), close the modal
@@ -131,5 +144,6 @@ $username = $_SESSION["username"];
     <p>This is a sample text content to show how you can add text to your webpage. You can include paragraphs, headings, lists, images, and more to enhance the content of your site. This text block is styled with a semi-transparent background and rounded corners for better readability against the background image.</p>
     <p>Feel free to customize the styling and content to fit your needs.</p>
 </div>
+
 </body>
 </html>

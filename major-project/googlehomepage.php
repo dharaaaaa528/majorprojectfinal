@@ -2,29 +2,36 @@
 require_once 'server.php';
 require_once 'topnavgoogle.php';
 
-
 // Initialize the session - is required to check the login state.
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['google_loggedin'])) {
     header('Location: login.php');
     exit;
 }
+
 // Retrieve session variables
 $stmt = $pdo->prepare('SELECT * FROM accounts WHERE id = ?');
-$stmt->execute([ $_SESSION['google_id'] ]);
+$stmt->execute([$_SESSION['google_id']]);
 $account = $stmt->fetch(PDO::FETCH_ASSOC);
+
 // Retrieve session variables
 $google_loggedin = $_SESSION['google_loggedin'];
 $google_email = $account['email'];
 $google_name = $account['name'];
 $google_picture = $account['picture'];
+
+// Check if the modal has been shown in this session
+$modalShown = isset($_SESSION['modal_shown']) && $_SESSION['modal_shown'];
+
+// If the modal hasn't been shown yet, mark it as shown
+if (!$modalShown) {
+    $_SESSION['modal_shown'] = true;
+}
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,55 +40,54 @@ $google_picture = $account['picture'];
     <title>Profile</title>
     <style>
         body {
-    background-image: url('background.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-/* Additional styles can be added for other elements as needed */
-        
-       
-        
-         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1; 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
             left: 0;
             top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgb(0,0,0); 
-            background-color: rgba(0,0,0,0.4); 
-            padding-top: 60px; 
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
         }
+
         .modal-content {
             background-color: white;
-            margin: 5% auto; 
+            margin: 5% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; 
+            width: 80%;
         }
-        
+
         .modal-content h1 {
             color: black; /* Change the color of the heading text */
         }
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         .content {
             padding: 20px;
             background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for better readability */
@@ -91,23 +97,18 @@ $google_picture = $account['picture'];
             color: #f2f2f2;
         }
     </style>
-
-
-        
-    </style>
 </head>
 <body>
 
-
-
-
 <!-- The Modal -->
-<div id="welcomeModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h1>Welcome, <?= htmlspecialchars($google_name) ?>!</h1>
-  </div>
-</div>
+<?php if (!$modalShown): ?>
+    <div id="welcomeModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Welcome, <?= htmlspecialchars($google_name) ?>!</h1>
+      </div>
+    </div>
+<?php endif; ?>
 
 <script>
     // Get the modal
@@ -116,9 +117,11 @@ $google_picture = $account['picture'];
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    // When the page loads, open the modal
+    // When the page loads, open the modal if it hasn't been shown yet
     window.onload = function() {
-        modal.style.display = "block";
+        <?php if (!$modalShown): ?>
+            modal.style.display = "block";
+        <?php endif; ?>
     }
 
     // When the user clicks on <span> (x), close the modal
@@ -142,5 +145,6 @@ $google_picture = $account['picture'];
 
 </body>
 </html>
+
 
 
