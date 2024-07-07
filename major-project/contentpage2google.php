@@ -14,7 +14,82 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            color: #fff; /* Ensure text is visible on dark background */
         }
+        .container {
+            display: flex;
+            min-height: 100vh; /* Ensure the container spans the full height of the viewport */
+        
+            
+        }
+        .sidebar {
+            width: 150px !important;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 140vh; /* Ensure the sidebar spans the full height of the viewport */
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+           
+        }
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            color: #000; /* Black text for better readability on light background */
+            background-color: rgba(255, 255, 255, 0.9); /* Light background for content area */
+            border-radius: 10px;
+            margin: 20px;
+            width: 100px;
+        }
+        .technique {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .technique h2 {
+            margin-top: 0;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        .button-group button {
+            margin-right: 10px;
+            margin-bottom: 10px; /* Add margin bottom for spacing */
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .example {
+            background-color: #333;
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .example pre {
+            margin: 0;
+            color: #fff; /* Ensure code text is visible on dark background */
+        }   
+    </style>
     </style>
 </head>
 <body>

@@ -97,8 +97,8 @@
         <div class="sidebar">
             <ul>
                 <li><a href="#">Profile</a></li>
-                <li><a href="contentpage.php">SQL techniques</a></li>
-                <li><a href="contentpage2.php">XSScript techniques</a></li>
+                <li><a href="contentpagegoogle.php">SQL techniques</a></li>
+                <li><a href="contentpage2google.php">XSScript techniques</a></li>
             </ul>
         </div>       
         <div class="content">
