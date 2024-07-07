@@ -29,7 +29,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            height: 490vh; /* Ensure the sidebar spans the full height of the viewport */
+            height: 450vh; /* Ensure the sidebar spans the full height of the viewport */
         }
         .sidebar ul {
             list-style-type: none;
