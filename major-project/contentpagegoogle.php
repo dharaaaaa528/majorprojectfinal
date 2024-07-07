@@ -119,7 +119,7 @@ SELECT * FROM users WHERE '1'='1';
                     </code></pre>
                 </div>
                 <div class="button-group">
-                    <form action="sqltry1.php" method="get" style="margin: 0;">
+                    <form action="sqltry1google.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
                     </form>
                     <form action="quizstart2.php" method="get" style="margin: 0;">
@@ -160,7 +160,7 @@ SELECT * FROM Users WHERE Name = "" OR ""="" AND Pass = "" OR ""="";
                     </code></pre>
                 </div>
                 <div class="button-group">
-                    <form action="sqltry2.php" method="get" style="margin: 0;">
+                    <form action="sqltry2google.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
                     </form>
                     <form action="quizstart2.php" method="get" style="margin: 0;">
@@ -186,7 +186,7 @@ SELECT * FROM Users WHERE UserId = 105; DROP TABLE Suppliers;
                     </code></pre>
                 </div>
                 <div class="button-group">
-                    <form action="sqltry3.php" method="get" style="margin: 0;">
+                    <form action="sqltry3google.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
                     </form>
                     <form action="quizstart2.php" method="get" style="margin: 0;">
@@ -259,7 +259,7 @@ SELECT * FROM Users WHERE username = 'admin' /* login bypass */;
                     </code></pre>
                 </div>
                 <div class="button-group">
-                    <form action="sqltry4.php" method="get" style="margin: 0;">
+                    <form action="sqltry4google.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
                     </form>
                     <form action="quizstart2.php" method="get" style="margin: 0;">

@@ -1,45 +1,31 @@
 <?php
-// Enable error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 require_once 'checkfile.php';
 require_once 'config.php';
 
-// Function to simulate getting request parameters (for demonstration)
+$query = "";
 $result = "";
 
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get username and password from form inputs
-    $username = $_POST["username"];
-    $password = $_POST["password"];
-    
-    // Vulnerable SQL query
-    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-    
-    // Execute the query
-    $query_result = $conn->query($sql);
-    
-    if ($query_result) {
-        if ($query_result->num_rows > 0) {
-            // Display user data if login successful
-            $result .= "<h2>Login Successful</h2><br><table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
-            while ($row = $query_result->fetch_assoc()) {
-                $id = isset($row["id"]) ? $row["id"] : "N/A";
-                $result .= "<tr><td>" . $id . "</td><td>" . $row["username"] . "</td><td>" . $row["password"] . "</td></tr>";
+    if (!empty($_POST["query"])) {
+        $query = $_POST["query"];
+
+        // Execute the query
+        $res = $conn->query($query);
+
+        if ($res) {
+            $result = "<table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
+            while ($row = $res->fetch_assoc()) {
+                $result .= "<tr><td>" . $row["id"] . "</td><td>" . $row["username"] . "</td><td>" . $row["password"] . "</td></tr>";
             }
             $result .= "</table>";
         } else {
-            // Display error message if login fails
-            $result .= "<h2>Login Failed</h2>";
+            $result = "Error executing query: " . $conn->error;
         }
     } else {
-        // Display SQL error
-        $result .= "<h2>SQL Error: " . $conn->error . "</h2>";
+        $result = "Query cannot be empty!";
     }
 }
 
-// Close connection
 $conn->close();
 ?>
 
@@ -47,7 +33,7 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SQL Injection Testing</title>
+    <title>SQL Injection Demo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,6 +56,7 @@ $conn->close();
         html, body {
             height: 100%;
         }
+
         .container {
             background-color: #fff;
             padding: 20px;
@@ -77,6 +64,7 @@ $conn->close();
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 600px;
+            z-index: 1; /* Ensure the container is above the background image */
         }
         .container h1 {
             margin-bottom: 20px;
@@ -84,13 +72,13 @@ $conn->close();
         .container form {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* Center elements inside the form */
         }
-        .container input[type="text"], .container input[type="password"] {
+        .container textarea {
             width: 100%;
-            height: 30px;
+            height: 100px;
             margin-bottom: 10px;
-            padding: 5px;
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             color: black;
@@ -123,7 +111,6 @@ $conn->close();
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-        
         .back-button {
             position: fixed;
             bottom: 20px;
@@ -144,16 +131,16 @@ $conn->close();
 </head>
 <body>
     <div class="container">
-        <h1>SQL Injection Testing</h1>
-        <form action="" method="post">
-            <input type="text" name="username" placeholder="Username"><br>
-            <input type="password" name="password" placeholder="Password"><br>
-            <button type="submit">Login</button>
+        <h1>SQL Injection Demo</h1>
+        <form action="sqltry1google.php" method="post">
+            <textarea name="query"><?php echo htmlspecialchars($query); ?></textarea><br>
+            <button type="submit">Run SQL</button>
         </form>
         <div class="result">
             <?php echo $result; ?>
         </div>
     </div>
-     <a href="contentpage.php" class="back-button">Go Back to Content</a>
+    <a href="contentpagegoogle.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
+

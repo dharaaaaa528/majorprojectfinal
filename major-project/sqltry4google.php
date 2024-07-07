@@ -1,11 +1,8 @@
 <?php
-// Enable error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Database connection
 require_once 'checkfile.php';
 require_once 'config.php';
 
-// Function to simulate getting request parameters (for demonstration)
 $result = "";
 
 // Handle form submission
@@ -13,29 +10,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get username and password from form inputs
     $username = $_POST["username"];
     $password = $_POST["password"];
-    
-    // Vulnerable SQL query
-    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-    
+
+    // Vulnerable SQL query allowing comment-based injection
+    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password';";
+
     // Execute the query
     $query_result = $conn->query($sql);
-    
-    if ($query_result) {
-        if ($query_result->num_rows > 0) {
-            // Display user data if login successful
-            $result .= "<h2>Login Successful</h2><br><table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
-            while ($row = $query_result->fetch_assoc()) {
-                $id = isset($row["id"]) ? $row["id"] : "N/A";
-                $result .= "<tr><td>" . $id . "</td><td>" . $row["username"] . "</td><td>" . $row["password"] . "</td></tr>";
-            }
-            $result .= "</table>";
-        } else {
-            // Display error message if login fails
-            $result .= "<h2>Login Failed</h2>";
+
+    if ($query_result && $query_result->num_rows > 0) {
+        // Display user data if login successful
+        $result .= "<h2>Login Successful</h2><br>";
+        $result .= "<table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
+        while ($row = $query_result->fetch_assoc()) {
+            $result .= "<tr><td>" . $row["id"] . "</td><td>" . $row["username"] . "</td><td>" . $row["password"] . "</td></tr>";
         }
+        $result .= "</table>";
     } else {
-        // Display SQL error
-        $result .= "<h2>SQL Error: " . $conn->error . "</h2>";
+        // Display error message if login fails
+        $result = "<h2>Login Failed</h2>";
     }
 }
 
@@ -47,7 +39,7 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SQL Injection Testing</title>
+    <title>Comment-Based SQL Injection </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -70,6 +62,7 @@ $conn->close();
         html, body {
             height: 100%;
         }
+
         .container {
             background-color: #fff;
             padding: 20px;
@@ -123,7 +116,6 @@ $conn->close();
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-        
         .back-button {
             position: fixed;
             bottom: 20px;
@@ -144,8 +136,8 @@ $conn->close();
 </head>
 <body>
     <div class="container">
-        <h1>SQL Injection Testing</h1>
-        <form action="" method="post">
+        <h1>Comment-Based SQL Injection</h1>
+        <form action="sqltry4google.php" method="post">
             <input type="text" name="username" placeholder="Username"><br>
             <input type="password" name="password" placeholder="Password"><br>
             <button type="submit">Login</button>
@@ -154,6 +146,6 @@ $conn->close();
             <?php echo $result; ?>
         </div>
     </div>
-     <a href="contentpage.php" class="back-button">Go Back to Content</a>
+     <a href="contentpagegoogle.php" class="back-button">Go Back to Content</a>
 </body>
 </html>

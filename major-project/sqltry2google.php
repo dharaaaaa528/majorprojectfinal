@@ -154,6 +154,6 @@ $conn->close();
             <?php echo $result; ?>
         </div>
     </div>
-     <a href="contentpage.php" class="back-button">Go Back to Content</a>
+     <a href="contentpagegoogle.php" class="back-button">Go Back to Content</a>
 </body>
 </html>

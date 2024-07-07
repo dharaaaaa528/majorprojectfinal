@@ -1,5 +1,6 @@
 <?php
 // Enable error reporting
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once 'checkfile.php';
@@ -154,6 +155,6 @@ $conn->close();
             <?php echo $result; ?>
         </div>
     </div>
-     <a href="contentpage.php" class="back-button">Go Back to Content</a>
+     <a href="contentpagemain.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
