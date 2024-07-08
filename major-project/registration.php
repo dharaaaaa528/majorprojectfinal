@@ -52,6 +52,7 @@ if (isset($_POST["submit"])) {
                 $_SESSION["userid"] = $userId;
                 $_SESSION["username"] = $username;
                 $_SESSION["email"] = $email;
+                $_SESSION["password"] = $password; // Store the unhashed password (not recommended for production)
 
                 // Redirect to usermain.php
                 header("Location: usermain.php");

@@ -25,7 +25,10 @@ $query->close();
 // Update session variables
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
+$password = $_SESSION['password']; // Get the stored unhashed password
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -144,6 +147,9 @@ $_SESSION['email'] = $email;
             </div>
             <div class="profile-info">
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
+            </div>
+            <div class="profile-info">
+                <p><strong>Password:</strong> <?php echo htmlspecialchars($password); ?></p>
             </div>
             <div class="profile-edit">
                 <a href="updateprofile.php">Edit Profile</a>
