@@ -230,7 +230,7 @@ if (isset($_GET['search'])) {
     </div>
 </div>
 <div class="button-container">
-    <a href="contentpage.php" class="button">START LEARNING NOW</a>
+    <a href="contentpagegoogle.php" class="button">START LEARNING NOW</a>
 </div>
 
 </body>
