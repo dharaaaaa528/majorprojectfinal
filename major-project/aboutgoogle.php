@@ -5,7 +5,7 @@
     <title>About Us</title>
     <link rel="stylesheet" href="#"> <!-- Link to your CSS file for styling -->
     <style>
-       body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             background-image: url('background.jpg');
@@ -19,6 +19,7 @@
             /* Ensure body background is transparent */
             background-color: rgba(0, 0, 0, 0.9); /* Black with 50% opacity */
         }
+
         html, body {
             height: 100%;
         }
@@ -71,7 +72,7 @@
     </style>
 </head>
 <body>
-    <?php include 'topnav.php'; ?> <!-- Include the top navigation bar -->
+    <?php include 'topnavgoogle.php'; ?> <!-- Include the top navigation bar -->
 
     <div class="background"></div>
     <div class="overlay"></div>

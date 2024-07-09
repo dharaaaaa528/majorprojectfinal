@@ -118,7 +118,7 @@ $google_picture = $account['picture'];
             color: white;
         }
         
-        .topnav a[href="about.php"] {
+        .topnav a[href="aboutgoogle.php"] {
             margin-left: 50px; /* Adjust as needed */
         }
     </style>
@@ -153,7 +153,7 @@ $google_picture = $account['picture'];
         </div>
     </div>
     
-    <a href="about.php">About</a>
+    <a href="aboutgoogle.php">About</a>
    
     <div class="dropdown" style="margin-left: auto;">
         <button class="dropbtn">

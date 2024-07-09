@@ -103,7 +103,7 @@ require_once 'server.php';
             background-color: #3700b3;
         }
         
-        .topnav a[href="about.php"] {
+        .topnav a[href="aboutmain.php"] {
             margin-left: 50px; /* Adjust as needed */
         }
         .right-nav {
@@ -135,7 +135,7 @@ require_once 'server.php';
     </div>
     <!-- Group Contact and About links -->
     
-    <a href="about.php">About</a>
+    <a href="aboutmain.php">About</a>
     <!-- Registration and Login buttons -->
      <div class="right-nav">
         <a href="registration.php" class="button">Register</a>
