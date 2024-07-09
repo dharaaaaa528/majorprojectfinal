@@ -98,7 +98,7 @@
             </div>
             <div class="team-member">
                 <img src="ilyas.jpg" alt="Team Member 4">
-                <p>MUHAMMAD ILYAS S-O SEGU ABUBACKER</p>
+                <p>MUHAMMAD ILYAS</p>
             </div>
             <!-- Add more team members as needed -->
         </div>
