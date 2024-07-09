@@ -1,11 +1,13 @@
 <?php
+ob_start();
 require_once 'server.php';
-
+// Ensure no whitespace or output before <?php tag
 
 // Initialize the session - is required to check the login state.
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['google_loggedin'])) {
     header('Location: login.php');
@@ -15,13 +17,13 @@ if (!isset($_SESSION['google_loggedin'])) {
 $stmt = $pdo->prepare('SELECT * FROM accounts WHERE id = ?');
 $stmt->execute([ $_SESSION['google_id'] ]);
 $account = $stmt->fetch(PDO::FETCH_ASSOC);
+
 // Retrieve session variables
 $google_loggedin = $_SESSION['google_loggedin'];
 $google_email = $account['email'];
 $google_name = $account['name'];
 $google_picture = $account['picture'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +34,7 @@ $google_picture = $account['picture'];
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-colour: black;
+            background-color: black; /* Corrected 'colour' to 'color' */
             color: white;
         }
         .topnav {
@@ -117,16 +119,15 @@ $google_picture = $account['picture'];
         }
         
         .topnav a[href="about.php"] {
-        margin-left: 50px; /* Adjust as needed */
+            margin-left: 50px; /* Adjust as needed */
         }
     </style>
 </head>
 <body>
 
 <div class="topnav">
-	 <a href="googlehomepage.php" class="branding">
+    <a href="googlehomepage.php" class="branding">
         <img src="logo3.jpg" alt="Logo"  class="logo">
-        
     </a>
     <a href="googlehomepage.php">Home</a>
     <!-- Content dropdown -->

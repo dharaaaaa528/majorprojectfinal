@@ -119,7 +119,7 @@ try {
 </head>
 <body>
     <div class="sidebar">
-        <a href="profile.php" class="profile-link"><u>Profile</u></a>
+        <a href="profilegoogle.php" class="profile-link"><u>Profile</u></a>
         <a href="#"><u>Progress</u></a>
         <a href="#"><u>Certifications</u></a>
     </div>  
