@@ -8,44 +8,36 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            color: white;
-            padding: 0;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .background {
             background-image: url('background.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
             background-attachment: fixed;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+            padding: 0;
+            height: 100vh;
+            /* Ensure body background is transparent */
+            background-color: rgba(0, 0, 0, 0.9); /* Black with 50% opacity */
         }
 
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+        html, body {
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background overlay */
-            z-index: -1;
         }
 
-        .about-container {
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Center vertically */
+            align-items: center; /* Center horizontally */
+            height: 90vh;
             padding: 20px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for content */
+            border-radius: 10px; /* Rounded corners for the content area */
+            padding: 20px; /* Padding inside the content area */
+        }
+        .about-container {
             text-align: center;
-            border-radius: 10px;
-            margin: 20px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 40px; /* Added margin for separation */
         }
 
         .about-container h1 {
@@ -55,12 +47,13 @@
         .team-container {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
         .team-member {
             text-align: center;
+            margin-bottom: 20px; /* Added margin between team members */
         }
 
         .team-member img {
@@ -83,9 +76,11 @@
     <div class="background"></div>
     <div class="overlay"></div>
 
-    <div class="about-container">
-        <h1>About Us</h1>
-        <p>Welcome to our website! We are a team of passionate individuals dedicated to providing the best services and experiences for our users. Our mission is to [your mission statement here].</p>
+    <div class="content">
+        <div class="about-container">
+            <h1>About Us</h1>
+            <p>Welcome to our website! We are a team of passionate individuals dedicated to providing the best services and experiences for our users. Our mission is to [your mission statement here].</p>
+        </div>
         
         <h2>Our Team</h2>
         <div class="team-container">
@@ -102,7 +97,7 @@
                 <p>DHARSHINI SARAVANA KUMAR</p>
             </div>
             <div class="team-member">
-                <img src="ilyas.jpg" alt="Team Member 3">
+                <img src="ilyas.jpg" alt="Team Member 4">
                 <p>MUHAMMAD ILYAS S-O SEGU ABUBACKER</p>
             </div>
             <!-- Add more team members as needed -->
@@ -110,4 +105,3 @@
     </div>
 </body>
 </html>
-
