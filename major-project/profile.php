@@ -132,7 +132,7 @@ $password = $_SESSION['password']; // Get the stored unhashed password
 <body>
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
-        <a href="#"><u>Progress</u></a>
+        <a href="progress.php"><u>Progress</u></a>
         <a href="#"><u>Certifications</u></a>
     </div>  
     <div class="content">
