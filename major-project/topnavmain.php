@@ -129,8 +129,6 @@ require_once 'server.php';
         </button>
         <div class="dropdown-content">
             <a href="contentpagemain.php">Courses</a>
-            <a href="#">Tutorials</a>
-            <a href="#">Articles</a>
         </div>
     </div>
     <!-- Group Contact and About links -->

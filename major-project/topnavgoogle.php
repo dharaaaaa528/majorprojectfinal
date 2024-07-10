@@ -137,8 +137,6 @@ $google_picture = $account['picture'];
         </button>
         <div class="dropdown-content">
             <a href="contentpagegoogle.php">Courses</a>
-            <a href="#">Tutorials</a>
-            <a href="#">Articles</a>
         </div>
     </div>
     <!-- Assessments dropdown -->
@@ -147,9 +145,7 @@ $google_picture = $account['picture'];
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="#">Quizzes</a>
             <a href="googletest.php">Tests</a>
-            <a href="#">Exams</a>
         </div>
     </div>
     
@@ -163,7 +159,6 @@ $google_picture = $account['picture'];
         </button>
         <div class="dropdown-content" style="right: 0; left: auto;">
             <a href="profilegoogle.php">Profile</a>
-            <a href="#">Settings</a>
             <a href="logout.php">Logout</a>
         </div>
     </div>

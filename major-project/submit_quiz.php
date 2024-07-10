@@ -1,6 +1,11 @@
 <?php
 require_once 'server.php';
 
+// Initialize session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 $score = 0;
 $total_questions = 10;
 
@@ -21,6 +26,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Calculate percentage score
 $percentage_score = ($score / $total_questions) * 100;
+
+// Determine pass or fail
+if ($score >= 7) {
+    $result_message = "Pass";
+    $result_color = "green";
+} else {
+    $result_message = "Fail";
+    $result_color = "red";
+}
 
 $conn->close();
 ?>
@@ -59,6 +73,7 @@ $conn->close();
         .score {
             font-size: 3em;
             margin: 20px 0;
+            color: <?php echo $result_color; ?>;
         }
         .back-btn {
             display: inline-block;
@@ -77,17 +92,28 @@ $conn->close();
 </head>
 <body>
 
-    <?php include 'topnav.php'; ?> <!-- Include topnav.php -->
-
+    <!-- Include topnav.php if needed -->
+    
     <div class="container">
         <h1>CONGRATULATIONS!</h1>
         <p>You have successfully submitted the quiz!</p>
         <div class="score">Here is your score:<br>
             <?php echo "$score/10"; ?><br>
-            Percentage: <?php echo "$percentage_score%"; ?>
+            Percentage: <?php echo "$percentage_score%"; ?><br>
+            Result: <span style="color: <?php echo $result_color; ?>;"><?php echo $result_message; ?></span>
         </div>
-        <a href="contentpage.php" class="back-btn">Back to Content page</a>
+        <?php
+        // Check if $_SESSION['google_loggedin'] is set and redirect accordingly
+        if (isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin']) {
+            echo '<a href="contentpagegoogle.php" class="back-btn">Back to Content page</a>';
+        } else {
+            echo '<a href="contentpage.php" class="back-btn">Back to Content page</a>';
+        }
+        ?>
     </div>
 </body>
 </html>
+
+
+
 
