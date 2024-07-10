@@ -36,27 +36,7 @@ if (!$modalShown) {
     $_SESSION['modal_shown'] = true;
 }
 
-// Example code with potential error at line 39
-if (isset($_GET['search'])) {
-    $searchQuery = strtolower(trim($_GET['search']));
-    
-    switch ($searchQuery) {
-        case 'sql injection':
-            header("Location: contentpagegoogle.php");
-            exit();
-        case 'script injection':
-            header("Location: contentpage2google.php");
-            exit();
-        case 'sql':
-            header("Location: contentpagegoogle.php");
-            exit();
-        case 'script':
-            header("Location: contentpage2google.php");
-            exit();
-        default:
-            $searchError = "No results found for '$searchQuery'. Please search for 'SQL Injection' or 'Script Injection'.";
-    }
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,33 +101,7 @@ if (isset($_GET['search'])) {
             margin: 20px auto;
             color: #f2f2f2;
         }
-        .search-bar-container {
-            text-align: center;
-            margin: 20px auto;
-            background-color: transparent;
-        }
-
-        .search-bar input[type="text"] {
-            width: 40%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 25px;
-            border: 1px solid #ccc;
-        }
-
-        .search-bar input[type="submit"] {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 25px;
-            border: none;
-            background-color: #333;
-            color: white;
-            cursor: pointer;
-        }
-
-        .search-bar input[type="submit"]:hover {
-            background-color: #555;
-        }
+        
         .button-container {
             display: flex;
             justify-content: center; /* Align the button to the left */
@@ -215,20 +169,7 @@ if (isset($_GET['search'])) {
     <p>This is a sample text content to show how you can add text to your webpage. You can include paragraphs, headings, lists, images, and more to enhance the content of your site. This text block is styled with a semi-transparent background and rounded corners for better readability against the background image.</p>
     <p>Feel free to customize the styling and content to fit your needs.</p>
 </div>
-<div class="search-bar-container">
-    <div class="search-bar">
-        <form method="GET" action="">
-            <input type="text" name="search" placeholder="Type your search query here">
-            <input type="submit" value="Search">
-        </form>
 
-        <?php
-        if (isset($searchError)) {
-            echo "<p>$searchError</p>";
-        }
-        ?>
-    </div>
-</div>
 <div class="button-container">
     <a href="contentpagegoogle.php" class="button">START LEARNING NOW</a>
 </div>

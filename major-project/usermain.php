@@ -20,28 +20,6 @@ $modalShown = isset($_SESSION['modal_shown']) && $_SESSION['modal_shown'];
 if (!$modalShown) {
     $_SESSION['modal_shown'] = true;
 }
-
-// Handle search functionality
-if (isset($_GET['search'])) {
-    $searchQuery = strtolower(trim($_GET['search']));
-
-    switch ($searchQuery) {
-        case 'sql injection':
-            header("Location: contentpage.php");
-            exit();
-        case 'script injection':
-            header("Location: contentpage2.php");
-            exit();
-        case 'sql':
-            header("Location: contentpage.php");
-            exit();
-        case 'script':
-            header("Location: contentpage2.php");
-            exit();
-        default:
-            $searchError = "No results found for '$searchQuery'. Please search for 'SQL Injection' or 'Script Injection'.";
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -118,33 +96,6 @@ if (isset($_GET['search'])) {
             color: #f2f2f2;
         }
 
-        .search-bar-container {
-            text-align: center;
-            margin: 20px auto;
-            background-color: transparent;
-        }
-
-        .search-bar input[type="text"] {
-            width: 40%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 25px;
-            border: 1px solid #ccc;
-        }
-
-        .search-bar input[type="submit"] {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 25px;
-            border: none;
-            background-color: #333;
-            color: white;
-            cursor: pointer;
-        }
-
-        .search-bar input[type="submit"]:hover {
-            background-color: #555;
-        }
         .button-container {
             display: flex;
             justify-content: center; /* Align the button to the left */
@@ -214,25 +165,11 @@ if (isset($_GET['search'])) {
     <p>Feel free to customize the styling and content to fit your needs.</p>
 </div>
 
-<!-- Search Bar -->
-<div class="search-bar-container">
-    <div class="search-bar">
-        <form method="GET" action="">
-            <input type="text" name="search" placeholder="Type your search query here">
-            <input type="submit" value="Search">
-        </form>
-
-        <?php
-        if (isset($searchError)) {
-            echo "<p>$searchError</p>";
-        }
-        ?>
-    </div>
-</div>
 <div class="button-container">
     <a href="contentpage.php" class="button">START LEARNING NOW</a>
 </div>
 
 </body>
 </html>
+
 

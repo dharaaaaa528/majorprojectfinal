@@ -1,5 +1,27 @@
 <?php 
 require_once 'server.php';
+
+// Handle search functionality
+if (isset($_GET['search'])) {
+    $searchQuery = strtolower(trim($_GET['search']));
+    
+    switch ($searchQuery) {
+        case 'sql injection':
+            header("Location: contentpagemain.php");
+            exit();
+        case 'script injection':
+            header("Location: contentpage2main.php");
+            exit();
+        case 'sql':
+            header("Location: contentpagemain.php");
+            exit();
+        case 'script':
+            header("Location: contentpage2main.php");
+            exit();
+        default:
+            $searchError = "No results found for '$searchQuery'. Please search for 'SQL Injection' or 'Script Injection'.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +31,12 @@ require_once 'server.php';
     <title>Top Navigation with Dropdowns</title>
     <style>
         /* Basic styling for the navigation */
-      
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: black;
+            color: white;
+        }
         .topnav {
             background-color: #333;
             overflow: hidden;
@@ -32,8 +59,6 @@ require_once 'server.php';
             text-decoration: none;
              font-size: 20px;
         }
-     
-        
         .topnav a:hover {
             background-color: #ddd;
             color: black;
@@ -102,7 +127,6 @@ require_once 'server.php';
         .topnav .button:hover {
             background-color: #3700b3;
         }
-        
         .topnav a[href="aboutmain.php"] {
             margin-left: 50px; /* Adjust as needed */
         }
@@ -110,16 +134,38 @@ require_once 'server.php';
             margin-left: auto; /* Pushes the content to the right */
             display: flex;
         }
-        
-        
+        .topnav a[href="about.php"] {
+            margin-left: 50px; /* Adjust as needed */
+        }
+        .topnav .search-bar {
+            margin-left: 100px; /* Add space between About link and search bar */
+        }
+        .topnav .search-bar input[type="text"] {
+            padding: 10px;
+            font-size: 17px;
+            border: none;
+            border-radius: 20px;
+            margin-right: 10px;
+            width: 400px; /* Make the search bar longer */
+        }
+        .topnav .search-bar input[type="submit"] {
+            padding: 6px 10px;
+            font-size: 17px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ddd;
+            cursor: pointer;
+        }
+        .topnav .search-bar input[type="submit"]:hover {
+            background-color: #ccc;
+        }
     </style>
 </head>
 <body>
 
 <div class="topnav">
-	<a href="#" class="branding">
+    <a href="#" class="branding">
         <img src="logo3.jpg" alt="Logo"  class="logo">
-        
     </a>
     <a href="main.php">Home</a>
     <!-- Content dropdown -->
@@ -132,17 +178,29 @@ require_once 'server.php';
         </div>
     </div>
     <!-- Group Contact and About links -->
-    
     <a href="aboutmain.php">About</a>
+    <!-- Search bar -->
+    <div class="search-bar-container">
+        <div class="search-bar">
+            <form method="GET" action="">
+                <input type="text" name="search" placeholder="Type your search query here">
+                <input type="submit" value="Search">
+            </form>
+            <?php
+            if (isset($searchError)) {
+                echo "<p>$searchError</p>";
+            }
+            ?>
+        </div>
+    </div>
     <!-- Registration and Login buttons -->
-     <div class="right-nav">
+    <div class="right-nav">
         <a href="registration.php" class="button">Register</a>
         <a href="login.php" class="button">Login</a>
     </div>
 </div>
 
-
-
 </body>
 </html>
+
 

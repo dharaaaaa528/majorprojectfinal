@@ -1,7 +1,6 @@
 <?php
 ob_start();
 require_once 'server.php';
-// Ensure no whitespace or output before <?php tag
 
 // Initialize the session - is required to check the login state.
 if (session_status() == PHP_SESSION_NONE) {
@@ -23,6 +22,28 @@ $google_loggedin = $_SESSION['google_loggedin'];
 $google_email = $account['email'];
 $google_name = $account['name'];
 $google_picture = $account['picture'];
+
+// Handle search functionality
+if (isset($_GET['search'])) {
+    $searchQuery = strtolower(trim($_GET['search']));
+    
+    switch ($searchQuery) {
+        case 'sql injection':
+            header("Location: contentpagegoogle.php");
+            exit();
+        case 'script injection':
+            header("Location: contentpage2google.php");
+            exit();
+        case 'sql':
+            header("Location: contentpagegoogle.php");
+            exit();
+        case 'script':
+            header("Location: contentpage2google.php");
+            exit();
+        default:
+            $searchError = "No results found for '$searchQuery'. Please search for 'SQL Injection' or 'Script Injection'.";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,6 +142,31 @@ $google_picture = $account['picture'];
         .topnav a[href="aboutgoogle.php"] {
             margin-left: 50px; /* Adjust as needed */
         }
+        .topnav .search-bar {
+            margin-left: 70px; /* Add space between About link and search bar */
+        }
+
+        .topnav .search-bar input[type="text"] {
+            padding: 10px;
+            font-size: 17px;
+            border: none;
+            border-radius: 20px;
+            margin-right: 10px;
+            width: 400px; /* Make the search bar longer */
+        }
+
+        .topnav .search-bar input[type="submit"] {
+            padding: 6px 10px;
+            font-size: 17px;
+            border: none;
+            border-radius: 20px;
+            background-color: #ddd;
+            cursor: pointer;
+        }
+
+        .topnav .search-bar input[type="submit"]:hover {
+            background-color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -150,6 +196,20 @@ $google_picture = $account['picture'];
     </div>
     
     <a href="aboutgoogle.php">About</a>
+    <div class="search-bar-container">
+        <div class="search-bar">
+            <form method="GET" action="">
+                <input type="text" name="search" placeholder="Type your search query here">
+                <input type="submit" value="Search">
+            </form>
+
+            <?php
+            if (isset($searchError)) {
+                echo "<p>$searchError</p>";
+            }
+            ?>
+        </div>
+    </div>
    
     <div class="dropdown" style="margin-left: auto;">
         <button class="dropbtn">
