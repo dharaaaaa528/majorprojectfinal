@@ -27,8 +27,10 @@ $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
 $password = $_SESSION['password']; // Get the stored unhashed password
 
-?>
+// Mask the password with stars
+$maskedPassword = str_repeat('•', strlen($password));
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -149,7 +151,7 @@ $password = $_SESSION['password']; // Get the stored unhashed password
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
             <div class="profile-info">
-                <p><strong>Password:</strong> <?php echo htmlspecialchars($password); ?></p>
+                <p><strong>Password:</strong> <?php echo htmlspecialchars($maskedPassword); ?></p>
             </div>
             <div class="profile-edit">
                 <a href="updateprofile.php">Edit Profile</a>
@@ -158,3 +160,4 @@ $password = $_SESSION['password']; // Get the stored unhashed password
     </div>
 </body>
 </html>
+
