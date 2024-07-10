@@ -15,8 +15,7 @@
             background-attachment: fixed;
             padding: 0;
             height: 100vh;
-            /* Ensure body background is transparent */
-            background-color: rgba(0, 0, 0, 0.9); /* Black with 50% opacity */
+            background-color: rgba(0, 0, 0, 0.9);
         }
 
         html, body {
@@ -31,12 +30,9 @@
             padding: 20px;
             position: relative;
             color: white;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for content */
-            border-radius: 10px; /* Rounded corners for the content area */
-            padding: 20px; /* Padding inside the content area */
-        }
-        .quiz-details {
-            margin: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
         }
         .quiz-details h1 {
             margin-bottom: 10px;
@@ -120,17 +116,19 @@
                 case "XS Script Technique 4":
                     url = "script4quiz.php";
                     break;
-                // Add more cases as needed for other techniques
                 default:
                     alert("No valid technique selected" + technique);
                     return;
             }
 
-            window.location.href = url; // Redirect to the appropriate quiz page
+            // Set timer in sessionStorage and redirect
+            sessionStorage.setItem("startTime", Date.now());
+            sessionStorage.setItem("duration", 60 * 60); // 60 minutes in seconds
+            window.location.href = url;
         }
     </script>
-
 </body>           
 </html>
+
 
 
