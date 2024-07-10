@@ -1,18 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "majorproject";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'server.php';
 
 $score = 0;
+$total_questions = 10;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     foreach ($_POST as $question_id => $user_answer) {
@@ -28,6 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+// Calculate percentage score
+$percentage_score = ($score / $total_questions) * 100;
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -88,8 +82,12 @@ $conn->close();
     <div class="container">
         <h1>CONGRATULATIONS!</h1>
         <p>You have successfully submitted the quiz!</p>
-        <div class="score">Here is your score:<br><?php echo "$score/10"; ?></div>
+        <div class="score">Here is your score:<br>
+            <?php echo "$score/10"; ?><br>
+            Percentage: <?php echo "$percentage_score%"; ?>
+        </div>
         <a href="contentpage.php" class="back-btn">Back to Content page</a>
     </div>
 </body>
 </html>
+

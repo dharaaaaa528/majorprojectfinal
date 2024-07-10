@@ -1,16 +1,5 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "majorproject";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'server.php';
 
 $number_of_questions = 10; // Specify the number of questions you want to fetch
 $sql = "SELECT * FROM sqlquiz4 ORDER BY RAND() LIMIT $number_of_questions";
@@ -30,13 +19,15 @@ $result = $conn->query($sql);
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: #fff; /* Ensure text is visible on dark background */
+            color: #fff;
             display: flex;
+            background-color: rgba(0, 0, 0, 0.5);
         }
         .container {
             flex: 1;
             padding: 20px;
-            margin-left: 250px; /* Space for the sidebar */
+            margin-left: 250px;
+            background-color: rgba(0, 0, 0, 0.5);
         }
         .sidebar {
             width: 200px;
@@ -95,33 +86,107 @@ $result = $conn->query($sql);
         .submit-btn:hover {
             background-color: #0056b3;
         }
+        .timer-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.2em;
+            z-index: 1000;
+        }
     </style>
-</head>
-<body>
+    <script>
+        // Function to start the timer
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            var interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
 
-    <div class="sidebar">
-        <h2>Questions</h2>
-        <ul>
-            <?php
-            if ($result->num_rows > 0) {
-                $i = 1;
-                $result->data_seek(0); // Reset the result pointer to the beginning
-                while($row = $result->fetch_assoc()) {
-                    echo "<li><a href='#question_$i'>Question $i</a></li>";
-                    $i++;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    document.getElementById("quizForm").submit(); // Auto-submit the form
                 }
-            }
-            ?>
-        </ul>
-    </div>
 
-    <div class="container">
-        <h1>SQL INJECTION QUIZ</h1>
-        <form action="submit_quiz.php" method="post">
+                if (timer === 15 * 60) {
+                    alert("15 minutes left!");
+                }
+            }, 1000);
+        }
+
+        // Function to prevent back navigation
+        function preventBack() {
+            history.pushState(null, null, window.location.href);
+            window.addEventListener('popstate', function () {
+                history.pushState(null, null, window.location.href);
+            });
+        }
+
+        // Start the quiz and timer
+        function startQuiz() {
+            preventBack();
+            var startTime = sessionStorage.getItem("startTime");
+            var duration = sessionStorage.getItem("duration");
+
+            if (!startTime || !duration) {
+                alert("Timer not found. Redirecting to the start page.");
+                window.location.href = "quizstart.php";
+                return;
+            }
+
+            var elapsed = Math.floor((Date.now() - startTime) / 1000);
+            var remainingTime = duration - elapsed;
+
+            if (remainingTime <= 0) {
+                alert("Time is up!");
+                document.getElementById("quizForm").submit();
+                return;
+            }
+
+            var display = document.querySelector('#time');
+            startTimer(remainingTime, display);
+        }
+
+        // Disable back navigation
+        window.onload = function () {
+            preventBack();
+        };
+    </script>
+</head>
+<body onload="startQuiz();">
+
+<div class="sidebar">
+    <h2>Questions</h2>
+    <ul>
+        <?php
+        if ($result->num_rows > 0) {
+            $i = 1;
+            $result->data_seek(0);
+            while($row = $result->fetch_assoc()) {
+                echo "<li><a href='#question_$i'>Question $i</a></li>";
+                $i++;
+            }
+        }
+        ?>
+    </ul>
+</div>
+
+<div class="container">
+    <h1>SQL INJECTION QUIZ</h1>
+    <div id="quizContent">
+        <form id="quizForm" action="submit_quiz.php" method="post">
             <?php
             if ($result->num_rows > 0) {
                 $i = 1;
-                $result->data_seek(0); // Reset the result pointer to the beginning
+                $result->data_seek(0);
                 while($row = $result->fetch_assoc()) {
                     echo "<div class='question' id='question_$i'>";
                     echo "<p>Question $i: " . $row["question_text"] . "</p>";
@@ -139,6 +204,12 @@ $result = $conn->query($sql);
             <input type="submit" value="Submit" class="submit-btn">
         </form>
     </div>
+</div>
+
+<div class="timer-box">
+    <p>Time left: <span id="time">60:00</span> minutes</p>
+</div>
+
 </body>
 </html>
 <?php

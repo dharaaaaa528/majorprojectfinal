@@ -206,7 +206,7 @@ $result = $conn->query($sql);
 </div>
 
 <div class="timer-box">
-    <p>Time left: <span id="time">60:00</span> minutes!</p>
+    <p>Time left: <span id="time">60:00</span> minutes</p>
 </div>
 
 </body>
