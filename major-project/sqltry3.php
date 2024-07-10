@@ -1,9 +1,6 @@
 <?php
-
 require_once 'checkfile.php';
-// Database connection
 require_once 'config.php';
-
 
 $result = "";
 
@@ -19,7 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Execute the query
     if ($conn->multi_query($sql)) {
         $result .= "<h2>SQL Injection - Batched SQL Statements</h2><br>";
-        $result .= "<p>Injected SQL: <code>$sql</code></p><br>";
+        $result .= "<p>Injected SQL: <code>";
+
+        // Highlight the injected part
+        $result .= str_replace("admin'; DROP TABLE users;--", "<strong>admin'; DROP TABLE users;--</strong>", htmlspecialchars($sql));
+
+        $result .= "</code></p><br>";
 
         do {
             if ($query_result = $conn->store_result()) {
@@ -111,10 +113,10 @@ $conn->close();
         .result {
             margin-top: 20px;
             padding: 10px;
-            background-color: #ffcccc;
-            border: 1px solid #cc0000;
+            background-color: #000000;
+            border: 1px solid #000000;
             border-radius: 5px;
-            color: #cc0000;
+            color: #ffffff; /* Changed font color to white */
         }
         table {
             width: 100%;
@@ -146,6 +148,10 @@ $conn->close();
 <body>
     <div class="container">
         <h1>SQL Injection - Batched SQL Statements</h1>
+        <p>Enter your username and password below to test SQL Injection:</p>
+        <p>For demonstration, try entering:</p>
+        <p><strong>Username:</strong> admin'; DROP TABLE users;--</p>
+        <p><strong>Password:</strong> Can be anything</p>
         <form action="sqltry3.php" method="post">
             <input type="text" name="username" placeholder="Username"><br>
             <input type="password" name="password" placeholder="Password"><br>
@@ -158,3 +164,4 @@ $conn->close();
     <a href="contentpage.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
+

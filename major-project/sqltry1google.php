@@ -1,17 +1,17 @@
 <?php
-require_once 'checkfile.php';
-require_once 'config.php';
+require_once 'checkfile.php'; // Adjust paths as per your project structure
+require_once 'config.php';   // Adjust paths as per your project structure
 
-$query = "";
-$result = "";
+$query = "";    // Initialize $query variable
+$result = "";   // Initialize $result variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($_POST["query"])) {
         $query = $_POST["query"];
-
+        
         // Execute the query
         $res = $conn->query($query);
-
+        
         if ($res) {
             $result = "<table border='1'><tr><th>ID</th><th>Username</th><th>Password</th></tr>";
             while ($row = $res->fetch_assoc()) {
@@ -97,14 +97,15 @@ $conn->close();
         .result {
             margin-top: 20px;
             padding: 10px;
-            background-color: #ffcccc;
-            border: 1px solid #cc0000;
+            background-color: #000000;
+            border: 1px solid #000000;
             border-radius: 5px;
-            color: #cc0000;
+            color: white; /* Changed font color to white */
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            color: white; /* Ensure table text color is also white */
         }
         th, td {
             padding: 10px;
@@ -132,15 +133,16 @@ $conn->close();
 <body>
     <div class="container">
         <h1>SQL Injection Demo</h1>
-        <form action="sqltry1google.php" method="post">
-            <textarea name="query"><?php echo htmlspecialchars($query); ?></textarea><br>
+        <p>Enter an SQL query into the text area below to see how SQL Injection works. For example, try entering:</p>
+        <p><strong>SELECT * FROM users WHERE '1'='1';</strong></p>
+        <form action="sqltry1.php" method="post">
+            <textarea name="query" placeholder="Enter your SQL query here"><?php echo htmlspecialchars($query); ?></textarea><br>
             <button type="submit">Run SQL</button>
         </form>
         <div class="result">
-            <?php echo $result; ?>
+            <?php echo isset($result) ? $result : ''; ?>
         </div>
     </div>
-    <a href="contentpagegoogle.php" class="back-button">Go Back to Content</a>
+    <a href="contentpage.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
-

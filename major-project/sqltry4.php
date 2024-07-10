@@ -39,7 +39,7 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Comment-Based SQL Injection </title>
+    <title>Comment-Based SQL Injection</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -102,10 +102,10 @@ $conn->close();
         .result {
             margin-top: 20px;
             padding: 10px;
-            background-color: #ffcccc;
-            border: 1px solid #cc0000;
+            background-color: #000000;
+            border: 1px solid #000000;
             border-radius: 5px;
-            color: #cc0000;
+            color: #ffffff; /* Changed font color to white */
         }
         table {
             width: 100%;
@@ -137,6 +137,10 @@ $conn->close();
 <body>
     <div class="container">
         <h1>Comment-Based SQL Injection</h1>
+        <p>Enter your username and password below to test SQL Injection:</p>
+        <p>For demonstration, try entering:</p>
+        <p><strong>Username:</strong> admin' -- (*Add a Space after the two hyphens admin' --) </p>
+        <p><strong>Password:</strong> Can be anything</p>
         <form action="sqltry4.php" method="post">
             <input type="text" name="username" placeholder="Username"><br>
             <input type="password" name="password" placeholder="Password"><br>
@@ -146,6 +150,7 @@ $conn->close();
             <?php echo $result; ?>
         </div>
     </div>
-     <a href="contentpage.php" class="back-button">Go Back to Content</a>
+    <a href="contentpage.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
+

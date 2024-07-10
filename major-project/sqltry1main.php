@@ -1,9 +1,9 @@
 <?php
-require_once 'checkfile.php';
-require_once 'config.php';
+require_once 'checkfile.php'; // Adjust paths as per your project structure
+require_once 'config.php';   // Adjust paths as per your project structure
 
-$query = "";
-$result = "";
+$query = "";    // Initialize $query variable
+$result = "";   // Initialize $result variable
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($_POST["query"])) {
@@ -132,15 +132,16 @@ $conn->close();
 <body>
     <div class="container">
         <h1>SQL Injection Demo</h1>
-        <form action="sqltry1main.php" method="post">
-            <textarea name="query"><?php echo htmlspecialchars($query); ?></textarea><br>
+        <p>Enter an SQL query into the text area below to see how SQL Injection works. For example, try entering:</p>
+        <p><strong>SELECT * FROM users WHERE '1'='1';</strong></p>
+        <form action="sqltry1.php" method="post">
+            <textarea name="query" placeholder="Enter your SQL query here"><?php echo htmlspecialchars($query); ?></textarea><br>
             <button type="submit">Run SQL</button>
         </form>
         <div class="result">
-            <?php echo $result; ?>
+            <?php echo isset($result) ? $result : ''; ?>
         </div>
     </div>
-    <a href="contentpagemain.php" class="back-button">Go Back to Content</a>
+    <a href="contentpage.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
-

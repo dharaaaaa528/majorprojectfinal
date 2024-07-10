@@ -95,6 +95,12 @@ $conn->close();
             border-radius: 5px;
             color: black;
         }
+        .container label {
+            text-align: left; /* Ensure labels are left-aligned */
+            width: 100%;
+            display: block;
+            margin-bottom: 5px;
+        }
         .container button {
             padding: 10px 20px;
             border: none;
@@ -109,14 +115,15 @@ $conn->close();
         .result {
             margin-top: 20px;
             padding: 10px;
-            background-color: #ffcccc;
-            border: 1px solid #cc0000;
+            background-color: #000000; /* Changed background color to black */
+            border: 1px solid #000000; /* Adjusted border color to match */
             border-radius: 5px;
-            color: #cc0000;
+            color: white; /* Changed font color to white */
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            color: white; /* Ensure table text color is also white */
         }
         th, td {
             padding: 10px;
@@ -145,15 +152,25 @@ $conn->close();
 <body>
     <div class="container">
         <h1>SQL Injection Testing</h1>
+        <p>Enter your username and password below to test SQL Injection:</p>
+        <p>For demonstration, try entering:</p>
+        <ul style="text-align: left;">
+            <li><strong>Username:</strong> admin</li>
+            <li><strong>Password:</strong> ' OR '1'='1</li>
+        </ul>
         <form action="" method="post">
-            <input type="text" name="username" placeholder="Username"><br>
-            <input type="password" name="password" placeholder="Password"><br>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username"><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password"><br>
             <button type="submit">Login</button>
         </form>
         <div class="result">
             <?php echo $result; ?>
         </div>
     </div>
-     <a href="contentpage.php" class="back-button">Go Back to Content</a>
+    <a href="contentpage.php" class="back-button">Go Back to Content</a>
 </body>
 </html>
+
+
