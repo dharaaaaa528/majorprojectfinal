@@ -6,11 +6,21 @@
     <title>SQL Technique 1 Quiz</title>
     <style>
         body {
-            background-color: black;
-            color: white;
             font-family: Arial, sans-serif;
             margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
             padding: 0;
+            height: 100vh;
+            /* Ensure body background is transparent */
+            background-color: rgba(0, 0, 0, 0.9); /* Black with 50% opacity */
+        }
+
+        html, body {
+            height: 100%;
         }
         .content {
             display: flex;
@@ -20,12 +30,16 @@
             height: 90vh;
             padding: 20px;
             position: relative;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for content */
+            border-radius: 10px; /* Rounded corners for the content area */
+            padding: 20px; /* Padding inside the content area */
         }
         .quiz-details {
             margin: 0;
         }
         .quiz-details h1 {
-            margin-bottom: 10px; /* Decreased margin */
+            margin-bottom: 10px;
         }
         .quiz-details .details {
             margin-bottom: 20px;
@@ -118,4 +132,5 @@
 
 </body>           
 </html>
+
 

@@ -20,8 +20,8 @@ if (isset($_POST["submit"])) {
         echo "<script>alert('Phone number must be exactly 8 digits');</script>";
     } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\W).{8,}$/', $password)) {
         echo "<script>alert('Password must be at least 8 characters long and include at least one uppercase letter and one special character');</script>";
-    } elseif (strlen($username) < 8) {
-        echo "<script>alert('Username must be at least 8 characters long');</script>";
+    } elseif (strlen($username) < 5) {
+        echo "<script>alert('Username must be at least 5 characters long');</script>";
     } else {
         // Check for duplicate entries
         $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ?");
@@ -44,9 +44,17 @@ if (isset($_POST["submit"])) {
 
             $insertQuery->bind_param("ssss", $username, $passwordHashed, $email, $phoneno);
             if ($insertQuery->execute()) {
-                // Registration successful, redirect to usermain.php
-                $_SESSION["login"] = true; // Set login session
+                // Registration successful, get the user id
+                $userId = $insertQuery->insert_id;
+
+                // Set session variables
+                $_SESSION["login"] = true;
+                $_SESSION["userid"] = $userId;
                 $_SESSION["username"] = $username;
+                $_SESSION["email"] = $email;
+                $_SESSION["password"] = $password; // Store the unhashed password (not recommended for production)
+
+                // Redirect to usermain.php
                 header("Location: usermain.php");
                 exit();
             } else {
@@ -60,6 +68,7 @@ if (isset($_POST["submit"])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -154,7 +163,7 @@ if (isset($_POST["submit"])) {
         <form action="registration.php" method="post" autocomplete="off">
             <div>
                 <label for="username">Username:</label>
-                <input type="text" name="username" id="username" required minlength="8">
+                <input type="text" name="username" id="username" required minlength="5">
             </div>
             <div>
                 <label for="email">Email:</label>
@@ -181,4 +190,5 @@ if (isset($_POST["submit"])) {
     </div>
 </body>
 </html>
+
 

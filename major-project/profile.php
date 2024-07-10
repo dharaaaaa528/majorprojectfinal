@@ -25,7 +25,10 @@ $query->close();
 // Update session variables
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
+$password = $_SESSION['password']; // Get the stored unhashed password
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,15 +37,13 @@ $_SESSION['email'] = $email;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
-        /* Basic styling for the navigation */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #000; /* Set background color to black */
-            color: #000; /* Adjust text color for visibility */
+            background-color: #000;
+            color: #000;
         }
         
-        /* Profile picture styling */
         .profile-picture img {
             border-radius: 50%;
             width: 150px;
@@ -68,7 +69,6 @@ $_SESSION['email'] = $email;
             font-size: 18px;
             color: #fff;
             display: block;
-            
          }
 
          .sidebar a:hover {
@@ -83,26 +83,26 @@ $_SESSION['email'] = $email;
             color: white ;
             margin-left: 200px;
             padding: 20px;
-            width: calc(100% - 200px); /* Adjust width considering the sidebar width */
+            width: calc(100% - 200px);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Full height of the viewport */
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
-            background: url('background.jpg') no-repeat center center; /* Add background image */
-            background-size: cover; /* Cover the entire content area */
+            height: 100vh;
+            box-sizing: border-box;
+            background: url('background.jpg') no-repeat center center;
+            background-size: cover;
         }
 
         .content-inner {
-            text-align: center; /* Center text within the content area */
+            text-align: center;
         }
         .profile-info {
             background-color: white;
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 10px;
-            width: 300px; /* Adjust width as needed */
+            width: 300px;
             text-align: left;
         }
 
@@ -116,7 +116,7 @@ $_SESSION['email'] = $email;
             border-radius: 8px;
             margin-bottom: 10px;
             margin-left: 70px;
-            width: 150px; /* Adjust width as needed */
+            width: 150px;
             text-align: centre;
         }
         .profile-edit a {
@@ -132,7 +132,7 @@ $_SESSION['email'] = $email;
 <body>
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
-        <a href="#"><u>Progress</u></a>
+        <a href="progress.php"><u>Progress</u></a>
         <a href="#"><u>Certifications</u></a>
     </div>  
     <div class="content">
@@ -148,6 +148,9 @@ $_SESSION['email'] = $email;
             <div class="profile-info">
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
+            <div class="profile-info">
+                <p><strong>Password:</strong> <?php echo htmlspecialchars($password); ?></p>
+            </div>
             <div class="profile-edit">
                 <a href="updateprofile.php">Edit Profile</a>
             </div>
@@ -155,7 +158,3 @@ $_SESSION['email'] = $email;
     </div>
 </body>
 </html>
-
-
-
-

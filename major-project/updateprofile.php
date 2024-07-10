@@ -7,7 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Check if user is logged in
 if (!isset($_SESSION['userid'])) {
-    // Redirect to login page or handle unauthorized access
     header("Location: login.php");
     exit();
 }
@@ -22,16 +21,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate input
     $new_username = !empty($_POST['username']) ? trim($_POST['username']) : $username;
     $new_email = !empty($_POST['email']) ? trim($_POST['email']) : $email;
+    $new_password = !empty($_POST['password']) ? trim($_POST['password']) : null;
 
-    // Update user info in the database
-    $query = $conn->prepare("UPDATE userinfo SET username = ?, email = ? WHERE userid = ?");
-    $query->bind_param("ssi", $new_username, $new_email, $userId);
-    
+    // Prepare query to update user info
+    if ($new_password) {
+        // Hash the new password
+        $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
+
+        // Update username, email, and password
+        $query = $conn->prepare("UPDATE userinfo SET username = ?, email = ?, password = ? WHERE userid = ?");
+        $query->bind_param("sssi", $new_username, $new_email, $new_password_hashed, $userId);
+    } else {
+        // Update only username and email
+        $query = $conn->prepare("UPDATE userinfo SET username = ?, email = ? WHERE userid = ?");
+        $query->bind_param("ssi", $new_username, $new_email, $userId);
+    }
+
+    // Execute query and update session variables
     if ($query->execute()) {
-        // Update session variables
         $_SESSION['username'] = $new_username;
         $_SESSION['email'] = $new_email;
-        
+        if ($new_password) {
+            $_SESSION['password'] = $new_password; // Store the plain text password temporarily
+        }
+
         // Redirect back to profile page
         header("Location: profile.php");
         exit();
@@ -80,7 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .form-container input[type="text"],
-        .form-container input[type="email"] {
+        .form-container input[type="email"],
+        .form-container input[type="password"] {
             width: 93%;
             padding: 10px;
             margin-bottom: 10px;
@@ -125,6 +139,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="email">Email</label>
             <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
 
+            <label for="password">New Password (leave blank to keep current password)</label>
+            <input type="password" id="password" name="password">
+
             <div class="button-container">
                 <button type="submit">Save Changes</button>
                 <a href="profile.php" class="cancel-button" style="text-decoration: none; padding: 10px 30px; border-radius: 4px; color: white; display: inline-block; background-color: #d9534f; text-align: centre; margin-left: 100px">Cancel</a>
@@ -133,3 +150,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </body>
 </html>
+
