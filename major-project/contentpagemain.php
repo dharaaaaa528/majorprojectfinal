@@ -96,7 +96,6 @@
     <div class="container">
         <div class="sidebar">
             <ul>
-                <li><a href="#">Profile</a></li>
                 <li><a href="contentpagemain.php">SQL techniques</a></li>
                 <li><a href="contentpage2main.php">XSScript techniques</a></li>
             </ul>
