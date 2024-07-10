@@ -89,7 +89,7 @@ $conn->close();
         <h1>CONGRATULATIONS!</h1>
         <p>You have successfully submitted the quiz!</p>
         <div class="score">Here is your score:<br><?php echo "$score/10"; ?></div>
-        <a href="content_page.php" class="back-btn">Back to Content page</a>
+        <a href="contentpage.php" class="back-btn">Back to Content page</a>
     </div>
 </body>
 </html>
