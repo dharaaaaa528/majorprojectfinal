@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="button-container">
                 <button type="submit">Save Changes</button>
-                <a href="profile.php" class="cancel-button" style="text-decoration: none; padding: 10px 20px; border-radius: 4px; color: white; display: inline-block; background-color: #d9534f; text-align: center;">Cancel</a>
+                <a href="profile.php" class="cancel-button" style="text-decoration: none; padding: 10px 30px; border-radius: 4px; color: white; display: inline-block; background-color: #d9534f; text-align: centre; margin-left: 100px">Cancel</a>
             </div>
         </form>
     </div>

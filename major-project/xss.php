@@ -18,7 +18,7 @@
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
-        color: #000; /* Set text color to black */
+        color: #000;
     }
 
     .container {
@@ -92,7 +92,6 @@
         background-color: #0056b3;
     }
 </style>
-    
 </head>
 <body>
     <div class="container">
@@ -106,8 +105,9 @@
         <?php
         if (isset($_POST['xss_input'])) {
             $xss_input = $_POST['xss_input'];
+            $sanitized_input = htmlspecialchars($xss_input, ENT_QUOTES, 'UTF-8');
             echo "<h2>XSS Test Output</h2>";
-            echo "<div class='output'>$xss_input</div>";
+            echo "<div class='output'>$sanitized_input</div>";
         } else {
             echo "<p>No input received.</p>";
         }
@@ -119,4 +119,3 @@
     </div>
 </body>
 </html>
-
