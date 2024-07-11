@@ -32,11 +32,13 @@ $result = $conn->query($sql);
             padding: 0;
             color: #fff; /* Ensure text is visible on dark background */
             display: flex;
+           
         }
         .container {
             flex: 1;
             padding: 20px;
             margin-left: 250px; /* Space for the sidebar */
+            background-color: rgba(0, 0, 0, 0.5);
         }
         .sidebar {
             width: 200px;
