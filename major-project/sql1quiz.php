@@ -129,6 +129,16 @@ $result = $conn->query($sql);
             text-decoration: none;
             cursor: pointer;
         }
+        #timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
@@ -151,6 +161,7 @@ $result = $conn->query($sql);
 
     <div class="container">
         <h1>SQL INJECTION QUIZ</h1>
+        <p id="timer">Time Left: 60:00</p> <!-- Display timer -->
         <form id="quizForm" action="submit_quiz.php" method="post" onsubmit="return validateForm()">
             <?php
             if ($result->num_rows > 0) {
@@ -184,6 +195,34 @@ $result = $conn->query($sql);
     </div>
 
     <script>
+        // Timer code
+        var timer;
+        var minutes = 60; // Initial minutes
+        var seconds = 0; // Initial seconds
+
+        function startTimer() {
+            timer = setInterval(function() {
+                if (seconds == 0) {
+                    if (minutes == 0) {
+                        clearInterval(timer);
+                        document.getElementById('quizForm').submit(); // Automatically submit quiz when time is up
+                    } else {
+                        minutes--;
+                        seconds = 59;
+                    }
+                } else {
+                    seconds--;
+                }
+                displayTime();
+            }, 1000);
+        }
+
+        function displayTime() {
+            var formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+            var formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+            document.getElementById('timer').textContent = 'Time Left: ' + formattedMinutes + ':' + formattedSeconds;
+        }
+
         function validateForm() {
             let unanswered = [];
             let questions = document.querySelectorAll('.question');
@@ -214,9 +253,21 @@ $result = $conn->query($sql);
                 modal.style.display = 'none';
             }
         }
+
+        // Start timer when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimer();
+        });
+
+        // Warn user before leaving page
+        window.onbeforeunload = function() {
+            return "Are you sure you want to leave? All progress will be lost.";
+        };
     </script>
 </body>
 </html>
 <?php
 $conn->close();
 ?>
+
+
