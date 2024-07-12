@@ -77,10 +77,10 @@
         ?>
         
         <h3>Please read the below details carefully!</h3>
-        <p>1. Duration: 60 Minutes</p>
+        <p>1. Duration: 20 Minutes</p>
         <p>2. Marks to pass: 70% (7/10)</p>
         <p>3. There are 10 questions in this quiz. To pass and get a certificate of completion you would be required to get at least 7 of them correct. Try to complete as many questions as you can.</p>
-        <p>4. The test would automatically submit at the end of 60 minutes. No changes after that would be registered.</p>
+        <p>4. The test would automatically submit at the end of 20 minutes. No changes after that would be registered.</p>
         <p>5. Click on the "Click here to start" button to start the quiz.</p>
         <p>6. Note: The timer would automatically start once you click on the button.</p>
         <h4>All the best!!</h4>
