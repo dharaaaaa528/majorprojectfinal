@@ -5,6 +5,7 @@ ob_start();
 // Include server.php for database connection and other necessary files
 require_once 'server.php';
 require_once 'topnavgoogle.php';
+include('sessiontimeout.php');
 
 // Initialize the session - is required to check the login state.
 if (session_status() == PHP_SESSION_NONE) {

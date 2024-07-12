@@ -2,8 +2,6 @@
 ob_start();
 require_once 'server.php';
 require_once 'topnavmain.php';
-
-
 ?>
 
 <!DOCTYPE html>
