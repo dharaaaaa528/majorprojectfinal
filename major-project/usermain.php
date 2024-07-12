@@ -1,5 +1,6 @@
 <?php
 require_once 'topnav.php';
+include('sessiontimeout.php');
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -131,6 +132,8 @@ if (!$modalShown) {
         </div>
     </div>
 <?php endif; ?>
+
+
 
 <script>
     // Get the modal
