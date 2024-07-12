@@ -102,24 +102,39 @@
                 
             </ul>
         </div>
-        <div class="content">
+         <div class="content">
             <div class="technique" id="technique1">
-                <h2>XS Script Technique 1</h2>
-                <p>[Description]</p>
+                <h2>Technique 1: Universal XSS</h2>
+                <p>
+                    Universal XSS exploits arbitrary JavaScript execution in any context, including server-side PDF generation or client-side interactions.
+                </p>
+                <h3>Example</h3>
+                <div class="example">
+                    <pre><code>
+script
+    document.body.innerHTML = 'This site is hacked!';
+script
+                    </code></pre>
+                </div>
                 <div class="button-group">
-                    <form action="#" method="get" style="margin: 0;">
-                    	<input type="hidden" name="technique" value="XS Script Technique 1">
-                        <button type="submit">Editor</button>
+                    <form action="xss.php" method="get" style="margin: 0;">
+                        <button type="submit">Try It Now!</button>
                     </form>
                     <form action="quizstart.php" method="get" style="margin: 0;">
-                    	<input type="hidden" name="technique" value="XS Script Technique 1">
+                        <input type="hidden" name="technique" value="XS Script Technique 1">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
             </div>
             <div class="technique" id="technique2">
-                <h2>XS Script Technique 2</h2>
-                <p>[Description]</p>
+                <h2>Technique 2: Cookie XSS</h2>
+                <p> It  is a common attack where the attacker injects malicious scripts into a web application to capture sensitive information stored in cookies. This can allow the attacker to hijack user sessions, impersonate users and gain unauthorized access to user accounts.</p>
+                <h3>Example</h3>
+                <div class="example">
+                    <pre><code>
+
+                    </code></pre>
+                </div>
                 <div class="button-group">
                     <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
@@ -131,8 +146,14 @@
                 </div>
             </div>
             <div class="technique" id="technique3">
-                <h2>XS Script Technique 3</h2>
-                <p>[Description]</p>
+                <h2>Technique 3: XSS with Header Injection in a 302 Response</h2>
+                <p>XSS in HTTP redirects, particularly with header injection in a 302 response, is an advanced technique used to bypass security mechanisms in modern browsers. This approach leverages the fact that redirects can be manipulated to execute malicious scripts, despite the recent efforts by browser developers to patch vulnerabilities.</p>
+                <h3>Example</h3>
+                <div class="example">
+                    <pre><code>
+
+                    </code></pre>
+                </div>
                 <div class="button-group">
                     <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
@@ -144,8 +165,14 @@
                 </div>
             </div>
             <div class="technique" id="technique4">
-                <h2>XS Script Technique 4</h2>
-                <p>[Description]</p>
+                <h2>Technique 4: Stored XSS</h2>
+                <p></p>
+                <h3>Example</h3>
+                <div class="example">
+                    <pre><code>
+
+                    </code></pre>
+                </div>
                 <div class="button-group">
                     <form action="#" method="get" style="margin: 0;">
                         <button type="submit">Editor</button>
