@@ -7,21 +7,22 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
     exit();
 }
 
-// Fetch quiz ID for Technique 1 (Assuming quiz ID 1 for Technique 1)
+// Fetch quiz ID for Technique 1 (Assuming quiz ID 2 for Technique 1)
 $quizId = 1; // Update with your actual quiz ID for Technique 1
 
-// Fetch quiz questions
-$sql = "SELECT id, question FROM quiz_questions WHERE quiz_id = ?";
+// Fetch quiz questions with options
+$sql = "SELECT id, question, option1, option2, option3, option4 FROM quiz_questions WHERE quiz_id = ?";
 $questions = [];
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $quizId);
     $stmt->execute();
-    $stmt->bind_result($questionId, $question);
+    $stmt->bind_result($questionId, $question, $option1, $option2, $option3, $option4);
 
     while ($stmt->fetch()) {
         $questions[] = [
             'id' => $questionId,
-            'text' => $question
+            'text' => $question,
+            'options' => [$option1, $option2, $option3, $option4]
         ];
     }
     $stmt->close();
@@ -88,10 +89,9 @@ if ($stmt = $conn->prepare($sql)) {
                 <div class="question">
                     <div class="question-text"><?php echo $question['text']; ?></div>
                     <div class="options">
-                        <label class="option"><input type="radio" name="question_<?php echo $question['id']; ?>" value="1"> Option 1</label><br>
-                        <label class="option"><input type="radio" name="question_<?php echo $question['id']; ?>" value="2"> Option 2</label><br>
-                        <label class="option"><input type="radio" name="question_<?php echo $question['id']; ?>" value="3"> Option 3</label><br>
-                        <label class="option"><input type="radio" name="question_<?php echo $question['id']; ?>" value="4"> Option 4</label><br>
+                        <?php foreach ($question['options'] as $key => $option): ?>
+                            <label class="option"><input type="radio" name="question_<?php echo $question['id']; ?>" value="<?php echo $key + 1; ?>"> <?php echo $option; ?></label><br>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             <?php endforeach; ?>
