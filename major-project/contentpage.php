@@ -118,6 +118,25 @@ If 'txtUserId' is set to '105 OR 1=1', the query becomes:
 SELECT * FROM users WHERE '1'='1';
                     </code></pre>
                 </div>
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent this type of SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use stored procedures.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
+                <div class="example">
+                    <pre><code>
+txtUserId = getRequestString("UserId");
+sql = "SELECT * FROM Users WHERE UserId = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setInt(1, Integer.parseInt(txtUserId));
+resultSet = preparedStmt.executeQuery();
+                    </code></pre>
+                </div>
                 <div class="button-group">
                     <form action="sqltry1.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
@@ -159,6 +178,27 @@ If 'uName' and 'uPass' are set to '=' or '='=', the query becomes:
 SELECT * FROM Users WHERE Name = "" OR ""="" AND Pass = "" OR ""="";
                     </code></pre>
                 </div>
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent this type of SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use stored procedures.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
+                <div class="example">
+                    <pre><code>
+uName = getRequestString("username");
+uPass = getRequestString("userpassword");
+sql = "SELECT * FROM Users WHERE Name = ? AND Pass = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setString(1, uName);
+preparedStmt.setString(2, uPass);
+resultSet = preparedStmt.executeQuery();
+                    </code></pre>
+                </div>
                 <div class="button-group">
                     <form action="sqltry2.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
@@ -185,6 +225,25 @@ If 'txtUserId' is set to '105; DROP TABLE Suppliers', the query becomes:
 SELECT * FROM Users WHERE UserId = 105; DROP TABLE Suppliers;
                     </code></pre>
                 </div>
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent this type of SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Limit database user permissions.</li>
+                    <li>Use input validation to prevent special characters like semicolons.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
+                <div class="example">
+                    <pre><code>
+txtUserId = getRequestString("UserId");
+sql = "SELECT * FROM Users WHERE UserId = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setInt(1, Integer.parseInt(txtUserId));
+resultSet = preparedStmt.executeQuery();
+                    </code></pre>
+                </div>
                 <div class="button-group">
                     <form action="sqltry3.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
@@ -196,66 +255,46 @@ SELECT * FROM Users WHERE UserId = 105; DROP TABLE Suppliers;
                 </div>
             </div>
             <div class="technique" id="technique4">
-                <h2>Technique 4: Comment-Based SQL Injection</h2>
+                <h2>Technique 4: SQL Injection Based on Blind SQL Injection</h2>
                 <p>
-                    Comment-based SQL injection is a technique used by attackers to manipulate SQL queries by injecting comments into the code. This method exploits vulnerabilities in an application’s handling of SQL queries by including SQL comment syntax to manipulate the intended query structure. This can effectively alter the intended query execution, potentially giving attackers unauthorized access to the database.
+                    This method is used when the attacker cannot see the result of the SQL query directly, but can infer information based on the behavior of the application.
                 </p>
-                <h3>How It Works</h3>
+                <h3>Example</h3>
                 <p>
-                    <ul>
-                        <li>SQL Comment Syntax: SQL comments can be added using -- (double dash) for single-line comments or /* ... */ for multi-line comments.</li>
-                    </ul>
+                    Consider a web application that displays a generic error message when a query fails. An attacker can inject SQL that causes a query to fail and observe the application's response.
                 </p>
-                <h3>Example of a Vulnerable Query</h3>
+                <h4>Injection Example</h4>
                 <div class="example">
                     <pre><code>
-SELECT * FROM Users WHERE username = 'admin' AND password = 'password';
+Original Query:
+SELECT * FROM Users WHERE UserId = '105';
+
+Injection:
+105' AND 1=1 -- (true condition, query succeeds)
+105' AND 1=2 -- (false condition, query fails)
                     </code></pre>
                 </div>
-                <h3>Injection Technique</h3>
+                <h4>Resulting Behavior</h4>
                 <p>
-                    An attacker might input the following into a login form:
+                    The attacker can determine whether the injection was successful based on the application's response to each query.
                 </p>
-                <p>Username: admin --</p>
-                <p>Password: (leave blank)</p>
-                <h3>Resulting Query</h3>
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent blind SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use web application firewalls (WAF) to detect and block SQL injection attempts.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
                 <div class="example">
                     <pre><code>
-SELECT * FROM Users WHERE username = 'admin' -- AND password = '';
-                    </code></pre>
-                </div>
-                <p>Here, -- comments out the rest of the query, turning it into:</p>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin';
-                    </code></pre>
-                </div>
-                <p>Since '1'='1' is always true, this query bypasses authentication.</p>
-                <h3>Detailed Examples</h3>
-                <h4>Basic Authentication Bypass</h4>
-                <p>Original input fields:</p>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' AND password = 'password';
-                    </code></pre>
-                </div>
-                <h4>Resulting query:</h4>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' -- AND password = '';
-                    </code></pre>
-                </div>
-                <h4>Multi-line Comments</h4>
-                <p>Using multi-line comments to bypass security checks:</p>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' AND password = 'password' /* login bypass */;
-                    </code></pre>
-                </div>
-                <h4>Resulting query:</h4>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' /* login bypass */;
+txtUserId = getRequestString("UserId");
+sql = "SELECT * FROM Users WHERE UserId = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setInt(1, Integer.parseInt(txtUserId));
+resultSet = preparedStmt.executeQuery();
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -272,5 +311,3 @@ SELECT * FROM Users WHERE username = 'admin' /* login bypass */;
     </div>
 </body>
 </html>
-
-
