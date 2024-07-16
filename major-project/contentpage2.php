@@ -27,7 +27,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Ensure the sidebar spans the full height of the viewport */
+            height: 280vh; /* Ensure the sidebar spans the full height of the viewport */
         }
         .sidebar ul {
             list-style-type: none;
