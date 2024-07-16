@@ -175,7 +175,7 @@ ob_end_flush();
                 <p><strong>Password:</strong> <?php echo $maskedPassword; ?></p>
             </div>
             <div class="profile-edit">
-                <a href="edit_profile.php">Edit Profile</a>
+                <a href="updateprofile.php">Edit Profile</a>
             </div>
         </div>
     </div>
