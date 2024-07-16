@@ -1,18 +1,29 @@
 <?php
-require_once 'topnav.php';
-include('sessiontimeout.php');
+require_once 'dbconfig.php'; // Include your database configuration file
+require_once 'topnav.php'; // Include your top navigation bar
+
+// Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 // Check if user is logged in
-if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
+if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
     header("Location: login.php");
     exit();
 }
 
-// Fetch user information if needed
-$username = $_SESSION["username"];
+// Fetch user information
+if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE) {
+    // Fetch Google user information from userinfo table
+    $stmt = $pdo->prepare('SELECT * FROM userinfo WHERE userid = ?');
+    $stmt->execute([$_SESSION['google_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $username = $user['username'];
+} else {
+    // Regular login user information
+    $username = $_SESSION["username"];
+}
 
 // Check if the modal has been shown in this session
 $modalShown = isset($_SESSION['modal_shown']) && $_SESSION['modal_shown'];
@@ -29,7 +40,6 @@ if (!$modalShown) {
     <meta charset="UTF-8">
     <title>User Main</title>
     <style>
-        /* Basic styling for the navigation */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -47,7 +57,6 @@ if (!$modalShown) {
             height: 100%;
         }
 
-        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -99,11 +108,11 @@ if (!$modalShown) {
 
         .button-container {
             display: flex;
-            justify-content: center; /* Align the button to the left */
+            justify-content: center;
             position: absolute;
-            bottom: 150px; /* Position the button 150px from the bottom of the page */
+            bottom: 150px;
             width: 100%;
-            padding-left: 0px; /* Add padding to create some space from the left edge */
+            padding-left: 0px;
         }
 
         .button {
@@ -120,41 +129,35 @@ if (!$modalShown) {
         }
     </style>
 </head>
-
 <body>
 
-<!-- The Modal -->
 <?php if (!$modalShown): ?>
+    <!-- Modal HTML -->
     <div id="welcomeModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h1>Welcome, <?= htmlspecialchars($username) ?>!</h1>
+            <!-- Additional modal content can be added here -->
         </div>
     </div>
 <?php endif; ?>
 
-
-
+<!-- JavaScript for modal behavior -->
 <script>
-    // Get the modal
+    // JavaScript to show and hide modal
     var modal = document.getElementById("welcomeModal");
-
-    // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    // When the page loads, open the modal if it hasn't been shown yet
     window.onload = function() {
         <?php if (!$modalShown): ?>
             modal.style.display = "block";
         <?php endif; ?>
     }
 
-    // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
         modal.style.display = "none";
     }
 
-    // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
@@ -162,17 +165,18 @@ if (!$modalShown) {
     }
 </script>
 
+<!-- Content area -->
 <div class="content">
     <h1>Welcome to Our Website</h1>
-    <p>This is a sample text content to show how you can add text to your webpage. You can include paragraphs, headings, lists, images, and more to enhance the content of your site. This text block is styled with a semi-transparent background and rounded corners for better readability against the background image.</p>
+    <p>This is a sample text content to show how you can add text to your webpage.</p>
     <p>Feel free to customize the styling and content to fit your needs.</p>
 </div>
 
+<!-- Button container -->
 <div class="button-container">
     <a href="contentpage.php" class="button">START LEARNING NOW</a>
 </div>
 
 </body>
 </html>
-
 

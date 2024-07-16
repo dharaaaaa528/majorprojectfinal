@@ -2,6 +2,13 @@
 require_once 'config.php';
 session_start();
 
+// Check if quiz has already been submitted
+if (isset($_SESSION['quiz_submitted']) && $_SESSION['quiz_submitted'] === true) {
+    header("Location: contentpage.php");
+    exit();
+}
+
+// Redirect to login page if not logged in
 if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
     header("Location: login.php");
     exit();
@@ -38,6 +45,13 @@ if ($stmt = $conn->prepare($sql)) {
 
 // Handle quiz submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if quiz submission session variable is set
+    if (isset($_SESSION['quiz_submitted']) && $_SESSION['quiz_submitted'] === true) {
+        // Prevent resubmission
+        header("Location: contentpage.php"); // Redirect to content page or any other page
+        exit();
+    }
+
     foreach ($questions as $question) {
         $questionId = $question['id'];
         $correctOption = $question['correct_option'];
@@ -57,6 +71,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt_insert_attempt = $conn->prepare($sql_insert_attempt)) {
         $stmt_insert_attempt->bind_param("iii", $userId, $quizId, $score);
         if ($stmt_insert_attempt->execute()) {
+            // Set quiz submission session variable
+            $_SESSION['quiz_submitted'] = true;
+
             // Fetch all attempts for the user
             $sql_fetch_attempts = "SELECT id, score, created_at FROM quiz_attempts WHERE user_id = ? AND quiz_id = ?";
             if ($stmt_fetch_attempts = $conn->prepare($sql_fetch_attempts)) {
@@ -64,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt_fetch_attempts->execute();
                 $stmt_fetch_attempts->bind_result($attemptId, $attemptScore, $attemptCreatedAt);
 
-                // Display attempts table
+                // Display quiz result and attempts table
                 echo "<!DOCTYPE html>
                 <html lang='en'>
                 <head>
@@ -141,6 +158,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Display highest score
                 echo "<div class='highest-score'>Highest Score: $highestScore</div>";
 
+                // JavaScript to disable back button and handle navigation
+                echo "<script>
+                        history.pushState(null, null, location.href);
+                        window.onpopstate = function () {
+                            history.go(1);
+                        };
+                        // End quiz session to prevent back navigation
+                        sessionStorage.setItem('quiz_submitted', true);
+                    </script>";
+
                 $stmt_fetch_attempts->close();
             } else {
                 echo "Error fetching attempts: " . $conn->error;
@@ -154,3 +181,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
+

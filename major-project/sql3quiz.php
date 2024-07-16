@@ -21,6 +21,7 @@ $result = $conn->query($sql);
             padding: 0;
             color: #fff; /* Ensure text is visible on dark background */
             display: flex;
+            background-color: rgba(0, 0, 0, 0.5);
         }
         .container {
             flex: 1;

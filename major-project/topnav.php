@@ -1,17 +1,25 @@
 <?php
-require_once 'config.php';
+require_once 'dbconfig.php';
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
-if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
+// Check if user is logged in through Google or regular login
+if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
     header("Location: login.php");
     exit();
 }
 
-// Fetch user information if needed
-$username = $_SESSION["username"];
+// Fetch user information
+if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE) {
+    // Fetch Google user info
+    $stmt = $pdo->prepare('SELECT username FROM userinfo WHERE userid = ?');
+    $stmt->execute([$_SESSION['google_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $username = $user['username'];
+} else {
+    $username = $_SESSION["username"];
+}
 
 // Handle search functionality
 if (isset($_GET['search'])) {
@@ -229,4 +237,3 @@ if (isset($_GET['search'])) {
 
 </body>
 </html>
-
