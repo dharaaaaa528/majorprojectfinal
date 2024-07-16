@@ -21,6 +21,28 @@ if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE
 } else {
     // Regular login user information
     $username = $_SESSION["username"];
+    
+}
+// Handle search functionality
+if (isset($_GET['search'])) {
+    $searchQuery = strtolower(trim($_GET['search']));
+    
+    switch ($searchQuery) {
+        case 'sql injection':
+            header("Location: contentpage.php");
+            exit();
+        case 'script injection':
+            header("Location: contentpage2.php");
+            exit();
+        case 'sql':
+            header("Location: contentpage.php");
+            exit();
+        case 'script':
+            header("Location: contentpage2.php");
+            exit();
+        default:
+            $searchError = "No results found for '$searchQuery'. Please search for 'SQL Injection' or 'Script Injection'.";
+    }
 }
 ?>
 
