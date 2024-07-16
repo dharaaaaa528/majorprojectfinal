@@ -51,6 +51,7 @@
             background-color: rgba(255, 255, 255, 0.9); /* Light background for content area */
             border-radius: 10px;
             margin: 20px;
+            width: 100px;
         }
         .technique {
             margin-bottom: 20px;
