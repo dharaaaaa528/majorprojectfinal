@@ -17,7 +17,7 @@ if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
 if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE) {
     // Fetch Google user information from userinfo table
     $stmt = $pdo->prepare('SELECT * FROM userinfo WHERE userid = ?');
-    $stmt->execute([$_SESSION['google_id']]);
+    $stmt->execute([$_SESSION['userid']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     $username = $user['username'];
 } else {
@@ -179,4 +179,3 @@ if (!$modalShown) {
 
 </body>
 </html>
-

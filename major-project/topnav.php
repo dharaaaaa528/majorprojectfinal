@@ -1,10 +1,11 @@
 <?php
 require_once 'dbconfig.php';
+// Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in through Google or regular login
+// Check if user is logged in
 if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
     header("Location: login.php");
     exit();
@@ -12,37 +13,19 @@ if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
 
 // Fetch user information
 if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE) {
-    // Fetch Google user info
-    $stmt = $pdo->prepare('SELECT username FROM userinfo WHERE userid = ?');
-    $stmt->execute([$_SESSION['google_id']]);
+    // Fetch Google user information from userinfo table
+    $stmt = $pdo->prepare('SELECT * FROM userinfo WHERE userid = ?');
+    $stmt->execute([$_SESSION['userid']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     $username = $user['username'];
 } else {
+    // Regular login user information
     $username = $_SESSION["username"];
 }
-
-// Handle search functionality
-if (isset($_GET['search'])) {
-    $searchQuery = strtolower(trim($_GET['search']));
-
-    switch ($searchQuery) {
-        case 'sql injection':
-            header("Location: contentpage.php");
-            exit();
-        case 'script injection':
-            header("Location: contentpage2.php");
-            exit();
-        case 'sql':
-            header("Location: contentpage.php");
-            exit();
-        case 'script':
-            header("Location: contentpage2.php");
-            exit();
-        default:
-            $searchError = "No results found for '$searchQuery'. Please search for 'SQL Injection' or 'Script Injection'.";
-    }
-}
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,6 +1,7 @@
 <?php
 
 require_once 'server.php';
+
 // Initialize the session
 session_start();
 
@@ -67,10 +68,10 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
             // Authenticate the account
             session_regenerate_id();
             $_SESSION['google_loggedin'] = TRUE;
-            $_SESSION['google_id'] = $id;
+            $_SESSION['userid'] = $id; // Use 'userid' for consistency
             $_SESSION['username'] = implode(' ', $google_name_parts);
 
-            // Redirect to user main page
+            // Redirect to profile page
             header('Location: usermain.php');
             exit;
         } else {

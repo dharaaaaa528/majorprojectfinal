@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require_once 'server.php';
 require_once 'topnav.php';
 
@@ -6,30 +7,48 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// Check if the user is logged in (either through Google or regular login)
 if (!isset($_SESSION['userid'])) {
     header("Location: login.php");
     exit();
 }
 
-// Get current user info from the database
 $userId = $_SESSION['userid'];
+$isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == 1;
 
-$query = $conn->prepare("SELECT username, email FROM userinfo WHERE userid = ?");
+// Fetch user info from the database based on the login type
+if ($isGoogleLoggedIn) {
+    $query = $conn->prepare("SELECT username, email FROM userinfo WHERE userid = ?");
+} else {
+    $query = $conn->prepare("SELECT username, email, password FROM userinfo WHERE userid = ?");
+}
+
+if ($query === false) {
+    die('Prepare failed: ' . htmlspecialchars($conn->error));
+}
+
 $query->bind_param("i", $userId);
 $query->execute();
-$query->bind_result($username, $email);
+
+if ($isGoogleLoggedIn) {
+    $query->bind_result($username, $email);
+} else {
+    $query->bind_result($username, $email, $password);
+}
+
 $query->fetch();
 $query->close();
 
-// Update session variables
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
-$password = $_SESSION['password']; // Get the stored unhashed password
 
-// Mask the password with stars
-$maskedPassword = str_repeat('•', strlen($password));
+if (!$isGoogleLoggedIn && isset($password)) {
+    $maskedPassword = str_repeat('•', strlen($password));
+} else {
+    $maskedPassword = "Password Not Available";
+}
 
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +62,7 @@ $maskedPassword = str_repeat('•', strlen($password));
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #000;
-            color: #000;
+            color: #fff;
         }
         
         .profile-picture img {
@@ -63,26 +82,26 @@ $maskedPassword = str_repeat('•', strlen($password));
             left: 0;
             padding-top: 20px;
             color: #fff;
-         }
+        }
 
-         .sidebar a {
+        .sidebar a {
             padding: 15px;
             text-decoration: none;
             font-size: 18px;
             color: #fff;
             display: block;
-         }
+        }
 
-         .sidebar a:hover {
+        .sidebar a:hover {
             background-color: #575757;
-         }
-         
-         .sidebar a.profile-link {
-            color: #56C2DD; 
-         }
+        }
         
-         .content {
-            color: white ;
+        .sidebar a.profile-link {
+            color: #56C2DD;
+        }
+
+        .content {
+            color: white;
             margin-left: 200px;
             padding: 20px;
             width: calc(100% - 200px);
@@ -112,6 +131,7 @@ $maskedPassword = str_repeat('•', strlen($password));
             margin: 5px 0;
             color: black;
         }
+
         .profile-edit {
             background-color: white;
             padding: 10px;
@@ -119,8 +139,9 @@ $maskedPassword = str_repeat('•', strlen($password));
             margin-bottom: 10px;
             margin-left: 70px;
             width: 150px;
-            text-align: centre;
+            text-align: center;
         }
+
         .profile-edit a {
             color: #56C2DD;
             text-decoration: none;
@@ -151,10 +172,10 @@ $maskedPassword = str_repeat('•', strlen($password));
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
             <div class="profile-info">
-                <p><strong>Password:</strong> <?php echo htmlspecialchars($maskedPassword); ?></p>
+                <p><strong>Password:</strong> <?php echo $maskedPassword; ?></p>
             </div>
             <div class="profile-edit">
-                <a href="updateprofile.php">Edit Profile</a>
+                <a href="edit_profile.php">Edit Profile</a>
             </div>
         </div>
     </div>
