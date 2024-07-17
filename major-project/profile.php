@@ -168,12 +168,14 @@ ob_end_flush();
             <div class="profile-info">
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
-            <div class="profile-info">
-                <p><strong>Password:</strong> <?php echo $maskedPassword; ?></p>
-            </div>
-            <div class="profile-edit">
-                <a href="updateprofile.php">Edit Profile</a>
-            </div>
+            <?php if (!$isGoogleLoggedIn) : ?>
+                <div class="profile-info">
+                    <p><strong>Password:</strong> <?php echo $maskedPassword; ?></p>
+                </div>
+                <div class="profile-edit">
+                    <a href="updateprofile.php">Edit Profile</a>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </body>
