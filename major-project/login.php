@@ -3,6 +3,9 @@ require_once 'server.php'; // Ensure this includes your database connection file
 
 session_start();
 
+// Set the default timezone to Singapore
+date_default_timezone_set('Asia/Singapore');
+
 // Debugging: Check if user is already logged in
 if (isset($_SESSION["login"]) && $_SESSION["login"]) {
     header("Location: usermain.php");
@@ -45,6 +48,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             unset($_SESSION['login_attempts']);
             unset($_SESSION['lockout_time']);
             
+            // Update last login time
+            $lastLogin = date('Y-m-d H:i:s'); // Current datetime in Singapore time
+            $updateStmt = $conn->prepare("UPDATE userinfo SET last_login = ? WHERE userid = ?");
+            $updateStmt->bind_param("si", $lastLogin, $row["userid"]);
+            $updateStmt->execute();
+            $updateStmt->close();
+            
             // Redirect to main page after successful login
             header("Location: usermain.php");
             exit();
@@ -65,6 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>

@@ -2,6 +2,9 @@
 require_once 'server.php';
 session_start();
 
+// Set the default timezone to Singapore
+date_default_timezone_set('Asia/Singapore');
+
 // Check if already logged in
 if (isset($_SESSION["login"]) && $_SESSION["login"] === true) {
     header("Location: usermain.php");
@@ -37,12 +40,13 @@ if (isset($_POST["submit"])) {
         } else {
             // Insert new user
             $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
-            $insertQuery = $conn->prepare("INSERT INTO userinfo (username, password, email, phoneno) VALUES (?, ?, ?, ?)");
+            $createdAt = date('Y-m-d H:i:s'); // Get current datetime in Singapore time
+            $insertQuery = $conn->prepare("INSERT INTO userinfo (username, password, email, phoneno, created_at) VALUES (?, ?, ?, ?, ?)");
             if ($insertQuery === false) {
                 die("MySQL prepare statement error (insert): " . $conn->error);
             }
 
-            $insertQuery->bind_param("ssss", $username, $passwordHashed, $email, $phoneno);
+            $insertQuery->bind_param("sssss", $username, $passwordHashed, $email, $phoneno, $createdAt);
             if ($insertQuery->execute()) {
                 // Registration successful, get the user id
                 $userId = $insertQuery->insert_id;
@@ -68,7 +72,6 @@ if (isset($_POST["submit"])) {
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">

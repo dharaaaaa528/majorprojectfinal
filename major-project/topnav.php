@@ -167,7 +167,7 @@ if (isset($_GET['search'])) {
             border: none;
             border-radius: 20px;
             margin-right: 10px;
-            width: 400px; /* Make the search bar longer */
+            width: 300px; /* Make the search bar longer */
         }
 
         .topnav .search-bar input[type="submit"] {
