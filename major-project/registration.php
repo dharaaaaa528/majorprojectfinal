@@ -1,78 +1,3 @@
-<?php
-require_once 'server.php';
-session_start();
-
-// Set the default timezone to Singapore
-date_default_timezone_set('Asia/Singapore');
-
-// Check if already logged in
-if (isset($_SESSION["login"]) && $_SESSION["login"] === true) {
-    header("Location: usermain.php");
-    exit();
-}
-
-// Handle form submission
-if (isset($_POST["submit"])) {
-    $username = trim($_POST["username"]);
-    $email = trim($_POST["email"]);
-    $password = trim($_POST["password"]);
-    $phoneno = trim($_POST["phoneno"]);
-
-    // Validate phone number
-    if (!preg_match('/^\d{8}$/', $phoneno)) {
-        echo "<script>alert('Phone number must be exactly 8 digits');</script>";
-    } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\W).{8,}$/', $password)) {
-        echo "<script>alert('Password must be at least 8 characters long and include at least one uppercase letter and one special character');</script>";
-    } elseif (strlen($username) < 5) {
-        echo "<script>alert('Username must be at least 5 characters long');</script>";
-    } else {
-        // Check for duplicate entries
-        $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ?");
-        if ($duplicate === false) {
-            die("MySQL prepare statement error (duplicate): " . $conn->error);
-        }
-        $duplicate->bind_param("sss", $username, $email, $phoneno);
-        $duplicate->execute();
-        $duplicate->store_result();
-
-        if ($duplicate->num_rows > 0) {
-            echo "<script>alert('Username or Email or PhoneNo Is Already Taken');</script>";
-        } else {
-            // Insert new user
-            $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
-            $createdAt = date('Y-m-d H:i:s'); // Get current datetime in Singapore time
-            $insertQuery = $conn->prepare("INSERT INTO userinfo (username, password, email, phoneno, created_at) VALUES (?, ?, ?, ?, ?)");
-            if ($insertQuery === false) {
-                die("MySQL prepare statement error (insert): " . $conn->error);
-            }
-
-            $insertQuery->bind_param("sssss", $username, $passwordHashed, $email, $phoneno, $createdAt);
-            if ($insertQuery->execute()) {
-                // Registration successful, get the user id
-                $userId = $insertQuery->insert_id;
-
-                // Set session variables
-                $_SESSION["login"] = true;
-                $_SESSION["userid"] = $userId;
-                $_SESSION["username"] = $username;
-                $_SESSION["email"] = $email;
-                $_SESSION["password"] = $password; // Store the unhashed password (not recommended for production)
-
-                // Redirect to usermain.php
-                header("Location: usermain.php");
-                exit();
-            } else {
-                die("Error executing query: " . $insertQuery->error);
-            }
-
-            $insertQuery->close();
-        }
-        $duplicate->close();
-        $conn->close();
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,10 +14,10 @@ if (isset($_POST["submit"])) {
             height: 100vh;
             margin: 0;
             background-image: url('background.jpg');
-            background-size: cover; /* Makes the image cover the entire page */
-            background-repeat: no-repeat; /* Prevents the image from repeating */
-            background-position: center; /* Centers the image */
-            background-attachment: fixed; /* Fixes the image while scrolling */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
         }
 
         .container {
@@ -101,8 +26,9 @@ if (isset($_POST["submit"])) {
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 300px; /* Adjust width as needed */
+            width: 300px;
         }
+
         .container h1 {
             margin-bottom: 20px;
         }
@@ -112,17 +38,20 @@ if (isset($_POST["submit"])) {
             flex-direction: column;
             align-items: center;
         }
+
         .container form div {
-            display: flex; /* Use flexbox for label and input alignment */
-            align-items: center; /* Center items vertically */
+            display: flex;
+            align-items: center;
             justify-content: center;
-            margin-bottom: 15px; /* Increased margin between input rows */
+            margin-bottom: 15px;
         }
+
         .container label {
             width: 120px;
             text-align: right;
             margin-right: 10px;
         }
+
         .container input {
             margin-bottom: 10px;
             padding: 5px;
@@ -131,6 +60,7 @@ if (isset($_POST["submit"])) {
             background-color: #333;
             color: #fff;
         }
+
         .container button {
             padding: 10px 20px;
             border: none;
@@ -139,19 +69,20 @@ if (isset($_POST["submit"])) {
             color: #fff;
             cursor: pointer;
         }
+
         .container button:hover {
             background-color: #3700b3;
         }
+
         .container a {
-            color: #ff6ff9; /* Change the color of the hyperlink */
-            text-decoration: none; /* Optional: remove underline */
+            color: #ff6ff9;
+            text-decoration: none;
         }
+
         .container a:hover {
-            color: #ff6ff9; /* Change the color when hovered over */
+            color: #ff6ff9;
         }
-        .google-login-btn .icon svg {
-            fill: white; /* Change the color of the Google icon */
-        }
+
         .requirements {
             font-size: 12px;
             color: #bbb;
@@ -163,7 +94,7 @@ if (isset($_POST["submit"])) {
 <body>
     <div class="container">
         <h1>Registration</h1>
-        <form action="registration.php" method="post" autocomplete="off">
+        <form action="send_otp.php" method="post" autocomplete="off">
             <div>
                 <label for="username">Username:</label>
                 <input type="text" name="username" id="username" required minlength="5">
@@ -186,12 +117,13 @@ if (isset($_POST["submit"])) {
         <a href="login.php">Login</a> <br><br>
         <a href="google-oauth.php" class="google-login-btn">
             <span class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 488 512"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg>
+                <!-- Google icon SVG -->
             </span>
             Register with Google
         </a>
     </div>
 </body>
 </html>
+
 
 
