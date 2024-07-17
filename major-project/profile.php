@@ -42,11 +42,8 @@ $query->close();
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
 
-if (!$isGoogleLoggedIn && isset($password)) {
-    $maskedPassword = str_repeat('•', strlen($password));
-} else {
-    $maskedPassword = "Password Not Available";
-}
+// Mask the password with 8 asterisks by default
+$maskedPassword = str_repeat('*', 8);
 
 ob_end_flush();
 ?>
@@ -181,4 +178,3 @@ ob_end_flush();
     </div>
 </body>
 </html>
-
