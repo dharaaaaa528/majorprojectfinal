@@ -1,4 +1,4 @@
-<?php
+<<?php
 ob_start();
 require_once 'server.php';
 require_once 'topnav.php';
@@ -29,7 +29,6 @@ if ($query === false) {
 
 $query->bind_param("i", $userId);
 $query->execute();
-
 if ($isGoogleLoggedIn) {
     $query->bind_result($username, $email);
 } else {
@@ -45,27 +44,8 @@ $_SESSION['email'] = $email;
 // Mask the password with 8 asterisks by default
 $maskedPassword = str_repeat('*', 8);
 
-// ... Your existing PHP code ...
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
-    // Delete user from the database
-    $deleteQuery = $conn->prepare("DELETE FROM userinfo WHERE userid = ?");
-    if ($deleteQuery === false) {
-        die('Prepare failed: ' . htmlspecialchars($conn->error));
-    }
-    $deleteQuery->bind_param("i", $userId);
-    if ($deleteQuery->execute()) {
-        // Destroy session and redirect to the login page
-        session_destroy();
-        header("Location: login.php");
-        exit();
-    } else {
-        die('Execute failed: ' . htmlspecialchars($deleteQuery->error));
-    }
-    $deleteQuery->close();
-}
+ob_end_flush();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
-        /* Your existing CSS styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -88,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
             object-fit: cover;
             margin-bottom: 20px;
         }
-
         .sidebar {
             width: 200px;
             background-color: #000;
@@ -115,8 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
         .sidebar a.profile-link {
             color: #56C2DD;
         }
-
-        .content {
+         .content {
             color: white;
             margin-left: 200px;
             padding: 20px;
@@ -147,9 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
             margin: 5px 0;
             color: black;
         }
-
-        .profile-edit,
-        .profile-delete {
+        .profile-edit {
             background-color: white;
             padding: 10px;
             border-radius: 8px;
@@ -159,31 +134,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
             text-align: center;
         }
 
-        .profile-edit a,
-        .profile-delete a {
+        .profile-edit a {
             color: #56C2DD;
             text-decoration: none;
         }
 
-        .profile-edit a:hover,
-        .profile-delete a:hover {
-            text-decoration: underline;
-        }
-
-        .profile-delete {
-            background-color: #d9534f;
-            color: white;
-        }
-
-        .profile-delete button {
-            background-color: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .profile-delete button:hover {
+        .profile-edit a:hover {
             text-decoration: underline;
         }
     </style>
@@ -198,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
         <div class="content-inner">
             <h1>PROFILE</h1>
             <div class="profile-picture">
-                <img src="profile.png" alt="User Profile Picture">
+            <img src="profile.png" alt="User Profile Picture">
             </div>
           
             <div class="profile-info">
@@ -207,20 +163,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
             <div class="profile-info">
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
-            <?php if (!$isGoogleLoggedIn) : ?>
+             <?php if (!$isGoogleLoggedIn) : ?>
                 <div class="profile-info">
                     <p><strong>Password:</strong> <?php echo $maskedPassword; ?></p>
                 </div>
+                <div class="profile-edit">
+                    <a href="updateprofile.php">Edit Profile</a>
+                </div>
             <?php endif; ?>
-            <div class="profile-edit">
-                <a href="updateprofile.php">Edit Profile</a>
-            </div>
-            <div class="profile-delete">
-                <form method="POST" onsubmit="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">
-                    <button type="submit" name="delete_profile">Delete Profile</button>
-                </form>
-            </div>
         </div>
     </div>
 </body>
-</html>
+        
