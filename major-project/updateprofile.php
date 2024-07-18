@@ -1,4 +1,4 @@
-<?php
+<?php 
 require_once 'server.php';
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -20,7 +20,6 @@ $email = $_SESSION['email'];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate input
     $new_username = !empty($_POST['username']) ? trim($_POST['username']) : $username;
-    $new_email = !empty($_POST['email']) ? trim($_POST['email']) : $email;
     $new_password = !empty($_POST['password']) ? trim($_POST['password']) : null;
     $current_password = !empty($_POST['current_password']) ? trim($_POST['current_password']) : null;
 
@@ -45,37 +44,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!password_verify($current_password, $hashed_password)) {
                 echo "<script>alert('Current password is incorrect');</script>";
             } else {
-                // Proceed to update username, email, and password
-                // Check for duplicate entries
-                $duplicate = $conn->prepare("SELECT userid FROM userinfo WHERE (username = ? OR email = ?) AND userid != ?");
+                // Proceed to update username and password
+                // Check for duplicate username
+                $duplicate = $conn->prepare("SELECT userid FROM userinfo WHERE username = ? AND userid != ?");
                 if ($duplicate === false) {
                     die("MySQL prepare statement error (duplicate): " . $conn->error);
                 }
-                $duplicate->bind_param("ssi", $new_username, $new_email, $userId);
+                $duplicate->bind_param("si", $new_username, $userId);
                 $duplicate->execute();
                 $duplicate->store_result();
 
                 if ($duplicate->num_rows > 0) {
-                    echo "<script>alert('Username or Email is already taken');</script>";
+                    echo "<script>alert('Username is already taken');</script>";
                 } else {
                     // Prepare query to update user info
                     if ($new_password) {
                         // Hash the new password
                         $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
 
-                        // Update username, email, and password
-                        $query = $conn->prepare("UPDATE userinfo SET username = ?, email = ?, password = ? WHERE userid = ?");
-                        $query->bind_param("sssi", $new_username, $new_email, $new_password_hashed, $userId);
+                        // Update username and password
+                        $query = $conn->prepare("UPDATE userinfo SET username = ?, password = ? WHERE userid = ?");
+                        $query->bind_param("ssi", $new_username, $new_password_hashed, $userId);
                     } else {
-                        // Update only username and email
-                        $query = $conn->prepare("UPDATE userinfo SET username = ?, email = ? WHERE userid = ?");
-                        $query->bind_param("ssi", $new_username, $new_email, $userId);
+                        // Update only username
+                        $query = $conn->prepare("UPDATE userinfo SET username = ? WHERE userid = ?");
+                        $query->bind_param("si", $new_username, $userId);
                     }
 
                     // Execute query and update session variables
                     if ($query->execute()) {
                         $_SESSION['username'] = $new_username;
-                        $_SESSION['email'] = $new_email;
                         if ($new_password) {
                             $_SESSION['password'] = $new_password; // Store the plain text password temporarily
                         }
@@ -136,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .form-container input[type="text"],
-        .form-container input[type="email"],
         .form-container input[type="password"] {
             width: 93%;
             padding: 10px;
@@ -165,6 +162,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: white;
             text-align: center;
             text-decoration: none;
+            padding: 10px;
+            border-radius: 4px;
+            display: block;
+            margin-top: 10px;
         }
 
         .form-container .cancel-button:hover {
@@ -178,9 +179,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="POST" action="updateprofile.php">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" required minlength="5">
-
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
 
             <label for="current_password">Current Password</label>
             <input type="password" id="current_password" name="current_password" required>
@@ -196,6 +194,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </body>
 </html>
-
-
-

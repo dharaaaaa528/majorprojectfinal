@@ -56,13 +56,22 @@ if (isset($_POST["verify"])) {
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            display: flex;
+            margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 0;
+            height: 100vh;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
+            display: flex;
+        }
+
+        html, body {
+            height: 100%;
         }
 
         .container {
@@ -122,7 +131,7 @@ if (isset($_POST["verify"])) {
 </head>
 <body>
     <div class="container">
-        <h1>Verify OTP</h1>
+        <h1>Verify OTP (sent to your email)</h1>
         <form action="verify_otp.php" method="post" autocomplete="off">
             <div>
                 <label for="otp">Enter OTP:</label>
