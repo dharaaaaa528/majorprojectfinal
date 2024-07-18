@@ -1,4 +1,4 @@
-<<?php
+<?php
 ob_start();
 require_once 'server.php';
 require_once 'topnav.php';
@@ -72,7 +72,7 @@ ob_end_flush();
             background-color: #000;
             height: calc(100vh - 50px);
             position: absolute;
-            top: 100px;
+            top: 120px;
             left: 0;
             padding-top: 20px;
             color: #fff;
