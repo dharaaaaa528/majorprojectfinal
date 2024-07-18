@@ -229,6 +229,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .form-container .cancel-button:hover {
             background-color: #c9302c;
         }
+        .toggle-password {
+            position: relative;
+            margin-left: 0px; /* Adjust position as needed */
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .toggle-password img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px; /* Adjust icon size */
+            height: auto;
+            margin-left: -15px;
+            
+        }
     </style>
     <script>
         function sendOTP(event) {
@@ -242,6 +259,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             };
             xhr.send();
         }
+        
+        function togglePasswordVisibility(fieldId, toggleButtonId) {
+            var passwordField = document.getElementById(fieldId);
+            var toggleButton = document.getElementById(toggleButtonId);
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.innerHTML = "<img src='eye-slash1.png' alt='Hide password'>";
+            } else {
+                passwordField.type = "password";
+                toggleButton.innerHTML = "<img src='eye1.png' alt='Show password'>";
+            }
+        }
     </script>
 </head>
 <body>
@@ -253,10 +283,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <label for="current_password">Current Password</label>
             <input type="password" id="current_password" name="current_password" required>
+            <span class="toggle-password" id="toggleCurrentPassword" onclick="togglePasswordVisibility('current_password', 'toggleCurrentPassword')">
+                    <img src="eye.png" alt="Toggle password visibility">
+                </span>
 
             <label for="password">New Password (leave blank to keep current password)</label>
             <input type="password" id="password" name="password" pattern="(?=.*[A-Z])(?=.*\W).{8,}" title="Password must be at least 8 characters long and include at least one uppercase letter and one special character">
-
+			<span class="toggle-password" id="toggleNewPassword" onclick="togglePasswordVisibility('password', 'toggleNewPassword')">
+                    <img src="eye.png" alt="Toggle password visibility">
+                </span>
             <label for="otp">OTP</label>
             <input type="text" id="otp" name="otp">
 
