@@ -171,6 +171,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         .google-login-btn .icon svg {
             fill: white; /* Change the color of the Google icon */
         }
+        .toggle-password {
+            position: relative;
+            margin-left: 0px; /* Adjust position as needed */
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .toggle-password img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px; /* Adjust icon size */
+            height: auto;
+            margin-left: -15px;
+            
+        }
     </style>
 </head>
 <body>
@@ -185,6 +202,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div>
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
+                 <span class="toggle-password" onclick="togglePasswordVisibility()">
+                    <img src="eye.png" alt="Toggle password visibility">
+                </span>
             </div>
             <button type="submit" name="submit">Login</button>
         </form>
@@ -201,6 +221,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <br><br>
         <a href="reset_request.php">Forgot Password?</a> <!-- Forgot Password link added -->
     </div>
+    <script>
+    	function togglePasswordVisibility() {
+            var passwordField = document.getElementById("password");
+            var toggleButton = document.querySelector(".toggle-password");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.innerHTML = "<img src='eye-slash.png' alt='Hide password'>";
+            } else {
+                passwordField.type = "password";
+                toggleButton.innerHTML = "<img src='eye.png' alt='Show password'>";
+            }
+        }
+    </script>
 </body>
 </html>
 
