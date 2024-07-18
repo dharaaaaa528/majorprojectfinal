@@ -45,7 +45,25 @@ $_SESSION['email'] = $email;
 // Mask the password with 8 asterisks by default
 $maskedPassword = str_repeat('*', 8);
 
-ob_end_flush();
+// ... Your existing PHP code ...
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_profile'])) {
+    // Delete user from the database
+    $deleteQuery = $conn->prepare("DELETE FROM userinfo WHERE userid = ?");
+    if ($deleteQuery === false) {
+        die('Prepare failed: ' . htmlspecialchars($conn->error));
+    }
+    $deleteQuery->bind_param("i", $userId);
+    if ($deleteQuery->execute()) {
+        // Destroy session and redirect to the login page
+        session_destroy();
+        header("Location: login.php");
+        exit();
+    } else {
+        die('Execute failed: ' . htmlspecialchars($deleteQuery->error));
+    }
+    $deleteQuery->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +73,7 @@ ob_end_flush();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
+        /* Your existing CSS styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -129,7 +148,8 @@ ob_end_flush();
             color: black;
         }
 
-        .profile-edit {
+        .profile-edit,
+        .profile-delete {
             background-color: white;
             padding: 10px;
             border-radius: 8px;
@@ -139,12 +159,31 @@ ob_end_flush();
             text-align: center;
         }
 
-        .profile-edit a {
+        .profile-edit a,
+        .profile-delete a {
             color: #56C2DD;
             text-decoration: none;
         }
 
-        .profile-edit a:hover {
+        .profile-edit a:hover,
+        .profile-delete a:hover {
+            text-decoration: underline;
+        }
+
+        .profile-delete {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .profile-delete button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .profile-delete button:hover {
             text-decoration: underline;
         }
     </style>
@@ -172,10 +211,15 @@ ob_end_flush();
                 <div class="profile-info">
                     <p><strong>Password:</strong> <?php echo $maskedPassword; ?></p>
                 </div>
-                <div class="profile-edit">
-                    <a href="updateprofile.php">Edit Profile</a>
-                </div>
             <?php endif; ?>
+            <div class="profile-edit">
+                <a href="updateprofile.php">Edit Profile</a>
+            </div>
+            <div class="profile-delete">
+                <form method="POST" onsubmit="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">
+                    <button type="submit" name="delete_profile">Delete Profile</button>
+                </form>
+            </div>
         </div>
     </div>
 </body>
