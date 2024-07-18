@@ -284,13 +284,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="current_password">Current Password</label>
             <input type="password" id="current_password" name="current_password" required>
             <span class="toggle-password" id="toggleCurrentPassword" onclick="togglePasswordVisibility('current_password', 'toggleCurrentPassword')">
-                    <img src="eye.png" alt="Toggle password visibility">
+                    <img src="eye1.png" alt="Toggle password visibility">
                 </span>
 
             <label for="password">New Password (leave blank to keep current password)</label>
             <input type="password" id="password" name="password" pattern="(?=.*[A-Z])(?=.*\W).{8,}" title="Password must be at least 8 characters long and include at least one uppercase letter and one special character">
 			<span class="toggle-password" id="toggleNewPassword" onclick="togglePasswordVisibility('password', 'toggleNewPassword')">
-                    <img src="eye.png" alt="Toggle password visibility">
+                    <img src="eye1.png" alt="Toggle password visibility">
                 </span>
             <label for="otp">OTP</label>
             <input type="text" id="otp" name="otp">

@@ -194,6 +194,24 @@ if (isset($_POST["submit"])) {
             margin-top: -10px;
             margin-bottom: 10px;
         }
+        .toggle-password {
+            position: relative;
+            margin-left: 0px; /* Adjust position as needed */
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .toggle-password img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px; /* Adjust icon size */
+            height: auto;
+            margin-left: -15px;
+            margin-top: -5px;
+            
+        }
     </style>
 </head>
 <body>
@@ -211,6 +229,9 @@ if (isset($_POST["submit"])) {
             <div>
                 <label for="password">Password:</label>
                 <input type="password" name="password" id="password" required pattern="(?=.*[A-Z])(?=.*\W).{8,}" title="Password must be at least 8 characters long and include at least one uppercase letter and one special character">
+                <span class="toggle-password" onclick="togglePasswordVisibility()">
+                    <img src="eye.png" alt="Toggle password visibility">
+                </span>
             </div>
             <div>
                 <label for="phoneno">Phone Number:</label>
@@ -227,6 +248,20 @@ if (isset($_POST["submit"])) {
             Register with Google
         </a>
     </div>
+    <script>
+    	function togglePasswordVisibility() {
+            var passwordField = document.getElementById("password");
+            var toggleButton = document.querySelector(".toggle-password");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleButton.innerHTML = "<img src='eye-slash.png' alt='Hide password'>";
+            } else {
+                passwordField.type = "password";
+                toggleButton.innerHTML = "<img src='eye.png' alt='Show password'>";
+            }
+        }
+    </script>
 </body>
 </html>
 
