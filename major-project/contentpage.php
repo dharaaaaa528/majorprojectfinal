@@ -1,3 +1,26 @@
+<?php
+session_start();
+include 'server.php'; // Ensure this file includes the database connection
+
+// Check if the user is logged in
+if (!isset($_SESSION['userid'])) {
+    header('Location: login.php'); // Redirect to login page if not logged in
+    exit;
+}
+
+// Fetch user details including role
+$stmt = $pdo->prepare('SELECT role FROM userinfo WHERE userid = ?');
+$stmt->execute([$_SESSION['userid']]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    exit('User not found');
+}
+
+// Check if the user has the 'admin' role
+$isAdmin = ($user['role'] === 'admin');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +74,7 @@
             background-color: rgba(255, 255, 255, 0.9); /* Light background for content area */
             border-radius: 10px;
             margin: 20px;
-            width: 100px;
+            width: 100%;
         }
         .technique {
             margin-bottom: 20px;
@@ -101,7 +124,9 @@
     </style>
 </head>
 <body>
-    <?php include 'topnav.php'; ?>
+    <?php 
+    include 'topnav.php'; 
+    ?>
     <div class="container">
         <div class="sidebar">
             <ul>
@@ -218,6 +243,7 @@ resultSet = preparedStmt.executeQuery();
                     </form>
                 </div>
             </div>
+            <!-- Add more technique sections here as needed -->
             <div class="technique" id="technique3">
                 <h2>Technique 3: SQL Injection Based on Batched SQL Statements</h2>
                 <p>
@@ -263,7 +289,8 @@ resultSet = preparedStmt.executeQuery();
                     </form>
                 </div>
             </div>
-                     <div class="technique" id="technique4">
+  
+                        <div class="technique" id="technique4">
                 <h2>Technique 4: SQL Injection Based on Blind SQL Injection</h2>
                 <p>
                     This method is used when the attacker cannot see the result of the SQL query directly, but can infer information based on the behavior of the application.
@@ -315,9 +342,9 @@ resultSet = preparedStmt.executeQuery();
                         <button type="submit">Attempt Quiz</button>
                     </form>
                 </div>
-<div class="create-quiz-button">
-                <?php                
-                if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+            <div class="create-quiz-button">
+                <?php
+                if ($isAdmin) {
                     echo '<a href="create_quiz.php">Create Quiz</a>';
                 }
                 ?>
