@@ -17,11 +17,7 @@ $userId = $_SESSION['userid'];
 $isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == 1;
 
 // Fetch user info from the database based on the login type
-if ($isGoogleLoggedIn) {
-    $query = $conn->prepare("SELECT username, email FROM userinfo WHERE userid = ?");
-} else {
-    $query = $conn->prepare("SELECT username, email, password FROM userinfo WHERE userid = ?");
-}
+$query = $conn->prepare("SELECT username, email, last_login FROM userinfo WHERE userid = ?");
 
 if ($query === false) {
     die('Prepare failed: ' . htmlspecialchars($conn->error));
@@ -29,20 +25,15 @@ if ($query === false) {
 
 $query->bind_param("i", $userId);
 $query->execute();
-if ($isGoogleLoggedIn) {
-    $query->bind_result($username, $email);
-} else {
-    $query->bind_result($username, $email, $password);
-}
-
+$query->bind_result($username, $email, $lastLogin);
 $query->fetch();
 $query->close();
 
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
 
-// Mask the password with 8 asterisks by default
-$maskedPassword = str_repeat('*', 8);
+// Mask the password with 8 asterisks by default if not logged in with Google
+$maskedPassword = $isGoogleLoggedIn ? '' : str_repeat('*', 8);
 
 ob_end_flush();
 ?>
@@ -93,7 +84,7 @@ ob_end_flush();
         .sidebar a.profile-link {
             color: #56C2DD;
         }
-         .content {
+        .content {
             color: white;
             margin-left: 200px;
             padding: 20px;
@@ -154,16 +145,18 @@ ob_end_flush();
         <div class="content-inner">
             <h1>PROFILE</h1>
             <div class="profile-picture">
-            <img src="profile.png" alt="User Profile Picture">
+                <img src="profile.png" alt="User Profile Picture">
             </div>
-          
             <div class="profile-info">
                 <p><strong>Name:</strong> <?php echo htmlspecialchars($username); ?></p>
             </div>
             <div class="profile-info">
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
             </div>
-             <?php if (!$isGoogleLoggedIn) : ?>
+            <div class="profile-info">
+                <p><strong>Last Login:</strong> <?php echo htmlspecialchars($lastLogin); ?></p>
+            </div>
+            <?php if (!$isGoogleLoggedIn) : ?>
                 <div class="profile-info">
                     <p><strong>Password:</strong> <?php echo $maskedPassword; ?></p>
                 </div>
@@ -174,4 +167,4 @@ ob_end_flush();
         </div>
     </div>
 </body>
-        
+</html>
