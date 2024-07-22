@@ -61,13 +61,7 @@ if (isset($_GET['search'])) {
     <meta charset="UTF-8">
     <style>
         /* Basic styling for the navigation */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: black;
-            color: white;
-        }
-
+        
         .topnav {
             background-color: #333;
             overflow: hidden;
@@ -246,6 +240,7 @@ if (isset($_GET['search'])) {
         <div class="dropdown-content" style="right: 0; left: auto;">
             <a href="profile.php">Profile</a>
             <a href="logout.php">Logout</a>
+            <a href="settings.php">Settings</a>
         </div>
     </div>
 </div>

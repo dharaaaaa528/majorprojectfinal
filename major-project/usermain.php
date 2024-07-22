@@ -2,6 +2,7 @@
 require_once 'dbconfig.php'; // Include your database configuration file
 require_once 'topnav.php'; // Include your top navigation bar
 require_once 'sessiontimeout.php';
+require_once 'header.php';
 // Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -40,22 +41,7 @@ if (!$modalShown) {
     <meta charset="UTF-8">
     <title>User Main</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-image: url('background.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-attachment: fixed;
-            color: white;
-            padding: 0;
-            height: 100vh;
-        }
-
-        html, body {
-            height: 100%;
-        }
+       
 
         .modal {
             display: none;

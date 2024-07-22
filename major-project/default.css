@@ -1,0 +1,25 @@
+body.default {
+   
+        font-family: Arial, sans-serif;
+        background-color: black;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-image: url('background.jpg');
+        background-size: cover; /* Makes the image cover the entire page */
+        background-size: cover; /* Makes the image cover the entire page */
+        background-repeat: no-repeat; /* Prevents the image from repeating */
+        background-position: center; /* Centers the image */
+        background-attachment: fixed; /* Fixes the image while scrolling */
+        color: #fff; /* Ensure text is visible on dark background */
+         
+    
+    
+}
+
+html, body {
+    height: 100%;
+}
