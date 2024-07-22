@@ -263,8 +263,14 @@ resultSet = preparedStmt.executeQuery();
                     </form>
                 </div>
             </div>
+            
+
             <div class="create-quiz-button">
-                <a href="create_quiz.php">Create Quiz</a>
+                <?php                
+                if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                    echo '<a href="create_quiz.php">Create Quiz</a>';
+                }
+                ?>
             </div>
         </div>
     </div>
