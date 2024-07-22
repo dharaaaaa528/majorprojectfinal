@@ -52,17 +52,22 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
             $stmt->execute([$profile['email']]);
             $account = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            $current_time = date('Y-m-d H:i:s');
+
             // If the account does not exist in the database, insert the account into the database
             if (!$account) {
                 // Generate a random password
                 $random_password = bin2hex(random_bytes(8));
                 $hashed_password = password_hash($random_password, PASSWORD_DEFAULT);
 
-                $stmt = $pdo->prepare('INSERT INTO userinfo (username, password, email) VALUES (?, ?, ?)');
-                $stmt->execute([implode(' ', $google_name_parts), $hashed_password, $profile['email']]);
+                $stmt = $pdo->prepare('INSERT INTO userinfo (username, password, email, created_at, last_login) VALUES (?, ?, ?, ?, ?)');
+                $stmt->execute([implode(' ', $google_name_parts), $hashed_password, $profile['email'], $current_time, $current_time]);
                 $id = $pdo->lastInsertId();
             } else {
                 $id = $account['userid'];
+                // Update the last_login timestamp
+                $stmt = $pdo->prepare('UPDATE userinfo SET last_login = ? WHERE userid = ?');
+                $stmt->execute([$current_time, $id]);
             }
 
             // Authenticate the account
@@ -94,4 +99,5 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     exit;
 }
 ?>
+
 
