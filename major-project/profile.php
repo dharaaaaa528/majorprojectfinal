@@ -17,7 +17,7 @@ $userId = $_SESSION['userid'];
 $isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == 1;
 
 // Fetch user info from the database based on the login type
-$query = $conn->prepare("SELECT username, email, last_login FROM userinfo WHERE userid = ?");
+$query = $conn->prepare("SELECT username, email, last_login, profile_picture FROM userinfo WHERE userid = ?");
 
 if ($query === false) {
     die('Prepare failed: ' . htmlspecialchars($conn->error));
@@ -25,12 +25,13 @@ if ($query === false) {
 
 $query->bind_param("i", $userId);
 $query->execute();
-$query->bind_result($username, $email, $lastLogin);
+$query->bind_result($username, $email, $lastLogin, $profilePicture);
 $query->fetch();
 $query->close();
 
 $_SESSION['username'] = $username;
 $_SESSION['email'] = $email;
+$_SESSION['profile_picture'] = $profilePicture;
 
 // Mask the password with 8 asterisks by default if not logged in with Google
 $maskedPassword = $isGoogleLoggedIn ? '' : str_repeat('*', 8);
@@ -133,6 +134,22 @@ ob_end_flush();
         .profile-edit a:hover {
             text-decoration: underline;
         }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-container input[type="file"] {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -145,7 +162,14 @@ ob_end_flush();
         <div class="content-inner">
             <h1>PROFILE</h1>
             <div class="profile-picture">
-                <img src="profile.png" alt="User Profile Picture">
+                <img src="<?php echo isset($_SESSION['profile_picture']) ? $_SESSION['profile_picture'] : 'profile.png'; ?>" alt="User Profile Picture">
+            </div>
+            <div class="upload-container">
+                <form action="upload_profile_picture.php" method="post" enctype="multipart/form-data">
+                    <label for="profile_picture">Upload Profile Picture:</label>
+                    <input type="file" name="profile_picture" id="profile_picture" accept="image/*" required>
+                    <button type="submit">Upload</button>
+                </form>
             </div>
             <div class="profile-info">
                 <p><strong>Name:</strong> <?php echo htmlspecialchars($username); ?></p>
@@ -168,3 +192,5 @@ ob_end_flush();
     </div>
 </body>
 </html>
+
+

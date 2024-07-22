@@ -1,5 +1,6 @@
 <?php
 require_once 'dbconfig.php';
+
 // Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -18,11 +19,19 @@ if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE
     $stmt->execute([$_SESSION['userid']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     $username = $user['username'];
+    $_SESSION['profile_picture'] = $user['profile_picture']; // Store profile picture in session
 } else {
     // Regular login user information
-    $username = $_SESSION["username"];
-    
+    $stmt = $pdo->prepare('SELECT * FROM userinfo WHERE username = ?');
+    $stmt->execute([$_SESSION['username']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $username = $user['username'];
+    $_SESSION['profile_picture'] = $user['profile_picture']; // Store profile picture in session
 }
+
+// Debugging: Log session data
+error_log("Session Data: " . print_r($_SESSION, true));
+
 // Handle search functionality
 if (isset($_GET['search'])) {
     $searchQuery = strtolower(trim($_GET['search']));
@@ -45,9 +54,6 @@ if (isset($_GET['search'])) {
     }
 }
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -229,7 +235,11 @@ if (isset($_GET['search'])) {
     
     <div class="dropdown" style="margin-left: auto;">
         <button class="dropbtn">
-            <img src="profile.png" alt="" width="30" height="30" style="border-radius: 50%;">
+            <?php if (isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture'])): ?>
+                <img src="<?php echo htmlspecialchars($_SESSION['profile_picture']); ?>" alt="" width="30" height="30" style="border-radius: 50%;">
+            <?php else: ?>
+                <img src="default_profile.png" alt="Default Profile Picture" width="30" height="30" style="border-radius: 50%;">
+            <?php endif; ?>
             <?= htmlspecialchars($username) ?> 
             <i class="fa fa-caret-down"></i>
         </button>
@@ -242,3 +252,6 @@ if (isset($_GET['search'])) {
 
 </body>
 </html>
+
+
+
