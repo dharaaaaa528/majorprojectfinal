@@ -6,7 +6,7 @@
     <title>Inj3ctPractice</title>
     <link rel="stylesheet" href="contentpage.css">
     <style>
-     body {
+        body {
             background-image: url('background.jpg');
             background-size: cover;
             background-repeat: no-repeat;
@@ -19,8 +19,6 @@
         .container {
             display: flex;
             min-height: 100vh; /* Ensure the container spans the full height of the viewport */
-        
-            
         }
         .sidebar {
             width: 150px !important;
@@ -39,7 +37,6 @@
         }
         .sidebar ul li {
             margin-bottom: 10px;
-           
         }
         .sidebar ul li a {
             color: #fff;
@@ -88,7 +85,19 @@
         .example pre {
             margin: 0;
             color: #fff; /* Ensure code text is visible on dark background */
-        }   
+        }
+        .create-quiz-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .create-quiz-button a {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -173,7 +182,7 @@ uName = getRequestString("username");
 uPass = getRequestString("userpassword");
 sql = 'SELECT * FROM Users WHERE Name = "' + uName + '" AND Pass = "' + uPass + '"';
 
-If 'uName' and 'uPass' are set to '=' or '='=', the query becomes:
+If 'uName' and 'uPass' are set to '=' or '='='', the query becomes:
 
 SELECT * FROM Users WHERE Name = "" OR ""="" AND Pass = "" OR ""="";
                     </code></pre>
@@ -212,17 +221,17 @@ resultSet = preparedStmt.executeQuery();
             <div class="technique" id="technique3">
                 <h2>Technique 3: SQL Injection Based on Batched SQL Statements</h2>
                 <p>
-                    This method exploits the ability to run multiple SQL statements in a single query, potentially performing destructive actions like dropping tables.
+                    This method exploits the ability to run multiple SQL statements in a single query, potentially allowing an attacker to execute arbitrary commands.
                 </p>
                 <h3>Example</h3>
                 <div class="example">
                     <pre><code>
 txtUserId = getRequestString("UserId");
-txtSQL = "SELECT * FROM Users WHERE UserId = " + txtUserId;
+txtSQL = "SELECT * FROM Users WHERE UserId = " + txtUserId + "; DROP TABLE Students";
 
-If 'txtUserId' is set to '105; DROP TABLE Suppliers', the query becomes:
+If 'txtUserId' is set to '105; DROP TABLE Students', the query becomes:
 
-SELECT * FROM Users WHERE UserId = 105; DROP TABLE Suppliers;
+SELECT * FROM Users WHERE UserId = 105; DROP TABLE Students;
                     </code></pre>
                 </div>
                 <h3>Mitigation</h3>
@@ -231,8 +240,8 @@ SELECT * FROM Users WHERE UserId = 105; DROP TABLE Suppliers;
                 </p>
                 <ul>
                     <li>Use prepared statements and parameterized queries.</li>
-                    <li>Limit database user permissions.</li>
-                    <li>Use input validation to prevent special characters like semicolons.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use stored procedures.</li>
                 </ul>
                 <h4>Example of Prepared Statement</h4>
                 <div class="example">
@@ -254,58 +263,8 @@ resultSet = preparedStmt.executeQuery();
                     </form>
                 </div>
             </div>
-            <div class="technique" id="technique4">
-                <h2>Technique 4: SQL Injection Based on Blind SQL Injection</h2>
-                <p>
-                    This method is used when the attacker cannot see the result of the SQL query directly, but can infer information based on the behavior of the application.
-                </p>
-                <h3>Example</h3>
-                <p>
-                    Consider a web application that displays a generic error message when a query fails. An attacker can inject SQL that causes a query to fail and observe the application's response.
-                </p>
-                <h4>Injection Example</h4>
-                <div class="example">
-                    <pre><code>
-Original Query:
-SELECT * FROM Users WHERE UserId = '105';
-
-Injection:
-105' AND 1=1 -- (true condition, query succeeds)
-105' AND 1=2 -- (false condition, query fails)
-                    </code></pre>
-                </div>
-                <h4>Resulting Behavior</h4>
-                <p>
-                    The attacker can determine whether the injection was successful based on the application's response to each query.
-                </p>
-                <h3>Mitigation</h3>
-                <p>
-                    To prevent blind SQL injection, you should:
-                </p>
-                <ul>
-                    <li>Use prepared statements and parameterized queries.</li>
-                    <li>Implement proper input validation and sanitization.</li>
-                    <li>Use web application firewalls (WAF) to detect and block SQL injection attempts.</li>
-                </ul>
-                <h4>Example of Prepared Statement</h4>
-                <div class="example">
-                    <pre><code>
-txtUserId = getRequestString("UserId");
-sql = "SELECT * FROM Users WHERE UserId = ?";
-preparedStmt = conn.prepareStatement(sql);
-preparedStmt.setInt(1, Integer.parseInt(txtUserId));
-resultSet = preparedStmt.executeQuery();
-                    </code></pre>
-                </div>
-                <div class="button-group">
-                    <form action="sqltry4.php" method="get" style="margin: 0;">
-                        <button type="submit">Try It Now!</button>
-                    </form>
-                    <form action="quizstart.php" method="get" style="margin: 0;">
-                        <input type="hidden" name="technique" value="SQL Technique 4">
-                        <button type="submit">Attempt Quiz</button>
-                    </form>
-                </div>
+            <div class="create-quiz-button">
+                <a href="create_quiz.php">Create Quiz</a>
             </div>
         </div>
     </div>
