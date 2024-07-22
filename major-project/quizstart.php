@@ -1,3 +1,6 @@
+<?php
+include 'topnav.php';  // Make sure this path is correct
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +11,6 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-image: url('background.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -60,7 +62,7 @@
     </style>
 </head>
 <body>
-    <?php include 'topnav.php'; ?>
+    <?php include 'header.php'; ?>
      
     <div class="content">
         <?php

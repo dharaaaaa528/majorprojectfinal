@@ -1,6 +1,8 @@
 <?php
 require_once 'checkfile.php'; // Adjust paths as per your project structure
-require_once 'config.php';   // Adjust paths as per your project structure
+require_once 'config.php';
+require_once 'header.php';
+// Adjust paths as per your project structure
 
 $query = "";    // Initialize $query variable
 $result = "";   // Initialize $result variable
@@ -44,8 +46,6 @@ $conn->close();
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-image: url('background.jpg');
-            background-size: cover; 
             background-repeat: no-repeat;
             background-position: center;
             background-attachment: fixed;
@@ -65,6 +65,7 @@ $conn->close();
             text-align: center;
             width: 600px;
             z-index: 1; /* Ensure the container is above the background image */
+            color: black;
         }
         .container h1 {
             margin-bottom: 20px;

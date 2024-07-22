@@ -2,7 +2,7 @@
 ob_start();
 require_once 'server.php';
 require_once 'topnav.php';
-
+require_once 'header.php';
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -62,9 +62,9 @@ ob_end_flush();
         .sidebar {
             width: 200px;
             background-color: #000;
-            height: calc(100vh - 50px);
+            height: calc(100vh - 20px);
             position: absolute;
-            top: 120px;
+            top: 99px;
             left: 0;
             padding-top: 20px;
             color: #fff;
@@ -96,7 +96,7 @@ ob_end_flush();
             align-items: center;
             height: 100vh;
             box-sizing: border-box;
-            background: url('background.jpg') no-repeat center center;
+             background-color: rgba(0, 0, 0, 0.5);
             background-size: cover;
         }
 

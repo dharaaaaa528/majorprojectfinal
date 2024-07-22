@@ -1,6 +1,7 @@
 <?php
 session_start();
-include 'server.php'; // Ensure this file includes the database connection
+include 'server.php';
+include 'header.php';// Ensure this file includes the database connection
 
 // Check if the user is logged in
 if (!isset($_SESSION['userid'])) {
@@ -27,14 +28,10 @@ $isAdmin = ($user['role'] === 'admin');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inj3ctPractice</title>
-    <link rel="stylesheet" href="contentpage.css">
+    <link rel="stylesheet" href="#">
     <style>
         body {
-            background-image: url('background.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            font-family: Arial, sans-serif;
+            
             margin: 0;
             padding: 0;
             color: #fff; /* Ensure text is visible on dark background */

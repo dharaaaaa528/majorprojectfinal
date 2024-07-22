@@ -1,3 +1,6 @@
+<?php
+include 'topnav.php';  // Make sure this path is correct
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +18,6 @@
         flex-direction: column;
         height: 100vh;
         font-family: Arial, sans-serif;
-        background-image: url('background.jpg');
         background-size: cover; /* Makes the image cover the entire page */
         background-size: cover; /* Makes the image cover the entire page */
         background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -34,6 +36,7 @@
         justify-content: center;
         align-items: center;
         flex-grow: 1;
+        background-color: rgba(0, 0, 0, 0.1);
     }
 
     .container {
@@ -79,7 +82,7 @@
 </head>
 <body>
     <nav>
-        <?php include 'topnav.php'; ?>
+        <?php include 'header.php'; ?>
     </nav>
     <div class="main-content">
         <div class="container">

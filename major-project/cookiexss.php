@@ -1,4 +1,6 @@
-
+<?php
+include 'header.php';  // Make sure this path is correct
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +17,6 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-image: url('background.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -29,6 +30,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            color:black;
         }
 
         h1 {

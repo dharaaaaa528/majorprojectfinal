@@ -1,22 +1,21 @@
+<?php
+include 'topnav.php';  // Make sure this path is correct
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>About Us</title>
-    <link rel="stylesheet" href="#"> <!-- Link to your CSS file for styling -->
+    <title>About</title>
+  
+    <!-- Link to your CSS file for styling -->
     <style>
-        body {
+         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-image: url('background.jpg');
             background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-attachment: fixed;
-            height: 100%;
             color: white;
             background-color: rgba(0, 0, 0, 0.9); /* Black with 50% opacity */
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-x: hidden; /* Prevent horizontal scrolling */ Prevent horizontal scrolling */
         }
         html, body {
             height: 100%;
@@ -67,7 +66,7 @@
     </style>
 </head>
 <body>
-    <?php include 'topnav.php'; ?> <!-- Include the top navigation bar -->
+    <?php include 'header.php';?> <!-- Include the top navigation bar -->
 
     <div class="background"></div>
     <div class="overlay"></div>

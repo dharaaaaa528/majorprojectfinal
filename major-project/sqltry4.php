@@ -2,7 +2,7 @@
 // Database connection
 require_once 'checkfile.php';
 require_once 'config.php';
-
+require_once 'header.php';
 $result = "";
 
 // Handle form submission
@@ -70,6 +70,7 @@ $conn->close();
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 600px;
+            color: black;
         }
         .container h1 {
             margin-bottom: 20px;
