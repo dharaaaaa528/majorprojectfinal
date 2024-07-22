@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["username"] = $row["username"];
             $_SESSION["email"] = $row["email"];
             $_SESSION["password"] = $password; // Store the plain text password temporarily
+            $_SESSION["role"] = $row["role"];
             session_regenerate_id(true); // Regenerate session ID for security
             unset($_SESSION['login_attempts']);
             unset($_SESSION['lockout_time']);
