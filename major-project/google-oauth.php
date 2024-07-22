@@ -1,6 +1,7 @@
 <?php
 
 require_once 'server.php';
+date_default_timezone_set('Asia/Singapore');
 
 // Initialize the session
 session_start();
