@@ -263,9 +263,59 @@ resultSet = preparedStmt.executeQuery();
                     </form>
                 </div>
             </div>
-            
+                     <div class="technique" id="technique4">
+                <h2>Technique 4: SQL Injection Based on Blind SQL Injection</h2>
+                <p>
+                    This method is used when the attacker cannot see the result of the SQL query directly, but can infer information based on the behavior of the application.
+                </p>
+                <h3>Example</h3>
+                <p>
+                    Consider a web application that displays a generic error message when a query fails. An attacker can inject SQL that causes a query to fail and observe the application's response.
+                </p>
+                <h4>Injection Example</h4>
+                <div class="example">
+                    <pre><code>
+Original Query:
+SELECT * FROM Users WHERE UserId = '105';
 
-            <div class="create-quiz-button">
+Injection:
+105' AND 1=1 -- (true condition, query succeeds)
+105' AND 1=2 -- (false condition, query fails)
+                    </code></pre>
+                </div>
+                <h4>Resulting Behavior</h4>
+                <p>
+                    The attacker can determine whether the injection was successful based on the application's response to each query.
+                </p>
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent blind SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use web application firewalls (WAF) to detect and block SQL injection attempts.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
+                <div class="example">
+                    <pre><code>
+txtUserId = getRequestString("UserId");
+sql = "SELECT * FROM Users WHERE UserId = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setInt(1, Integer.parseInt(txtUserId));
+resultSet = preparedStmt.executeQuery();
+                    </code></pre>
+                </div>
+                <div class="button-group">
+                    <form action="sqltry4.php" method="get" style="margin: 0;">
+                        <button type="submit">Try It Now!</button>
+                    </form>
+                    <form action="quizstart.php" method="get" style="margin: 0;">
+                        <input type="hidden" name="technique" value="SQL Technique 4">
+                        <button type="submit">Attempt Quiz</button>
+                    </form>
+                </div>
+<div class="create-quiz-button">
                 <?php                
                 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                     echo '<a href="create_quiz.php">Create Quiz</a>';
