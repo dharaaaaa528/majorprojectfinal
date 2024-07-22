@@ -2,17 +2,17 @@
 require_once 'config.php';
 session_start();
 
-// Check if quiz has already been submitted
 if (isset($_SESSION['quiz_submitted']) && $_SESSION['quiz_submitted'] === true) {
     header("Location: contentpage.php");
     exit();
 }
 
-// Redirect to login page if not logged in
-if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
+// Redirect to the login page if not logged in (either traditional login or Google login)
+if ((!isset($_SESSION["login"]) || $_SESSION["login"] !== true) && (!isset($_SESSION['google_loggedin']) || $_SESSION['google_loggedin'] !== true)) {
     header("Location: login.php");
     exit();
 }
+
 
 $userId = $_SESSION["userid"];
 $quizId = isset($_POST['quiz_id']) ? intval($_POST['quiz_id']) : 0;

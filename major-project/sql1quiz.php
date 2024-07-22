@@ -2,10 +2,14 @@
 require_once 'config.php';
 session_start();
 
-if (!isset($_SESSION["login"]) || $_SESSION["login"] !== true) {
+if (!isset($_SESSION['userid'])) {
     header("Location: login.php");
     exit();
 }
+
+$userId = $_SESSION['userid'];
+$isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == 1;
+
 $_SESSION['quiz_submitted'] = false;
 $quizId = 1; // Update with your actual quiz ID for Technique 1
 
@@ -15,8 +19,8 @@ if (!isset($_SESSION['quiz_start_time'])) {
 
 $questions = []; // Initialize $questions as an empty array
 
-// Fetch quiz questions with options
-$sql = "SELECT id, question, option1, option2, option3, option4 FROM quiz_questions WHERE quiz_id = ?";
+// Fetch quiz questions with options, limit to 10 random questions
+$sql = "SELECT id, question, option1, option2, option3, option4 FROM quiz_questions WHERE quiz_id = ? ORDER BY RAND() LIMIT 10";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $quizId);
     $stmt->execute();
@@ -272,6 +276,16 @@ if ($stmt = $conn->prepare($sql)) {
                     }
                 });
             });
+
+            // Handle page reload or navigation away
+            window.addEventListener("beforeunload", function (e) {
+                fetch('end_quiz_session.php', { method: 'POST' });
+            });
+
+            window.addEventListener("popstate", function (event) {
+                fetch('end_quiz_session.php', { method: 'POST' });
+                window.location.href = 'quizstart.php';
+            });
         }
     </script>
 </head>
@@ -312,6 +326,3 @@ if ($stmt = $conn->prepare($sql)) {
     </div>
 </body>
 </html>
-
-
-

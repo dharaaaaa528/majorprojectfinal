@@ -1,15 +1,49 @@
 <?php
-require_once 'server.php';
+require_once 'config.php';
+session_start();
 
-$number_of_questions = 10; // Specify the number of questions you want to fetch
-$sql = "SELECT * FROM sqlquiz3 ORDER BY RAND() LIMIT $number_of_questions";
-$result = $conn->query($sql);
+if (!isset($_SESSION['userid'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$userId = $_SESSION['userid'];
+$isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == 1;
+
+$_SESSION['quiz_submitted'] = false;
+$quizId = 3; // Update with your actual quiz ID for Technique 1
+
+if (!isset($_SESSION['quiz_start_time'])) {
+    $_SESSION['quiz_start_time'] = time();
+}
+
+$questions = []; // Initialize $questions as an empty array
+
+// Fetch quiz questions with options, limit to 10 random questions
+$sql = "SELECT id, question, option1, option2, option3, option4 FROM quiz_questions WHERE quiz_id = ? ORDER BY RAND() LIMIT 10";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $quizId);
+    $stmt->execute();
+    $stmt->bind_result($questionId, $question, $option1, $option2, $option3, $option4);
+
+    while ($stmt->fetch()) {
+        $questions[] = [
+            'id' => $questionId,
+            'text' => $question,
+            'options' => [$option1, $option2, $option3, $option4]
+        ];
+    }
+    $stmt->close();
+} else {
+    echo "Error fetching quiz questions: " . $conn->error;
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quiz</title>
+    <title>SQL Technique 3 Quiz</title>
     <style>
         body {
             background-image: url('background.jpg');
@@ -21,217 +55,274 @@ $result = $conn->query($sql);
             padding: 0;
             color: #fff; /* Ensure text is visible on dark background */
             display: flex;
-            background-color: rgba(0, 0, 0, 0.5);
         }
-        .container {
-            flex: 1;
-            padding: 20px;
-            margin-left: 250px; /* Space for the sidebar */
-            background-color: rgba(0, 0, 0, 0.5);
+
+        html, body {
+            height: 100%;
         }
-        .sidebar {
-            width: 200px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
+
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
             height: 100%;
-            overflow-y: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Transparent background color */
+            z-index: -1; /* Ensure it's behind other content */
         }
-        .sidebar h2 {
-            font-size: 1.5em;
-            margin-bottom: 20px;
+
+        .quiz-container {
+            flex: 1;
+            padding: 20px;
+            margin-left: 220px; /* Adjusted space for the sidebar */
         }
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
+
+        .quiz-content {
+            padding: 20px;
+            border-radius: 8px;
         }
-        .sidebar ul li {
-            margin: 10px 0;
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 10px;
         }
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px;
-            display: block;
-            background: grey;
-            border-radius: 5px;
-            text-align: center;
+
+        .options {
+            margin-top: 10px;
         }
-        .sidebar ul li a.answered {
-            background: green;
+
+        .option {
+            margin-bottom: 10px;
         }
-        .sidebar ul li a:hover {
-            background: #0056b3;
+
+        .option input {
+            margin-right: 10px;
         }
-        .sidebar ul li a.flashing {
-            animation: flash 1s infinite;
-        }
-        @keyframes flash {
-            0% { background-color: grey; }
-            50% { background-color: #ff0000; }
-            100% { background-color: grey; }
-        }
-        @keyframes flashRed {
-            0% { color: #fff; }
-            50% { color: #ff0000; }
-            100% { color: #fff; }
-        }
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-        .question {
-            margin-bottom: 20px;
-        }
-        .question p {
-            font-size: 1.2em;
-        }
+
         .submit-btn {
-            display: inline-block;
+            margin-top: 20px;
             padding: 10px 20px;
             background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 1.2em;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
-            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
+
         .submit-btn:hover {
             background-color: #0056b3;
         }
-        #timer {
-            position: fixed;
+
+        .timer {
+            font-size: 20px;
+            font-weight: bold;
+            position: absolute;
             top: 20px;
             right: 20px;
+            padding: 10px;
             background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
+            color: #fff;
             border-radius: 5px;
-            font-size: 1.2em;
         }
-        #timer.flashing {
-            animation: flashRed 1s infinite;
+
+        .timer.red {
+            background-color: red;
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0%, 50%, 100% {
+                background-color: red;
+            }
+            25%, 75% {
+                background-color: white;
+            }
+        }
+
+        /* Side Navigation Styles */
+        .side-nav {
+            width: 200px;
+            position: fixed;
+            top: 45%;
+            left: 0;
+            transform: translateY(-50%);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5); /* Transparent background color */
+        }
+
+        .side-nav a {
+            display: block;
+            padding: 12px 0;
+            text-decoration: none;
+            color: white;
+            background-color: grey;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .side-nav a.answered {
+            background-color: green;
+        }
+
+        .side-nav a:hover {
+            background-color: #e0e0e0;
+            color: black;
+        }
+
+        .side-nav a.flash {
+            animation: flashRed 0.5s;
+        }
+
+        @keyframes flashRed {
+            0%, 50%, 100% {
+                color: red;
+            }
+            25%, 75% {
+                color: white;
+            }
+        }
+
+        .active {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .question-container.flash {
+            animation: flashRed 0.5s;
+        }
+
+        @keyframes flashRed {
+            0%, 50%, 100% {
+                background-color: red;
+            }
+            25%, 75% {
+                background-color: white;
+            }
         }
     </style>
-</head>
-<body>
-
-    <div class="sidebar">
-        <h2>Question Navigation</h2>
-        <ul id="questionNavigation">
-            <?php
-            if ($result->num_rows > 0) {
-                $i = 1;
-                $result->data_seek(0); // Reset the result pointer to the beginning
-                while($row = $result->fetch_assoc()) {
-                    echo "<li><a href='#question_$i' id='nav_question_$i'>Question $i</a></li>";
-                    $i++;
-                }
-            }
-            ?>
-        </ul>
-    </div>
-
-    <div class="container">
-        <h1>SQL INJECTION QUIZ</h1>
-        <p id="timer">Time Left: 20:00</p> <!-- Display timer -->
-        <form id="quizForm" action="submit_quiz.php" method="post" onsubmit="return validateForm()">
-            <?php
-            if ($result->num_rows > 0) {
-                $i = 1;
-                $result->data_seek(0); // Reset the result pointer to the beginning
-                while($row = $result->fetch_assoc()) {
-                    echo "<div class='question' id='question_$i'>";
-                    echo "<p>Question $i: " . $row["question_text"] . "</p>";
-                    echo "<label><input type='radio' name='question_" . $row["id"] . "' value='A' onclick='markAnswered($i)'>" . $row["option_a"] . "</label><br>";
-                    echo "<label><input type='radio' name='question_" . $row["id"] . "' value='B' onclick='markAnswered($i)'>" . $row["option_b"] . "</label><br>";
-                    echo "<label><input type='radio' name='question_" . $row["id"] . "' value='C' onclick='markAnswered($i)'>" . $row["option_c"] . "</label><br>";
-                    echo "<label><input type='radio' name='question_" . $row["id"] . "' value='D' onclick='markAnswered($i)'>" . $row["option_d"] . "</label><br>";
-                    echo "</div>";
-                    $i++;
-                }
-            } else {
-                echo "No questions available";
-            }
-            ?>
-            <input type="submit" value="Submit" class="submit-btn">
-        </form>
-    </div>
-
     <script>
-        // Timer code
-        var timer;
-        var minutes = 20; // Initial minutes
-        var seconds = 0; // Initial seconds
+        let timerDuration = 20 * 60; // 20 minutes in seconds
+        let timerElement;
 
         function startTimer() {
-            timer = setInterval(function() {
-                if (seconds == 0) {
-                    if (minutes == 0) {
-                        clearInterval(timer);
-                        document.getElementById('quizForm').submit(); // Automatically submit quiz when time is up
-                    } else {
-                        minutes--;
-                        seconds = 59;
-                    }
-                } else {
-                    seconds--;
-                }
-                if (minutes < 3) {
-                    document.getElementById('timer').classList.add('flashing');
-                }
-                displayTime();
-            }, 1000);
+            timerElement = document.getElementById("timer");
+            setInterval(updateTimer, 1000);
         }
 
-        function displayTime() {
-            var formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-            var formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
-            document.getElementById('timer').textContent = 'Time Left: ' + formattedMinutes + ':' + formattedSeconds;
+        function updateTimer() {
+            let minutes = Math.floor(timerDuration / 60);
+            let seconds = timerDuration % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+
+            if (timerDuration > 0) {
+                timerDuration--;
+                if (timerDuration <= 2 * 60) { // When 2 minutes or less are left
+                    timerElement.classList.add('red');
+                }
+            } else {
+                document.getElementById("quizForm").submit();
+            }
         }
 
-        function validateForm() {
-            let unanswered = [];
-            let questions = document.querySelectorAll('.question');
-            questions.forEach((question, index) => {
-                let radios = question.querySelectorAll('input[type="radio"]');
-                let answered = Array.from(radios).some(radio => radio.checked);
-                if (!answered) {
-                    unanswered.push(index + 1);
-                    let navItem = document.getElementById('nav_question_' + (index + 1));
-                    navItem.classList.add('flashing');
+        function validateForm(event) {
+            let form = document.getElementById("quizForm");
+            let inputs = form.querySelectorAll("input[type=radio]");
+            let checked = Array.from(inputs).some(input => input.checked);
+
+            if (!checked) {
+                alert("Please answer all questions before submitting the quiz.");
+                event.preventDefault();
+            }
+        }
+
+        window.onload = function() {
+            startTimer();
+
+            let quizForm = document.getElementById("quizForm");
+            quizForm.addEventListener("submit", validateForm);
+
+            // Add click event to side nav links
+            document.querySelectorAll(".side-nav a").forEach(link => {
+                link.addEventListener("click", function() {
+                    // Remove flash class from all question containers
+                    document.querySelectorAll(".question-container").forEach(container => container.classList.remove("flash"));
+
+                    // Get the corresponding question container
+                    let questionId = this.getAttribute("href").substring(1);
+                    let questionContainer = document.getElementById(questionId);
+
+                    // Add flash class to the corresponding question container
+                    questionContainer.classList.add("flash");
+
+                    // Remove flash class after 0.5 seconds
                     setTimeout(() => {
-                        navItem.classList.remove('flashing');
-                    }, 2000); // Remove flashing after 2 seconds
-                }
+                        questionContainer.classList.remove("flash");
+                    }, 500);
+                });
             });
 
-            if (unanswered.length > 0) {
-                return false;
-            }
-            return true;
+            // Change the color of the side nav link to green once the user answers the question
+            document.querySelectorAll(".option input").forEach(input => {
+                input.addEventListener("change", function() {
+                    let questionId = this.name.split('_')[1];
+                    let link = document.querySelector(`.side-nav a[href='#question_${questionId}']`);
+                    if (link) {
+                        link.classList.add('answered');
+                    }
+                });
+            });
+
+            // Handle page reload or navigation away
+            window.addEventListener("beforeunload", function (e) {
+                fetch('end_quiz_session.php', { method: 'POST' });
+            });
+
+            window.addEventListener("popstate", function (event) {
+                fetch('end_quiz_session.php', { method: 'POST' });
+                window.location.href = 'quizstart.php';
+            });
         }
-
-        function markAnswered(questionNumber) {
-            let navItem = document.getElementById('nav_question_' + questionNumber);
-            navItem.classList.add('answered');
-        }
-
-        // Start timer when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            startTimer();
-        });
-
-        // Warn user before leaving page
-        window.onbeforeunload = function() {
-            return "Are you sure you want to leave? All progress will be lost.";
-        };
     </script>
+</head>
+<body>
+    <!-- Transparent Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Side Navigation Panel -->
+    <div class="side-nav">
+        <h2>Questions</h2>
+        <?php foreach ($questions as $index => $question): ?>
+            <a href="#question_<?php echo $index + 1; ?>">Question <?php echo $index + 1; ?></a>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Main Quiz Container -->
+    <div class="quiz-container">
+        <h1>SQL Technique 3 Quiz</h1>
+        <div class="timer" id="timer">Time Left: 20:00</div>
+        <div class="quiz-content">
+            <form id="quizForm" action="submit_quiz1.php" method="POST">
+                <?php foreach ($questions as $index => $question): ?>
+                    <div id="question_<?php echo $index + 1; ?>" class="question-container" style="margin-bottom: 20px;">
+                        <div class="question-text">
+                            <span class="question-number">Question <?php echo $index + 1; ?>:</span> <?php echo $question['text']; ?>
+                        </div>
+                        <div class="options">
+                            <?php foreach ($question['options'] as $key => $option): ?>
+                                <label class="option"><input type="radio" name="question_<?php echo $question['id']; ?>" value="<?php echo $key + 1; ?>"> <?php echo $option; ?></label><br>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <input type="hidden" name="quiz_id" value="<?php echo $quizId; ?>">
+                <input type="submit" class="submit-btn" value="Submit Quiz">
+            </form>
+        </div>
+    </div>
 </body>
 </html>
-<?php
-$conn->close();
-?>
