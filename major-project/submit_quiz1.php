@@ -1,6 +1,9 @@
 <?php
 require_once 'config.php';
-session_start();
+require_once 'header.php';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (isset($_SESSION['quiz_submitted']) && $_SESSION['quiz_submitted'] === true) {
     header("Location: contentpage.php");
@@ -12,7 +15,6 @@ if ((!isset($_SESSION["login"]) || $_SESSION["login"] !== true) && (!isset($_SES
     header("Location: login.php");
     exit();
 }
-
 
 $userId = $_SESSION["userid"];
 $quizId = isset($_POST['quiz_id']) ? intval($_POST['quiz_id']) : 0;
@@ -90,10 +92,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <style>
                         body {
                             font-family: Arial, sans-serif;
-                            background-color: #f0f0f0;
                             color: #333;
                             text-align: center;
                             margin-top: 50px;
+                        }
+                        .content {
+                            background-color: rgba(0, 0, 0, 0.5);
+                            padding: 20px;
+                            border-radius: 10px;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                            display: inline-block;
+                            width: 80%;
+                            max-width: 1000px;
+                            margin: 0 auto;
                         }
                         .result {
                             font-size: 24px;
@@ -106,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             color: red;
                         }
                         table {
-                            width: 60%;
+                            width: 100%;
                             margin: 20px auto;
                             border-collapse: collapse;
                             text-align: center;
@@ -116,28 +127,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             border: 1px solid #ccc;
                         }
                         th {
-                            background-color: #f0f0f0;
+                            background-color: black;
                         }
                         .highest-score {
                             margin-top: 20px;
                             font-weight: bold;
                         }
+                        .button {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            font-size: 16px;
+                            color: #fff;
+                            background-color: #007bff;
+                            border: none;
+                            border-radius: 5px;
+                            text-decoration: none;
+                            cursor: pointer;
+                            margin-top: 20px;
+                        }
+                        .button:hover {
+                            background-color: #0056b3;
+                        }
                     </style>
                 </head>
                 <body>
-                    <h1>Quiz Result</h1>
-                    <div class='result " . ($pass ? "pass" : "fail") . "'>
-                        You scored $score out of $totalQuestions.<br>
-                        Percentage: $percentage%<br>
-                        Status: " . ($pass ? "Pass" : "Fail") . "
-                    </div>
-                    <h2>Quiz Attempts</h2>
-                    <table>
-                        <tr>
-                            <th>Attempt Number</th>
-                            <th>Score</th>
-                            <th>Date Done</th>
-                        </tr>";
+                    <div class='content'>
+                        <h1>Quiz Result</h1>
+                        <div class='result " . ($pass ? "pass" : "fail") . "'>
+                            You scored $score out of $totalQuestions.<br>
+                            Percentage: $percentage%<br>
+                            Status: " . ($pass ? "Pass" : "Fail") . "
+                        </div>
+                        <h2>Quiz Attempts</h2>
+                        <table>
+                            <tr>
+                                <th>Attempt Number</th>
+                                <th>Score</th>
+                                <th>Date Done</th>
+                            </tr>";
                 
                 $highestScore = 0;
                 $attemptNumber = 1;
@@ -157,6 +184,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 // Display highest score
                 echo "<div class='highest-score'>Highest Score: $highestScore</div>";
+                
+                echo "<a href='contentpage.php' class='button'>Go Back to Content</a>";
 
                 // JavaScript to disable back button and handle navigation
                 echo "<script>
@@ -181,5 +210,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
