@@ -58,7 +58,6 @@ $conn->close();
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-image: url('background.jpg');
             background-size: cover; 
             background-repeat: no-repeat;
             background-position: center;

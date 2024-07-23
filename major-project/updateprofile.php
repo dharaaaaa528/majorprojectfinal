@@ -4,7 +4,7 @@ use PHPMailer\PHPMailer\Exception;
 
 require 'vendor/autoload.php';
 require_once 'server.php';
-
+require_once 'header.php';
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -149,7 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background: url('background.jpg') no-repeat center center;
             background-size: cover;
             color: white;
             display: flex;
