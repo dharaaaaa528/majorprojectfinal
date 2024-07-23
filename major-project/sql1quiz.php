@@ -49,7 +49,6 @@ if ($stmt = $conn->prepare($sql)) {
     <title>SQL Technique 1 Quiz</title>
     <style>
         body {
-            background-image: url('background.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
