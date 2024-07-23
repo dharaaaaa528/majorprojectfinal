@@ -1,4 +1,7 @@
 <?php
+// Set the time zone to Singapore
+date_default_timezone_set('Asia/Singapore');
+
 // Database connection setup (update with your database details)
 $servername = "localhost";
 $username = "root";
