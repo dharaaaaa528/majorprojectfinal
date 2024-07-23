@@ -27,12 +27,24 @@ if (isset($_SESSION['userid'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Website</title>
-    <link rel="stylesheet" href="default.css">
-    <?php if (isset($_SESSION['theme']) && $_SESSION['theme'] != 'default'): ?>
-        <link rel="stylesheet" href="<?= htmlspecialchars($_SESSION['theme']) ?>.css">
+    <link rel="stylesheet" href="default.css"> <!-- Default CSS -->
+    <?php
+    $theme = isset($_SESSION['theme']) ? htmlspecialchars($_SESSION['theme']) : 'default';
+    if ($theme != 'default'): ?>
+        <link rel="stylesheet" href="<?= $theme ?>.css"> <!-- Theme CSS -->
     <?php endif; ?>
 </head>
-<body class="<?= htmlspecialchars($_SESSION['theme'] ?? 'default') ?>">
+<body class="<?= htmlspecialchars($theme) ?>">
+    <!-- Page content -->
+</body>
+</html>
+
+
+
+
+
+
 
 

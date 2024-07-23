@@ -1,12 +1,15 @@
-body.dark {
-     
-  
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: black;
-    color: white;
-    padding: 0;
-    height: 100vh;
-   
+html, body.dark {
+    height: 100%; /* Ensure the body takes up the full height of the viewport */
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
 }
 
+body.dark{
+    font-family: Arial, sans-serif;
+    background-image: url('background1.jpg'); /* Path to your background image */
+    background-size: cover; /* Ensure the background covers the entire viewport */
+    background-repeat: no-repeat; /* Prevent repeating of the image */
+    background-position: center; /* Center the image */
+    background-attachment: fixed; /* Make the background fixed while scrolling */
+    color: white; /* Text color for contrast */
+}
