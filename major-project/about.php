@@ -15,7 +15,7 @@ include 'topnav.php';  // Make sure this path is correct
             background-size: cover;
             color: white;
             background-color: rgba(0, 0, 0, 0.9); /* Black with 50% opacity */
-            overflow-x: hidden; /* Prevent horizontal scrolling */ Prevent horizontal scrolling */
+            overflow-x: hidden; /* Prevent horizontal scrolling */ 
         }
         html, body {
             height: 100%;

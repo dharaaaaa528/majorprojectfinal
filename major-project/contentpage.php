@@ -42,12 +42,13 @@ $isAdmin = ($user['role'] === 'admin');
         }
         .sidebar {
             width: 150px !important;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
+            background-color:black;
+            color: black;
             padding: 20px;
             display: flex;
             flex-direction: column;
             height: 450vh; /* Ensure the sidebar spans the full height of the viewport */
+            border-right: 2px solid white;
         }
         .sidebar ul {
             list-style-type: none;

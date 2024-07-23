@@ -68,6 +68,7 @@ ob_end_flush();
             left: 0;
             padding-top: 20px;
             color: #fff;
+            border-right: 2px solid white;
         }
 
         .sidebar a {

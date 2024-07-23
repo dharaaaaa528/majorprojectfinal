@@ -10,7 +10,6 @@ include 'header.php';
     <link rel="stylesheet" href="contentpage.css">
     <style>
         body {
-            background-image: url('background.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -25,12 +24,13 @@ include 'header.php';
         }
         .sidebar {
             width: 150px !important;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: black;
             color: #fff;
             padding: 20px;
             display: flex;
             flex-direction: column;
             height: 280vh; /* Ensure the sidebar spans the full height of the viewport */
+            border-right: 2px solid white;
         }
         .sidebar ul {
             list-style-type: none;
