@@ -1,5 +1,9 @@
 <?php
-include('config.php'); // Ensure this file exists and is correctly referenced
+include('config.php');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php'; // Path to the Composer autoload file
 
 session_start();
 
@@ -7,25 +11,57 @@ if (isset($_POST['submit'])) {
     $username = trim($_POST['username']);
     $phoneno = trim($_POST['phoneno']);
 
-    // Validate input
     if (empty($username) || empty($phoneno)) {
         $error_message = 'Please fill in both fields.';
     } else {
-        $stmt = $conn->prepare("SELECT userid FROM userinfo WHERE username = ? AND phoneno = ?");
+        $stmt = $conn->prepare("SELECT userid, email FROM userinfo WHERE username = ? AND phoneno = ?");
         $stmt->bind_param("ss", $username, $phoneno);
         $stmt->execute();
-        $stmt->store_result();
+        $result = $stmt->get_result();
 
-        if ($stmt->num_rows > 0) {
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $userid = $row['userid'];
+            $email = $row['email'];
+
+            // Generate OTP
+            $otp = rand(100000, 999999);
+            $_SESSION['otp'] = $otp;
+            $_SESSION['otp_expiry'] = time() + 300;
             $_SESSION['reset_username'] = $username;
-            $_SESSION['reset_phoneno'] = $phoneno;
-            header("Location: reset_password.php");
-            exit();
+
+            // Send OTP email using PHPMailer
+            $mail = new PHPMailer(true);
+            try {
+                //Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.mail.yahoo.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'dgandhi50@yahoo.com'; // Your email
+                $mail->Password = 'hkrnqbzyizzxtcsi'; // Your email password or app password
+                $mail->SMTPSecure = 'tls'; // Enable TLS encryption
+                $mail->Port = 587;
+
+                //Recipients
+                $mail->setFrom('dgandhi50@yahoo.com', 'dhara gandhi');
+                $mail->addAddress($email);
+
+                //Content
+                $mail->isHTML(true);
+                $mail->Subject = 'Password Reset OTP';
+                $mail->Body = "Your OTP for password reset is: <b>$otp</b>";
+
+                $mail->send();
+                header("Location: verify_otp1.php");
+                exit();
+            } catch (Exception $e) {
+                $error_message = 'Error sending OTP email: ' . $mail->ErrorInfo;
+            }
+
+            $stmt->close();
         } else {
             $error_message = 'Invalid username or phone number.';
         }
-
-        $stmt->close();
     }
 }
 ?>
@@ -36,7 +72,8 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <title>Reset Password</title>
     <style>
-        body {
+    
+         body {
             font-family: Arial, sans-serif;
             background-color: #121212;
             color: #ffffff;
@@ -45,6 +82,11 @@ if (isset($_POST['submit'])) {
             justify-content: center;
             height: 100vh;
             margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
         }
         .container {
             background-color: #1e1e1e;
@@ -95,6 +137,7 @@ if (isset($_POST['submit'])) {
         .container button:hover {
             background-color: #3700b3;
         }
+        /* Your existing styles */
     </style>
 </head>
 <body>
@@ -110,8 +153,9 @@ if (isset($_POST['submit'])) {
                 <label for="phoneno">Phone Number:</label>
                 <input type="text" id="phoneno" name="phoneno" required>
             </div>
-            <button type="submit" name="submit">Reset Password</button>
+            <button type="submit" name="submit">Send OTP</button>
         </form>
     </div>
 </body>
 </html>
+

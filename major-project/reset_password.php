@@ -3,7 +3,7 @@ include('config.php'); // Ensure this file exists and is correctly referenced
 
 session_start();
 
-if (!isset($_SESSION['reset_username']) || !isset($_SESSION['reset_phoneno'])) {
+if (!isset($_SESSION['reset_username'])) {
     header("Location: reset_request.php");
     exit();
 }
@@ -27,7 +27,8 @@ if (isset($_POST['submit'])) {
         if ($stmt->execute()) {
             $success_message = 'Password has been reset successfully.';
             unset($_SESSION['reset_username']);
-            unset($_SESSION['reset_phoneno']);
+            unset($_SESSION['otp']);
+            unset($_SESSION['otp_expiry']);
         } else {
             $error_message = 'Error resetting password.';
         }
@@ -43,7 +44,8 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <title>Set New Password</title>
     <style>
-        body {
+    
+       body {
             font-family: Arial, sans-serif;
             background-color: #121212;
             color: #ffffff;
@@ -52,6 +54,12 @@ if (isset($_POST['submit'])) {
             justify-content: center;
             height: 100vh;
             margin: 0;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            
         }
         .container {
             background-color: #1e1e1e;
@@ -102,6 +110,7 @@ if (isset($_POST['submit'])) {
         .container button:hover {
             background-color: #3700b3;
         }
+        /* Your existing styles */
     </style>
 </head>
 <body>
@@ -119,6 +128,7 @@ if (isset($_POST['submit'])) {
                 <input type="password" id="confirm_password" name="confirm_password" required>
             </div>
             <button type="submit" name="submit">Set Password</button>
+            <button type="button" onclick="window.location.href='login.php';">Go Back To Login Page</button>
         </form>
     </div>
 </body>
