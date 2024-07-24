@@ -239,8 +239,9 @@ if (isset($_GET['search'])) {
         </button>
         <div class="dropdown-content" style="right: 0; left: auto;">
             <a href="profile.php">Profile</a>
-            <a href="logout.php">Logout</a>
             <a href="settings.php">Settings</a>
+            <a href="logout.php">Logout</a>
+            
         </div>
     </div>
 </div>

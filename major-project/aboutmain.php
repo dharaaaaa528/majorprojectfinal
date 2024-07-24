@@ -81,7 +81,7 @@
         <h2>Our Team</h2>
         <div class="team-container">
             <div class="team-member">
-                <img src="dhara.jpg" alt="Team Member 1">
+                <img src="dhara1.jpg" alt="Team Member 1">
                 <p>DHARA HARESH GANDHI</p>
             </div>
             <div class="team-member">
