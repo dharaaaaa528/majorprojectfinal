@@ -139,43 +139,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <a href="settings.php" class="settings-link"><u>Settings</u></a>
     </div>
     <div class="content">
-        <div class="settings-container">
-            <h1>Settings</h1>
-            <form method="post" action="">
-                <label>Select Theme:</label>
-                <div class="theme-options">
-                    <!-- Repeat this block for each theme image -->
-                    <label class="theme-option <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'light' ? 'selected' : '' ?>">
-                        <input type="radio" name="theme" value="light" <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'light' ? 'checked' : '' ?>>
-                        <img src="background3.jpg" alt="Light Theme">
-                        <span>Light Theme</span>
-                    </label>
-                    <label class="theme-option <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'default' ? 'selected' : '' ?>">
-                        <input type="radio" name="theme" value="default" <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'default' ? 'checked' : '' ?>>
-                        <img src="background.jpg" alt="Default Theme">
-                        <span>Default Theme</span>
-                    </label>
-                    <label class="theme-option <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'dark' ? 'selected' : '' ?>">
-                        <input type="radio" name="theme" value="dark" <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'dark' ? 'checked' : '' ?>>
-                        <img src="background1.jpg" alt="Dark Theme">
-                        <span>Dark Theme</span>
-                    </label>
-                    <!-- Add more options as needed -->
-                </div>
-                <button type="submit" class="submit-button">Save</button>
-            </form>
+    <div class="settings-container">
+    <h1>Settings</h1>
+    <form method="post" action="">
+        <label>Select Theme:</label>
+        <div class="theme-options">
+            <!-- Default Themes -->
+            <label class="theme-option <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'light' ? 'selected' : '' ?>">
+                <input type="radio" name="theme" value="light" <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'light' ? 'checked' : '' ?>>
+                <img src="background3.jpg" alt="Light Theme">
+                <span>Light Theme</span>
+            </label>
+            <label class="theme-option <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'default' ? 'selected' : '' ?>">
+                <input type="radio" name="theme" value="default" <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'default' ? 'checked' : '' ?>>
+                <img src="background.jpg" alt="Default Theme">
+                <span>Default Theme</span>
+            </label>
+            <label class="theme-option <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'dark' ? 'selected' : '' ?>">
+                <input type="radio" name="theme" value="dark" <?= isset($_SESSION['theme']) && $_SESSION['theme'] == 'dark' ? 'checked' : '' ?>>
+                <img src="background1.jpg" alt="Dark Theme">
+                <span>Dark Theme</span>
+            </label>
+            <!-- Custom Themes -->
+            <?php
+            $user_id = $_SESSION['userid'];
+            $stmt = $pdo->prepare('SELECT * FROM user_themes WHERE userid = ?');
+            $stmt->execute([$user_id]);
+            $user_themes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($user_themes as $theme) {
+                echo '<label class="theme-option ' . (isset($_SESSION['theme']) && $_SESSION['theme'] == $theme['theme_name'] ? 'selected' : '') . '">
+                      <input type="radio" name="theme" value="' . htmlspecialchars($theme['theme_name']) . '" ' . (isset($_SESSION['theme']) && $_SESSION['theme'] == $theme['theme_name'] ? 'checked' : '') . '>
+                      <img src="user_themes/' . htmlspecialchars($theme['theme_file']) . '" alt="' . htmlspecialchars($theme['theme_name']) . '">
+                      <span>' . htmlspecialchars($theme['theme_name']) . '</span>
+                      </label>';
+            }
+            ?>
         </div>
-    </div>
-    <script>
-        // Optional: Add JavaScript to handle theme selection
-        document.querySelectorAll('.theme-option').forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelectorAll('.theme-option').forEach(op => op.classList.remove('selected'));
-                option.classList.add('selected');
-            });
-        });
-    </script>
-</body>
-</html>
-
-
+        <button type="submit" class="submit-button">Save</button>
+    </form>
+    <h2>Upload Custom Theme</h2>
+    <form method="post" action="upload_theme.php" enctype="multipart/form-data">
+        <label for="theme_name">Theme Name:</label>
+        <input type="text" name="theme_name" id="theme_name" required>
+        <label for="theme_file">Theme Image (JPG/PNG):</label>
+        <input type="file" name="theme_file" id="theme_file" accept=".jpg,.jpeg,.png" required>
+        <button type="submit" class="submit-button">Upload Theme</button>
+    </form>
+</div>
+    

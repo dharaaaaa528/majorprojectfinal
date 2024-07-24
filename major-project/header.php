@@ -1,6 +1,5 @@
 <?php
-require_once 'server.php';
-
+require_once 'dbconfig.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -22,6 +21,11 @@ if (isset($_SESSION['userid'])) {
     // Default theme if not logged in
     $_SESSION['theme'] = 'default';
 }
+
+// Fetch custom theme if set
+if ($_SESSION['theme'] != 'default' && $_SESSION['theme'] != 'light' && $_SESSION['theme'] != 'dark') {
+    $theme_css = 'user_themes/' . htmlspecialchars($_SESSION['theme']) . '.css';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,19 +36,13 @@ if (isset($_SESSION['userid'])) {
     <link rel="stylesheet" href="default.css"> <!-- Default CSS -->
     <?php
     $theme = isset($_SESSION['theme']) ? htmlspecialchars($_SESSION['theme']) : 'default';
-    if ($theme != 'default'): ?>
+    if ($theme == 'light' || $theme == 'dark'): ?>
         <link rel="stylesheet" href="<?= $theme ?>.css"> <!-- Theme CSS -->
+    <?php elseif (isset($theme_css)): ?>
+        <link rel="stylesheet" href="<?= $theme_css ?>"> <!-- Custom Theme CSS -->
     <?php endif; ?>
 </head>
 <body class="<?= htmlspecialchars($theme) ?>">
     <!-- Page content -->
 </body>
 </html>
-
-
-
-
-
-
-
-
