@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background-color: #000;
             height: calc(100vh - 20px);
             position: absolute;
-            top: 100px;
+            top: 99px;
             left: 0;
             padding-top: 20px;
             color: #fff;
