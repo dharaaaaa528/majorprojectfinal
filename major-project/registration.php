@@ -12,31 +12,24 @@ date_default_timezone_set('Asia/Singapore');
 // Function to send OTP
 function sendOtp($email, $username, $otp) {
     $mail = new PHPMailer(true);
-
+    
     try {
-        // Server settings
-        $mail->SMTPDebug = 0; // Set to 0 for no debugging output, 2 for detailed debugging output
+        $mail->SMTPDebug = 0;
         $mail->isSMTP();
         $mail->Host = 'smtp.mail.yahoo.com';
         $mail->SMTPAuth = true;
-
-        // Replace with your actual email and app-specific password
-        $mail->Username = 'dgandhi50@yahoo.com'; 
+        $mail->Username = 'dgandhi50@yahoo.com';
         $mail->Password = 'hkrnqbzyizzxtcsi';
-
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
-
-        // Recipients
+        
         $mail->setFrom('dgandhi50@yahoo.com', 'dhara gandhi');
         $mail->addAddress($email, $username);
-
-        // Content
         $mail->isHTML(true);
         $mail->Subject = 'Your OTP Code';
         $mail->Body    = "Your OTP code is <b>$otp</b>";
         $mail->AltBody = "Your OTP code is $otp";
-
+        
         $mail->send();
         return true;
     } catch (Exception $e) {
@@ -44,6 +37,7 @@ function sendOtp($email, $username, $otp) {
         return false;
     }
 }
+
 
 // Handle form submission
 if (isset($_POST["submit"])) {
