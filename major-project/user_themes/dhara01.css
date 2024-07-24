@@ -1,0 +1,16 @@
+
+html, body.dhara01 {
+    height: 100%; /* Ensure the body takes up the full height of the viewport */
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
+}
+
+body.dhara01 {
+    font-family: Arial, sans-serif;
+    background-image: url('../user_themes/success.png'); /* Path to your background image */
+    background-size: cover; /* Ensure the background covers the entire viewport */
+    background-repeat: no-repeat; /* Prevent repeating of the image */
+    background-position: center; /* Center the image */
+    background-attachment: fixed; /* Make the background fixed while scrolling */
+    color: white; /* Text color for contrast */
+}
