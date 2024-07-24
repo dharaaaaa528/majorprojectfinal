@@ -12,12 +12,22 @@ if (isset($_POST["verify"])) {
     // Check if entered OTP matches the generated OTP
     if ($entered_otp == $_SESSION['otp']) {
         // Insert new user into the database
-        $insertQuery = $conn->prepare("INSERT INTO userinfo (username, password, email, phoneno, created_at) VALUES (?, ?, ?, ?, ?)");
+        $insertQuery = $conn->prepare("INSERT INTO userinfo (first_name, last_name, username, email, password, phoneno, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)");
         if ($insertQuery === false) {
             die("MySQL prepare statement error (insert): " . $conn->error);
         }
 
-        $insertQuery->bind_param("sssss", $_SESSION['username'], $_SESSION['password'], $_SESSION['email'], $_SESSION['phoneno'], $_SESSION['created_at']);
+        $insertQuery->bind_param(
+            "sssssss",
+            $_SESSION['first_name'],
+            $_SESSION['last_name'],
+            $_SESSION['username'],
+            $_SESSION['email'],
+            $_SESSION['password'],
+            $_SESSION['phoneno'],
+            $_SESSION['created_at']
+        );
         if ($insertQuery->execute()) {
             // Registration successful, get the user id
             $userId = $insertQuery->insert_id;
@@ -30,6 +40,8 @@ if (isset($_POST["verify"])) {
 
             // Clear sensitive session data
             unset($_SESSION['otp']);
+            unset($_SESSION['first_name']);
+            unset($_SESSION['last_name']);
             unset($_SESSION['password']);
             unset($_SESSION['phoneno']);
             unset($_SESSION['created_at']);
@@ -142,3 +154,4 @@ if (isset($_POST["verify"])) {
     </div>
 </body>
 </html>
+
