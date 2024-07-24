@@ -107,7 +107,7 @@ include 'header.php';  // Make sure this path is correct
         <?php
         if (isset($_GET['url'])) {
             $url = htmlspecialchars($_GET['url']);
-            $exploit_url = "https://$url%0d%0aContent-Length:0%0d%0a%0d%0a<script>alert('XSS');</script>";
+            $exploit_url = "$url";
             echo "<h2>Injected URL:</h2>";
             echo "<div class='output'>$exploit_url</div>";
             echo "<h2>Result:</h2>";
