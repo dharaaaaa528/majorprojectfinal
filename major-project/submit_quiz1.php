@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'header.php';
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -25,7 +26,7 @@ if ($quizId === 0) {
 }
 
 $score = 0;
-$totalQuestions = 0;
+$totalQuestions = 10; // Fixed number of questions
 
 // Fetch quiz questions
 $sql = "SELECT id, correct_option FROM quiz_questions WHERE quiz_id = ?";
@@ -40,7 +41,6 @@ if ($stmt = $conn->prepare($sql)) {
             'id' => $questionId,
             'correct_option' => $correctOption
         ];
-        $totalQuestions++;
     }
     $stmt->close();
 }
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Calculate percentage
+    // Score and percentage calculations
     $percentage = ($score / $totalQuestions) * 100;
     $pass = $percentage >= 70;
 
@@ -75,6 +75,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($stmt_insert_attempt->execute()) {
             // Set quiz submission session variable
             $_SESSION['quiz_submitted'] = true;
+
+            // Update or insert into userprogress table only if score is 7 or higher
+            if ($score >= 7) {
+                $sql_upsert_progress = "
+                    INSERT INTO userprogress (user_id, quiz_id, status, completed_at)
+                    VALUES (?, ?, 'completed', NOW())
+                    ON DUPLICATE KEY UPDATE
+                        status = 'completed',
+                        completed_at = NOW()
+                ";
+                if ($stmt_upsert_progress = $conn->prepare($sql_upsert_progress)) {
+                    $stmt_upsert_progress->bind_param("ii", $userId, $quizId);
+                    if (!$stmt_upsert_progress->execute()) {
+                        echo "Error executing progress statement: " . $stmt_upsert_progress->error;
+                    }
+                    $stmt_upsert_progress->close();
+                } else {
+                    echo "Error preparing progress statement: " . $conn->error;
+                }
+            }
 
             // Fetch all attempts for the user
             $sql_fetch_attempts = "SELECT id, score, created_at FROM quiz_attempts WHERE user_id = ? AND quiz_id = ?";
@@ -154,8 +174,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class='content'>
                         <h1>Quiz Result</h1>
                         <div class='result " . ($pass ? "pass" : "fail") . "'>
-                            You scored $score out of $totalQuestions.<br>
-                            Percentage: $percentage%<br>
+                            You scored " . $score . " out of 10.<br>
+                            Percentage: " . number_format($percentage, 2) . "%<br>
                             Status: " . ($pass ? "Pass" : "Fail") . "
                         </div>
                         <h2>Quiz Attempts</h2>

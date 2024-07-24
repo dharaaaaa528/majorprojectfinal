@@ -32,6 +32,24 @@ if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE
 // Debugging: Log session data
 error_log("Session Data: " . print_r($_SESSION, true));
 
+// Function to check if user has completed specific quizzes
+function hasCompletedQuizzes($pdo, $user_id, $quiz_ids) {
+    foreach ($quiz_ids as $quiz_id) {
+        $stmt = $pdo->prepare('SELECT status FROM userprogress WHERE user_id = ? AND quiz_id = ?');
+        $stmt->execute([$user_id, $quiz_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$result || $result['status'] !== 'completed') {
+            return false; // If any quiz is not completed, return false
+        }
+    }
+    return true;
+}
+
+// Check if user has completed quizzes for SQL and XSS tests
+$isCompletedSQL = hasCompletedQuizzes($pdo, $_SESSION['userid'], [1, 2, 3, 4]);
+$isCompletedXSS = hasCompletedQuizzes($pdo, $_SESSION['userid'], [5, 6, 7, 8]);
+
 // Handle search functionality
 if (isset($_GET['search'])) {
     $searchQuery = strtolower(trim($_GET['search']));
@@ -61,7 +79,6 @@ if (isset($_GET['search'])) {
     <meta charset="UTF-8">
     <style>
         /* Basic styling for the navigation */
-        
         .topnav {
             background-color: #333;
             overflow: hidden;
@@ -182,6 +199,12 @@ if (isset($_GET['search'])) {
         .topnav .search-bar input[type="submit"]:hover {
             background-color: #ccc;
         }
+
+        /* Disabled link styling */
+        .disabled-link {
+            pointer-events: none;
+            color: #888;
+        }
     </style>
 </head>
 <body>
@@ -206,7 +229,12 @@ if (isset($_GET['search'])) {
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <a href="test.php">Tests</a>
+            <?php if ($isCompletedSQL): ?>
+                <a href="sqltest.php">SQL Tests</a>
+            <?php endif; ?>
+            <?php if ($isCompletedXSS): ?>
+                <a href="scripttest.php">XSS Tests</a>
+            <?php endif; ?>
         </div>
     </div>
     
@@ -248,7 +276,5 @@ if (isset($_GET['search'])) {
 
 </body>
 </html>
-
-
 
 

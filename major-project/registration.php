@@ -38,9 +38,10 @@ function sendOtp($email, $username, $otp) {
     }
 }
 
-
 // Handle form submission
 if (isset($_POST["submit"])) {
+    $firstname = trim($_POST["first_name"]);
+    $lastname = trim($_POST["last_name"]);
     $username = trim($_POST["username"]);
     $email = trim($_POST["email"]);
     $password = trim($_POST["password"]);
@@ -53,18 +54,24 @@ if (isset($_POST["submit"])) {
         echo "<script>alert('Password must be at least 8 characters long and include at least one uppercase letter and one special character');</script>";
     } elseif (strlen($username) < 5) {
         echo "<script>alert('Username must be at least 5 characters long');</script>";
+    } elseif (strlen($firstname) < 2 || strlen($lastname) < 2) {
+        echo "<script>alert('First name and Last name must be at least 2 characters long');</script>";
     } else {
         // Check for duplicate entries
-        $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ?");
+        $duplicate = $conn->prepare("
+            SELECT * FROM userinfo 
+            WHERE username = ? OR email = ? OR phoneno = ? 
+            OR (first_name = ? AND last_name = ?)
+        ");
         if ($duplicate === false) {
             die("MySQL prepare statement error (duplicate): " . $conn->error);
         }
-        $duplicate->bind_param("sss", $username, $email, $phoneno);
+        $duplicate->bind_param("sssss", $username, $email, $phoneno, $firstname, $lastname);
         $duplicate->execute();
         $duplicate->store_result();
 
         if ($duplicate->num_rows > 0) {
-            echo "<script>alert('Username or Email or Phone Number is already taken');</script>";
+            echo "<script>alert('Username, Email, Phone Number, First Name, or Last Name is already taken');</script>";
         } else {
             // Check if OTP was sent in the last 30 seconds
             if (isset($_SESSION['otp_sent_time']) && (time() - $_SESSION['otp_sent_time'] < 30)) {
@@ -76,6 +83,8 @@ if (isset($_POST["submit"])) {
                 // Store data in session variables
                 $_SESSION['otp'] = $otp;
                 $_SESSION['otp_sent_time'] = time();
+                $_SESSION['first_name'] = $firstname;
+                $_SESSION['last_name'] = $lastname;
                 $_SESSION['username'] = $username;
                 $_SESSION['email'] = $email;
                 $_SESSION['password'] = password_hash($password, PASSWORD_DEFAULT);
@@ -212,6 +221,15 @@ if (isset($_POST["submit"])) {
     <div class="container">
         <h1>Registration</h1>
         <form action="" method="post" autocomplete="off">
+        <div>
+    <label for="first_name">First Name:</label>
+    <input type="text" name="first_name" id="first_name" required minlength="2">
+</div>
+<div>
+    <label for="last_name">Last Name:</label>
+    <input type="text" name="last_name" id="last_name" required minlength="2">
+</div>
+        
             <div>
                 <label for="username">Username:</label>
                 <input type="text" name="username" id="username" required minlength="5">
