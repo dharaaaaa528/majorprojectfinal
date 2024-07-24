@@ -230,9 +230,9 @@ if (isset($_GET['search'])) {
     <div class="dropdown" style="margin-left: auto;">
         <button class="dropbtn">
             <?php if (isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture'])): ?>
-                <img src="<?php echo htmlspecialchars($_SESSION['profile_picture']); ?>" alt="" width="30" height="30" style="border-radius: 50%;">
+                <img src="<?php echo htmlspecialchars($_SESSION['profile_picture']); ?>" alt="Profile Picture" width="30" height="30" style="border-radius: 50%;">
             <?php else: ?>
-                <img src="default_profile.png" alt="Default Profile Picture" width="30" height="30" style="border-radius: 50%;">
+                <img src="profile.png" alt="Default Profile Picture" width="30" height="30" style="border-radius: 50%;">
             <?php endif; ?>
             <?= htmlspecialchars($username) ?> 
             <i class="fa fa-caret-down"></i>
@@ -247,6 +247,7 @@ if (isset($_GET['search'])) {
 
 </body>
 </html>
+
 
 
 
