@@ -40,13 +40,12 @@ if ($stmt = $conn->prepare($sql)) {
     <title>My Certificates</title>
     <style>
         .certificate-container {
-            text-align: center;
-            margin-top: 20px;
-            position: absolute;
-            top: 120px; /* Adjust based on your layout */
-            left: 220px; /* Adjust based on your sidebar width */
-            width: calc(100% - 220px); /* Adjust width based on sidebar */
-             /* Ensure it's on top */
+       
+            border-radius: 25px;
+            margin: 20px 0;
+            position: relative;
+           
+           
         }
         .certificate-grid {
             display: flex;
@@ -75,6 +74,7 @@ if ($stmt = $conn->prepare($sql)) {
             padding-top: 20px;
             color: #fff;
             border-right: 2px solid white;
+            
         }
         .sidebar a {
             padding: 15px;
@@ -98,6 +98,7 @@ if ($stmt = $conn->prepare($sql)) {
             overflow-y: auto;
             background-color: rgba(0, 0, 0, 0.7);
             height: 100vh;
+             
         }
     </style>
 </head>

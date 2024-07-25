@@ -108,15 +108,31 @@ $pdf = new Fpdi();
 
 // Choose the correct template based on template ID
 $templateFile = '';
+$coordinates = [];
 switch ($templateId) {
     case 1:
         $templateFile = 'templates/template1.pdf';
+        $coordinates = [
+            'name' => [85, 135],
+            'course' => [35, 170],
+            'date' => [135, 170]
+        ];
         break;
     case 2:
         $templateFile = 'templates/template2.pdf';
+        $coordinates = [
+            'name' => [85, 140],
+            'course' => [30, 180],
+            'date' => [130, 180]
+        ];
         break;
     case 3:
         $templateFile = 'templates/template3.pdf';
+        $coordinates = [
+            'name' => [30, 120],
+            'course' => [20, 180],
+            'date' => [80, 180]
+        ];
         break;
     default:
         echo "Invalid template ID.";
@@ -134,18 +150,14 @@ $pdf->SetFont('Arial', 'B', 16);
 $pdf->SetTextColor(0, 0, 0);
 
 // Replace these coordinates with the ones from your template
-$pdf->SetXY(50, 120); // Coordinates for the name
+$pdf->SetXY($coordinates['name'][0], $coordinates['name'][1]);
 $pdf->Write(10, "$firstName $lastName");
 
-$pdf->SetXY(50, 140); // Coordinates for the course name
+$pdf->SetXY($coordinates['course'][0], $coordinates['course'][1]);
 $pdf->Write(10, $courseName);
 
-$pdf->SetXY(50, 160); // Coordinates for the highest score
-$pdf->Write(10, "Highest Score: " . $highestScore);
-
-// Add the creation timestamp
-$pdf->SetXY(50, 180); // Coordinates for the creation timestamp
-$pdf->Write(10, "Date of Completion: " . date('F j, Y', strtotime($createdAt)));
+$pdf->SetXY($coordinates['date'][0], $coordinates['date'][1]);
+$pdf->Write(10, date('F j, Y', strtotime($createdAt)));
 
 // Save the PDF to a file
 $filePath = 'certificates/certificate_' . $userId . '_' . $quizId . '.pdf';
