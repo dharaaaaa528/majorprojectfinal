@@ -292,14 +292,13 @@ if ($stmt = $conn->prepare($sql)) {
             const timerInterval = setInterval(updateTimer, 1000);
 
             // Add event listeners to radio inputs
-            document.querySelectorAll('input[type="radio"]').for
-                        // Add event listeners to radio inputs
             document.querySelectorAll('input[type="radio"]').forEach(input => {
                 input.addEventListener('change', function() {
                     const questionId = Array.from(document.querySelectorAll('input[name^="question_"]')).find(input => input.checked)?.name.split('_')[1];
                     
                     if (questionId) {
                         const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
+                        console.log(`Sidebar link: ${sidebarLink}`);
 
                         if (sidebarLink) {
                             sidebarLink.classList.add('answered');
@@ -317,39 +316,6 @@ if ($stmt = $conn->prepare($sql)) {
                     });
                 });
             });
-
-            // Form submit handling
-            document.getElementById('quizForm').addEventListener('submit', function(event) {
-                let allAnswered = true;
-                let unansweredQuestions = [];
-
-                // Check if all questions are answered
-                for (let i = 1; i <= 10; i++) {
-                    const questionInputs = document.querySelectorAll(`input[name^="question_${i}"]`);
-                    const isAnswered = Array.from(questionInputs).some(input => input.checked);
-
-                    if (!isAnswered) {
-                        allAnswered = false;
-                        unansweredQuestions.push(i);
-                    }
-                }
-
-                if (!allAnswered) {
-                    event.preventDefault(); // Prevent form submission
-
-                    // Add blink effect to unanswered questions in the sidebar
-                    unansweredQuestions.forEach(questionId => {
-                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
-                        
-                        if (sidebarLink) {
-                            sidebarLink.classList.add('blink');
-                            setTimeout(() => {
-                                sidebarLink.classList.remove('blink');
-                            }, 2000); // Duration of the blink effect
-                        }
-                    });
-                }
-            });
         });
 
         // Disable back button
@@ -360,4 +326,3 @@ if ($stmt = $conn->prepare($sql)) {
     </script>
 </body>
 </html>
-            
