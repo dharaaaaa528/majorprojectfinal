@@ -206,6 +206,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<div class='highest-score'>Highest Score: $highestScore</div>";
                 
                 echo "<a href='contentpage.php' class='button'>Go Back to Content</a>";
+                if ($pass) {
+                    echo "<a href='choose_certificate.php?quiz_id=$quizId' class='button'>Generate Certificate</a>";
+                }
 
                 // JavaScript to disable back button and handle navigation
                 echo "<script>

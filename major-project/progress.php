@@ -14,12 +14,12 @@ if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
     exit();
 }
 
-// Function to fetch completed quizzes count
+// Function to fetch completed quizzes count and last completed quiz ID
 function getCompletedQuizzesCount($pdo, $user_id, $quiz_ids) {
     $inClause = implode(',', array_fill(0, count($quiz_ids), '?'));
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM userprogress WHERE user_id = ? AND quiz_id IN ($inClause) AND status = 'completed'");
+    $stmt = $pdo->prepare("SELECT COUNT(*), MAX(quiz_id) FROM userprogress WHERE user_id = ? AND quiz_id IN ($inClause) AND status = 'completed'");
     $stmt->execute(array_merge([$user_id], $quiz_ids));
-    return $stmt->fetchColumn();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Function to fetch completed tests count
@@ -54,8 +54,17 @@ $xss_test_ids = [5, 6, 7, 8];
 
 // Fetch completed quizzes and tests counts
 $user_id = $_SESSION['userid'];
-$completed_sql_quizzes = getCompletedQuizzesCount($pdo, $user_id, $sql_quiz_ids);
-$completed_xss_quizzes = getCompletedQuizzesCount($pdo, $user_id, $xss_quiz_ids);
+
+// Fetch completed quizzes and last completed quiz ID for SQL
+$sql_quiz_data = getCompletedQuizzesCount($pdo, $user_id, $sql_quiz_ids);
+$completed_sql_quizzes = $sql_quiz_data['COUNT(*)'];
+$last_completed_sql_quiz_id = $sql_quiz_data['MAX(quiz_id)'];
+
+// Fetch completed quizzes and last completed quiz ID for XSS
+$xss_quiz_data = getCompletedQuizzesCount($pdo, $user_id, $xss_quiz_ids);
+$completed_xss_quizzes = $xss_quiz_data['COUNT(*)'];
+$last_completed_xss_quiz_id = $xss_quiz_data['MAX(quiz_id)'];
+
 $completed_sql_tests = getCompletedTestsCount($pdo, $user_id, $sql_test_ids);
 $completed_xss_tests = getCompletedTestsCount($pdo, $user_id, $xss_test_ids);
 
@@ -70,8 +79,31 @@ $total_sql_quizzes = count($sql_quiz_ids);
 $total_xss_quizzes = count($xss_quiz_ids);
 $total_sql_tests = count($sql_test_ids);
 $total_xss_tests = count($xss_test_ids);
-?>
 
+// Initialize last completed quiz IDs in session if not set
+if (!isset($_SESSION['last_completed_sql_quiz_id'])) {
+    $_SESSION['last_completed_sql_quiz_id'] = $last_completed_sql_quiz_id;
+}
+if (!isset($_SESSION['last_completed_xss_quiz_id'])) {
+    $_SESSION['last_completed_xss_quiz_id'] = $last_completed_xss_quiz_id;
+}
+
+// Update session if quiz ID changes
+if ($last_completed_sql_quiz_id != $_SESSION['last_completed_sql_quiz_id']) {
+    $_SESSION['last_completed_sql_quiz_id'] = $last_completed_sql_quiz_id;
+    $update_sql_progress = true;
+} else {
+    $update_sql_progress = false;
+}
+
+if ($last_completed_xss_quiz_id != $_SESSION['last_completed_xss_quiz_id']) {
+    $_SESSION['last_completed_xss_quiz_id'] = $last_completed_xss_quiz_id;
+    $update_xss_progress = true;
+} else {
+    $update_xss_progress = false;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,7 +181,7 @@ $total_xss_tests = count($xss_test_ids);
 <div class="sidebar">
     <a href="profile.php" class="profile-link"><u>Profile</u></a>
     <a href="progress.php" class="progress-link"><u>Progress</u></a>
-    <a href="#"><u>Certifications</u></a>
+    <a href="certificate.php"><u>Certifications</u></a>
     <a href="settings.php"><u>Settings</u></a>
 </div>
 
@@ -158,9 +190,15 @@ $total_xss_tests = count($xss_test_ids);
 
     <h2>SQL Quizzes</h2>
     <div class="progress-bar-container">
-        <div class="progress-bar" style="width: <?= ($completed_sql_quizzes / $total_sql_quizzes) * 100 ?>%">
-            <span><?= $completed_sql_quizzes ?> / <?= $total_sql_quizzes ?> completed</span>
-        </div>
+        <?php if ($update_sql_progress): ?>
+            <div class="progress-bar" style="width: <?= ($completed_sql_quizzes / $total_sql_quizzes) * 100 ?>%">
+                <span><?= $completed_sql_quizzes ?> / <?= $total_sql_quizzes ?> completed</span>
+            </div>
+        <?php else: ?>
+            <div class="progress-bar" style="width: <?= ($_SESSION['last_completed_sql_quiz_id'] / $total_sql_quizzes) * 100 ?>%">
+                <span><?= $_SESSION['last_completed_sql_quiz_id'] ?> / <?= $total_sql_quizzes ?> completed</span>
+            </div>
+        <?php endif; ?>
     </div>
     <?php if ($incomplete_sql_quizzes): ?>
         <p>Incomplete SQL Quizzes:</p>
@@ -173,9 +211,15 @@ $total_xss_tests = count($xss_test_ids);
 
     <h2>XSS Quizzes</h2>
     <div class="progress-bar-container">
-        <div class="progress-bar" style="width: <?= ($completed_xss_quizzes / $total_xss_quizzes) * 100 ?>%">
-            <span><?= $completed_xss_quizzes ?> / <?= $total_xss_quizzes ?> completed</span>
-        </div>
+        <?php if ($update_xss_progress): ?>
+            <div class="progress-bar" style="width: <?= ($completed_xss_quizzes / $total_xss_quizzes) * 100 ?>%">
+                <span><?= $completed_xss_quizzes ?> / <?= $total_xss_quizzes ?> completed</span>
+            </div>
+        <?php else: ?>
+            <div class="progress-bar" style="width: <?= ($_SESSION['last_completed_xss_quiz_id'] / $total_xss_quizzes) * 100 ?>%">
+                <span><?= $_SESSION['last_completed_xss_quiz_id'] ?> / <?= $total_xss_quizzes ?> completed</span>
+            </div>
+        <?php endif; ?>
     </div>
     <?php if ($incomplete_xss_quizzes): ?>
         <p>Incomplete XSS Quizzes:</p>
@@ -219,4 +263,5 @@ $total_xss_tests = count($xss_test_ids);
 
 </body>
 </html>
+
 
