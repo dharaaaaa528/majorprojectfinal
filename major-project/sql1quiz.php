@@ -61,9 +61,13 @@ if ($stmt = $conn->prepare($sql)) {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: #fff; /* Ensure text is visible on dark background */
+            color: #fff;
             display: flex;
             background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         html, body {
@@ -75,7 +79,7 @@ if ($stmt = $conn->prepare($sql)) {
             padding: 20px;
             margin-left: 250px; /* Space for the sidebar */
             background-color: rgba(0, 0, 0, 0.5);
-            width:1229px;
+            width: 1229px;
         }
 
         .quiz-content {
@@ -174,18 +178,18 @@ if ($stmt = $conn->prepare($sql)) {
             text-decoration: none;
             padding: 10px;
             display: block;
-            background: #007bff;
+            background: grey; /* Default background color */
             border-radius: 5px;
             text-align: center;
             transition: background 0.3s;
         }
 
         .sidebar ul li a:hover {
-            background: #0056b3;
+            background: #0056b3; /* Change color on hover */
         }
 
         .sidebar ul li a.answered {
-            background-color: green;
+            background-color: green; /* Background color for answered questions */
         }
 
         .sidebar ul li a.blink {
@@ -194,7 +198,7 @@ if ($stmt = $conn->prepare($sql)) {
 
         @keyframes blink-red {
             0%, 100% {
-                background-color: #007bff;
+                background-color: grey;
                 color: #fff;
             }
             50% {
@@ -207,48 +211,15 @@ if ($stmt = $conn->prepare($sql)) {
             scroll-margin-top: 100px; /* Adjust based on your header height */
         }
     </style>
-
-    <script>
-        let timer;
-        let timerDuration = 1200; // 20 minutes in seconds
-
-        function startTimer() {
-            let timerDisplay = document.getElementById("timer");
-            timer = setInterval(function() {
-                let minutes = Math.floor(timerDuration / 60);
-                let seconds = timerDuration % 60;
-                timerDisplay.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                timerDuration--;
-
-                if (timerDuration < 0) {
-                    clearInterval(timer);
-                    document.getElementById("quizForm").submit(); // Submit form when timer runs out
-                }
-            }, 1000);
-        }
-
-        window.onload = function() {
-            startTimer();
-            document.getElementById("quizForm").addEventListener("submit", function() {
-                clearInterval(timer); // Clear timer on form submission
-            });
-        };
-
-        // Disable back button
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            history.go(1);
-        };
-    </script>
 </head>
 <body>
     <!-- Side Navigation Panel -->
     <div class="sidebar">
         <h2>Questions</h2>
         <ul>
-            <?php foreach ($questions as $index => $question): ?>
-                <li><a href="#question_<?php echo $index + 1; ?>">Question <?php echo $index + 1; ?></a></li>
-            <?php endforeach; ?>
+            <?php for ($i = 1; $i <= 10; $i++): ?>
+                <li><a href="#question_<?php echo $i; ?>" data-question-id="<?php echo $i; ?>">Question <?php echo $i; ?></a></li>
+            <?php endfor; ?>
         </ul>
     </div>
 
@@ -282,5 +253,111 @@ if ($stmt = $conn->prepare($sql)) {
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("DOM fully loaded and parsed");
+
+            // Timer logic
+            let timerElement = document.getElementById('timer');
+            let endTime = new Date().getTime() + 20 * 60 * 1000; // 20 minutes countdown
+
+            function updateTimer() {
+                let now = new Date().getTime();
+                let timeLeft = endTime - now;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = "Time's up!";
+                    timerElement.classList.add('red');
+                    return;
+                }
+
+                let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+
+                timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+
+                if (timeLeft <= 60000) { // Less than or equal to 1 minute
+                    timerElement.classList.add('red');
+                }
+            }
+
+            // Initial call
+            updateTimer();
+            // Update timer every second
+            const timerInterval = setInterval(updateTimer, 1000);
+
+            // Add event listeners to radio inputs
+            document.querySelectorAll('input[type="radio"]').for
+                        // Add event listeners to radio inputs
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const questionId = Array.from(document.querySelectorAll('input[name^="question_"]')).find(input => input.checked)?.name.split('_')[1];
+                    
+                    if (questionId) {
+                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
+
+                        if (sidebarLink) {
+                            sidebarLink.classList.add('answered');
+                        }
+                    }
+                });
+            });
+
+            // Smooth scrolling for sidebar links
+            document.querySelectorAll('.sidebar ul li a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Form submit handling
+            document.getElementById('quizForm').addEventListener('submit', function(event) {
+                let allAnswered = true;
+                let unansweredQuestions = [];
+
+                // Check if all questions are answered
+                for (let i = 1; i <= 10; i++) {
+                    const questionInputs = document.querySelectorAll(`input[name^="question_${i}"]`);
+                    const isAnswered = Array.from(questionInputs).some(input => input.checked);
+
+                    if (!isAnswered) {
+                        allAnswered = false;
+                        unansweredQuestions.push(i);
+                    }
+                }
+
+                if (!allAnswered) {
+                    event.preventDefault(); // Prevent form submission
+
+                    // Add blink effect to unanswered questions in the sidebar
+                    unansweredQuestions.forEach(questionId => {
+                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
+                        
+                        if (sidebarLink) {
+                            sidebarLink.classList.add('blink');
+                            setTimeout(() => {
+                                sidebarLink.classList.remove('blink');
+                            }, 2000); // Duration of the blink effect
+                        }
+                    });
+                }
+            });
+        });
+
+        // Disable back button
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+    </script>
 </body>
 </html>
+            
