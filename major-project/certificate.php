@@ -46,7 +46,7 @@ if ($stmt = $conn->prepare($sql)) {
             top: 120px; /* Adjust based on your layout */
             left: 220px; /* Adjust based on your sidebar width */
             width: calc(100% - 220px); /* Adjust width based on sidebar */
-            z-index: 1; /* Ensure it's on top */
+             /* Ensure it's on top */
         }
         .certificate-grid {
             display: flex;
@@ -69,7 +69,7 @@ if ($stmt = $conn->prepare($sql)) {
             width: 200px;
             background-color: #000;
             height: calc(100vh - 20px);
-            position: fixed;
+            position: absolute;
             top: 99px;
             left: 0;
             padding-top: 20px;
@@ -97,6 +97,7 @@ if ($stmt = $conn->prepare($sql)) {
             height: calc(100vh - 50px); /* Adjust based on top nav height */
             overflow-y: auto;
             background-color: rgba(0, 0, 0, 0.7);
+            height: 100vh;
         }
     </style>
 </head>

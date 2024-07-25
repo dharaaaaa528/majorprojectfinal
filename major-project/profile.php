@@ -157,7 +157,7 @@ ob_end_flush();
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
         <a href="progress.php"><u>Progress</u></a>
-        <a href="#"><u>Certifications</u></a>
+        <a href="certificate.php"><u>Certifications</u></a>
         <a href="settings.php"><u>Settings</u></a>
     </div>  
     <div class="content">

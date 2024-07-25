@@ -17,7 +17,7 @@ if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
 // Function to fetch completed quizzes count and last completed quiz ID
 function getCompletedQuizzesCount($pdo, $user_id, $quiz_ids) {
     $inClause = implode(',', array_fill(0, count($quiz_ids), '?'));
-    $stmt = $pdo->prepare("SELECT COUNT(*), MAX(quiz_id) FROM userprogress WHERE user_id = ? AND quiz_id IN ($inClause) AND status = 'completed'");
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count, MAX(quiz_id) as max_quiz_id FROM userprogress WHERE user_id = ? AND quiz_id IN ($inClause) AND status = 'completed'");
     $stmt->execute(array_merge([$user_id], $quiz_ids));
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -57,13 +57,13 @@ $user_id = $_SESSION['userid'];
 
 // Fetch completed quizzes and last completed quiz ID for SQL
 $sql_quiz_data = getCompletedQuizzesCount($pdo, $user_id, $sql_quiz_ids);
-$completed_sql_quizzes = $sql_quiz_data['COUNT(*)'];
-$last_completed_sql_quiz_id = $sql_quiz_data['MAX(quiz_id)'];
+$completed_sql_quizzes = $sql_quiz_data['count'];
+$last_completed_sql_quiz_id = $sql_quiz_data['max_quiz_id'];
 
 // Fetch completed quizzes and last completed quiz ID for XSS
 $xss_quiz_data = getCompletedQuizzesCount($pdo, $user_id, $xss_quiz_ids);
-$completed_xss_quizzes = $xss_quiz_data['COUNT(*)'];
-$last_completed_xss_quiz_id = $xss_quiz_data['MAX(quiz_id)'];
+$completed_xss_quizzes = $xss_quiz_data['count'];
+$last_completed_xss_quiz_id = $xss_quiz_data['max_quiz_id'];
 
 $completed_sql_tests = getCompletedTestsCount($pdo, $user_id, $sql_test_ids);
 $completed_xss_tests = getCompletedTestsCount($pdo, $user_id, $xss_test_ids);
@@ -81,28 +81,26 @@ $total_sql_tests = count($sql_test_ids);
 $total_xss_tests = count($xss_test_ids);
 
 // Initialize last completed quiz IDs in session if not set
-if (!isset($_SESSION['last_completed_sql_quiz_id'])) {
-    $_SESSION['last_completed_sql_quiz_id'] = $last_completed_sql_quiz_id;
+if (!isset($_SESSION['completed_sql_quiz_ids'])) {
+    $_SESSION['completed_sql_quiz_ids'] = [];
 }
-if (!isset($_SESSION['last_completed_xss_quiz_id'])) {
-    $_SESSION['last_completed_xss_quiz_id'] = $last_completed_xss_quiz_id;
+if (!isset($_SESSION['completed_xss_quiz_ids'])) {
+    $_SESSION['completed_xss_quiz_ids'] = [];
 }
 
 // Update session if quiz ID changes
-if ($last_completed_sql_quiz_id != $_SESSION['last_completed_sql_quiz_id']) {
-    $_SESSION['last_completed_sql_quiz_id'] = $last_completed_sql_quiz_id;
+$update_sql_progress = false;
+$update_xss_progress = false;
+
+if ($last_completed_sql_quiz_id && !in_array($last_completed_sql_quiz_id, $_SESSION['completed_sql_quiz_ids'])) {
+    $_SESSION['completed_sql_quiz_ids'][] = $last_completed_sql_quiz_id;
     $update_sql_progress = true;
-} else {
-    $update_sql_progress = false;
 }
 
-if ($last_completed_xss_quiz_id != $_SESSION['last_completed_xss_quiz_id']) {
-    $_SESSION['last_completed_xss_quiz_id'] = $last_completed_xss_quiz_id;
+if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESSION['completed_xss_quiz_ids'])) {
+    $_SESSION['completed_xss_quiz_ids'][] = $last_completed_xss_quiz_id;
     $update_xss_progress = true;
-} else {
-    $update_xss_progress = false;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -164,16 +162,16 @@ if ($last_completed_xss_quiz_id != $_SESSION['last_completed_xss_quiz_id']) {
             color: #56C2DD;
         }
 
-      .main-content {
-    margin-left: 200px; /* Space for the side navigation */
-    padding: 20px;
-    width: calc(100% - 200px); /* Adjust width based on sidebar */
-    box-sizing: border-box;
-    height: calc(100vh - 50px); /* Adjust based on top nav height */
-    overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-    height: 100vh;
-}
+        .main-content {
+            margin-left: 200px; /* Space for the side navigation */
+            padding: 20px;
+            width: calc(100% - 200px); /* Adjust width based on sidebar */
+            box-sizing: border-box;
+            height: calc(100vh - 50px); /* Adjust based on top nav height */
+            overflow-y: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            height: 100vh;
+        }
     </style>
 </head>
 <body>
@@ -190,15 +188,9 @@ if ($last_completed_xss_quiz_id != $_SESSION['last_completed_xss_quiz_id']) {
 
     <h2>SQL Quizzes</h2>
     <div class="progress-bar-container">
-        <?php if ($update_sql_progress): ?>
-            <div class="progress-bar" style="width: <?= ($completed_sql_quizzes / $total_sql_quizzes) * 100 ?>%">
-                <span><?= $completed_sql_quizzes ?> / <?= $total_sql_quizzes ?> completed</span>
-            </div>
-        <?php else: ?>
-            <div class="progress-bar" style="width: <?= ($_SESSION['last_completed_sql_quiz_id'] / $total_sql_quizzes) * 100 ?>%">
-                <span><?= $_SESSION['last_completed_sql_quiz_id'] ?> / <?= $total_sql_quizzes ?> completed</span>
-            </div>
-        <?php endif; ?>
+        <div class="progress-bar" style="width: <?= ($completed_sql_quizzes / $total_sql_quizzes) * 100 ?>%">
+            <span><?= $completed_sql_quizzes ?> / <?= $total_sql_quizzes ?> completed</span>
+        </div>
     </div>
     <?php if ($incomplete_sql_quizzes): ?>
         <p>Incomplete SQL Quizzes:</p>
@@ -207,27 +199,25 @@ if ($last_completed_xss_quiz_id != $_SESSION['last_completed_xss_quiz_id']) {
                 <li><?= htmlspecialchars($quiz['name']) ?> </li>
             <?php endforeach; ?>
         </ul>
+    <?php else: ?>
+        <p>All SQL Quizzes are completed!</p>
     <?php endif; ?>
 
     <h2>XSS Quizzes</h2>
     <div class="progress-bar-container">
-        <?php if ($update_xss_progress): ?>
-            <div class="progress-bar" style="width: <?= ($completed_xss_quizzes / $total_xss_quizzes) * 100 ?>%">
-                <span><?= $completed_xss_quizzes ?> / <?= $total_xss_quizzes ?> completed</span>
-            </div>
-        <?php else: ?>
-            <div class="progress-bar" style="width: <?= ($_SESSION['last_completed_xss_quiz_id'] / $total_xss_quizzes) * 100 ?>%">
-                <span><?= $_SESSION['last_completed_xss_quiz_id'] ?> / <?= $total_xss_quizzes ?> completed</span>
-            </div>
-        <?php endif; ?>
+        <div class="progress-bar" style="width: <?= ($completed_xss_quizzes / $total_xss_quizzes) * 100 ?>%">
+            <span><?= $completed_xss_quizzes ?> / <?= $total_xss_quizzes ?> completed</span>
+        </div>
     </div>
     <?php if ($incomplete_xss_quizzes): ?>
         <p>Incomplete XSS Quizzes:</p>
         <ul>
             <?php foreach ($incomplete_xss_quizzes as $quiz): ?>
-                <li><?= htmlspecialchars($quiz['name']) ?> </li>
+                <li><?= htmlspecialchars($quiz['name']) ?></li>
             <?php endforeach; ?>
         </ul>
+    <?php else: ?>
+        <p>All XSS Quizzes are completed!</p>
     <?php endif; ?>
 
     <h2>SQL Tests</h2>
@@ -237,12 +227,14 @@ if ($last_completed_xss_quiz_id != $_SESSION['last_completed_xss_quiz_id']) {
         </div>
     </div>
     <?php if ($incomplete_sql_tests): ?>
-        <p>Incomplete SQL Tests (Unlocked after all SQL quizzes are completed):</p>
+        <p>Incomplete SQL Tests:</p>
         <ul>
             <?php foreach ($incomplete_sql_tests as $test): ?>
-                <li><?= htmlspecialchars($test['name']) ?> </li>
+                <li><?= htmlspecialchars($test['name']) ?></li>
             <?php endforeach; ?>
         </ul>
+    <?php else: ?>
+        <p>All SQL Tests are completed!</p>
     <?php endif; ?>
 
     <h2>XSS Tests</h2>
@@ -252,16 +244,18 @@ if ($last_completed_xss_quiz_id != $_SESSION['last_completed_xss_quiz_id']) {
         </div>
     </div>
     <?php if ($incomplete_xss_tests): ?>
-        <p>Incomplete XSS Tests (Unlocked after all XSS quizzes are completed):</p>
+        <p>Incomplete XSS Tests:</p>
         <ul>
             <?php foreach ($incomplete_xss_tests as $test): ?>
-                <li><?= htmlspecialchars($test['name']) ?> </li>
+                <li><?= htmlspecialchars($test['name']) ?></li>
             <?php endforeach; ?>
         </ul>
+    <?php else: ?>
+        <p>All XSS Tests are completed!</p>
     <?php endif; ?>
+
 </div>
 
 </body>
 </html>
-
 

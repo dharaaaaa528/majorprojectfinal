@@ -1,4 +1,4 @@
-<?php
+<?php 
 require_once 'config.php';
 require_once 'header.php';
 
@@ -78,21 +78,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Update or insert into userprogress table only if score is 7 or higher
             if ($score >= 7) {
-                $sql_upsert_progress = "
-                    INSERT INTO userprogress (user_id, quiz_id, status, completed_at)
-                    VALUES (?, ?, 'completed', NOW())
-                    ON DUPLICATE KEY UPDATE
-                        status = 'completed',
-                        completed_at = NOW()
-                ";
-                if ($stmt_upsert_progress = $conn->prepare($sql_upsert_progress)) {
-                    $stmt_upsert_progress->bind_param("ii", $userId, $quizId);
-                    if (!$stmt_upsert_progress->execute()) {
-                        echo "Error executing progress statement: " . $stmt_upsert_progress->error;
+                $sql_check_progress = "SELECT COUNT(*) FROM userprogress WHERE user_id = ? AND quiz_id = ?";
+                if ($stmt_check_progress = $conn->prepare($sql_check_progress)) {
+                    $stmt_check_progress->bind_param("ii", $userId, $quizId);
+                    $stmt_check_progress->execute();
+                    $stmt_check_progress->bind_result($count);
+                    $stmt_check_progress->fetch();
+                    $stmt_check_progress->close();
+                    
+                    if ($count > 0) {
+                        // Update the existing entry
+                        $sql_update_progress = "UPDATE userprogress SET completed_at = NOW() WHERE user_id = ? AND quiz_id = ?";
+                        if ($stmt_update_progress = $conn->prepare($sql_update_progress)) {
+                            $stmt_update_progress->bind_param("ii", $userId, $quizId);
+                            if (!$stmt_update_progress->execute()) {
+                                echo "Error updating progress statement: " . $stmt_update_progress->error;
+                            }
+                            $stmt_update_progress->close();
+                        } else {
+                            echo "Error preparing progress update statement: " . $conn->error;
+                        }
+                    } else {
+                        // Insert a new entry
+                        $sql_insert_progress = "INSERT INTO userprogress (user_id, quiz_id, status, completed_at) VALUES (?, ?, 'completed', NOW())";
+                        if ($stmt_insert_progress = $conn->prepare($sql_insert_progress)) {
+                            $stmt_insert_progress->bind_param("ii", $userId, $quizId);
+                            if (!$stmt_insert_progress->execute()) {
+                                echo "Error executing progress statement: " . $stmt_insert_progress->error;
+                            }
+                            $stmt_insert_progress->close();
+                        } else {
+                            echo "Error preparing progress statement: " . $conn->error;
+                        }
                     }
-                    $stmt_upsert_progress->close();
                 } else {
-                    echo "Error preparing progress statement: " . $conn->error;
+                    echo "Error checking progress: " . $conn->error;
                 }
             }
 
@@ -233,3 +253,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
