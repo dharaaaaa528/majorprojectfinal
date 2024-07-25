@@ -21,8 +21,8 @@ if ((!isset($_SESSION["login"]) || $_SESSION["login"] !== true) && (!isset($_SES
 
 // Get the user ID and quiz ID
 $userId = $_SESSION["userid"];
-$quizId = isset($_POST['quiz_id']) ? intval($_POST['quiz_id']) : 0;
-$templateId = isset($_POST['template_id']) ? intval($_POST['template_id']) : 0;
+$quizId = isset($_POST['quiz_id']) ? intval($_POST['quiz_id']) : (isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : 0);
+$templateId = isset($_POST['template_id']) ? intval($_POST['template_id']) : (isset($_GET['template_id']) ? intval($_GET['template_id']) : 0);
 
 if ($quizId === 0 || $templateId === 0) {
     echo "Invalid quiz ID or template ID.";
@@ -40,6 +40,38 @@ if ($userStmt = $conn->prepare($userSql)) {
 } else {
     echo "Error fetching user details: " . $conn->error;
     exit();
+}
+
+// If first name or last name is not set, prompt the user to enter them
+if (empty($firstName) || empty($lastName)) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['first_name']) && isset($_POST['last_name'])) {
+        $firstName = trim($_POST['first_name']);
+        $lastName = trim($_POST['last_name']);
+
+        // Update user info in the database
+        $updateUserSql = "UPDATE userinfo SET first_name = ?, last_name = ? WHERE userid = ?";
+        if ($updateUserStmt = $conn->prepare($updateUserSql)) {
+            $updateUserStmt->bind_param("ssi", $firstName, $lastName, $userId);
+            if ($updateUserStmt->execute()) {
+                // Redirect to the certificate generation page after updating user info
+                header("Location: " . $_SERVER['PHP_SELF'] . "?quiz_id=" . $quizId . "&template_id=" . $templateId);
+                exit();
+            } else {
+                echo "Error updating user details: " . $updateUserStmt->error;
+            }
+            $updateUserStmt->close();
+        } else {
+            echo "Error preparing statement: " . $conn->error;
+        }
+    } else {
+        echo '<form method="post" action="' . $_SERVER['PHP_SELF'] . '?quiz_id=' . $quizId . '&template_id=' . $templateId . '">';
+        echo 'Please enter your first name and last name:<br>';
+        echo 'First Name: <input type="text" name="first_name" required><br>';
+        echo 'Last Name: <input type="text" name="last_name" required><br>';
+        echo '<input type="submit" value="Submit">';
+        echo '</form>';
+        exit();
+    }
 }
 
 // Fetch the course name
@@ -134,3 +166,4 @@ if ($stmt = $conn->prepare($sql)) {
 header("Location: certificate.php?id=" . $certificateId);
 exit();
 ?>
+
