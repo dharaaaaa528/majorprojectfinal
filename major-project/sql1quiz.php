@@ -294,12 +294,10 @@ if ($stmt = $conn->prepare($sql)) {
             // Add event listeners to radio inputs
             document.querySelectorAll('input[type="radio"]').forEach(input => {
                 input.addEventListener('change', function() {
-                    const questionId = Array.from(document.querySelectorAll('input[name^="question_"]')).find(input => input.checked)?.name.split('_')[1];
+                    const questionId = this.name.split('_')[1];
                     
                     if (questionId) {
                         const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
-                        console.log(`Sidebar link: ${sidebarLink}`);
-
                         if (sidebarLink) {
                             sidebarLink.classList.add('answered');
                         }
@@ -315,6 +313,33 @@ if ($stmt = $conn->prepare($sql)) {
                         behavior: 'smooth'
                     });
                 });
+            });
+
+            // Check if all questions are answered before submitting
+            document.querySelector('.submit-btn').addEventListener('click', function(e) {
+                const unansweredQuestions = [];
+
+                document.querySelectorAll('.question-container').forEach((questionContainer, index) => {
+                    const questionId = index + 1;
+                    const isAnswered = document.querySelector(`input[name="question_${questionContainer.querySelector('.options input').name.split('_')[1]}"]:checked`);
+                    
+                    if (!isAnswered) {
+                        unansweredQuestions.push(questionId);
+                    }
+                });
+
+                if (unansweredQuestions.length > 0) {
+                    e.preventDefault(); // Prevent form submission
+                    unansweredQuestions.forEach(questionId => {
+                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
+                        if (sidebarLink) {
+                            sidebarLink.classList.add('blink');
+                            setTimeout(() => {
+                                sidebarLink.classList.remove('blink');
+                            }, 2000); // Blink for 2 seconds
+                        }
+                    });
+                }
             });
         });
 
