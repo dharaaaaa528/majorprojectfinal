@@ -14,22 +14,13 @@ if (!isset($_SESSION['userid'])) {
 $userId = $_SESSION['userid'];
 $isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == 1;
 
-if (!isset($_SESSION['quiz_submitted'])) {
-    $_SESSION['quiz_submitted'] = false;
-}
+$_SESSION['quiz_submitted'] = false;
 
 // Check if quiz ID is passed via GET or SESSION
 $quizId = isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : (isset($_SESSION['quiz_id']) ? intval($_SESSION['quiz_id']) : 1);
 
 if (!isset($_SESSION['quiz_start_time'])) {
     $_SESSION['quiz_start_time'] = time();
-    $_SESSION['quiz_locked'] = true; // Lock the session when the quiz starts
-}
-
-// If quiz is locked and the session is already set, redirect to content page
-if (isset($_SESSION['quiz_locked']) && $_SESSION['quiz_locked'] === true) {
-    header("Location: contentpage.php");
-    exit();
 }
 
 // Store the quiz ID in the session
@@ -219,7 +210,6 @@ if ($stmt = $conn->prepare($sql)) {
         .question-container {
             scroll-margin-top: 100px; /* Adjust based on your header height */
         }
-        /* Your CSS styles */
     </style>
 </head>
 <body>
@@ -264,7 +254,6 @@ if ($stmt = $conn->prepare($sql)) {
         </div>
     </div>
 
-    <!-- Your HTML content -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             console.log("DOM fully loaded and parsed");
@@ -290,7 +279,7 @@ if ($stmt = $conn->prepare($sql)) {
                 minutes = minutes < 10 ? '0' + minutes : minutes;
                 seconds = seconds < 10 ? '0' + seconds : seconds;
 
-                timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+                timerElement.textContent = Time Left: ${minutes}:${seconds};
 
                 if (timeLeft <= 60000) { // Less than or equal to 1 minute
                     timerElement.classList.add('red');
@@ -308,7 +297,7 @@ if ($stmt = $conn->prepare($sql)) {
                     const questionId = this.name.split('_')[1];
                     
                     if (questionId) {
-                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
+                        const sidebarLink = document.querySelector(.sidebar ul li a[data-question-id="${questionId}"]);
                         if (sidebarLink) {
                             sidebarLink.classList.add('answered');
                         }
@@ -332,7 +321,7 @@ if ($stmt = $conn->prepare($sql)) {
 
                 document.querySelectorAll('.question-container').forEach((questionContainer, index) => {
                     const questionId = index + 1;
-                    const isAnswered = document.querySelector(`input[name="question_${questionContainer.querySelector('.options input').name.split('_')[1]}"]:checked`);
+                    const isAnswered = document.querySelector(input[name="question_${questionContainer.querySelector('.options input').name.split('_')[1]}"]:checked);
                     
                     if (!isAnswered) {
                         unansweredQuestions.push(questionId);
@@ -342,7 +331,7 @@ if ($stmt = $conn->prepare($sql)) {
                 if (unansweredQuestions.length > 0) {
                     e.preventDefault(); // Prevent form submission
                     unansweredQuestions.forEach(questionId => {
-                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
+                        const sidebarLink = document.querySelector(.sidebar ul li a[data-question-id="${questionId}"]);
                         if (sidebarLink) {
                             sidebarLink.classList.add('blink');
                             setTimeout(() => {
@@ -350,41 +339,18 @@ if ($stmt = $conn->prepare($sql)) {
                             }, 2000); // Blink for 2 seconds
                         }
                     });
-                } else {
-                    // Prevent the default form submission and handle it with AJAX
-                    e.preventDefault();
-
-                    const formData = new FormData(document.getElementById('quizForm'));
-
-                    fetch('submit_quiz1.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Quiz submitted successfully!');
-                            sessionStorage.setItem('quiz_submitted', true);
-                            window.location.href = 'quiz_results.php';
-                        } else {
-                            alert('There was an error submitting the quiz. Please try again.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
                 }
             });
         });
 
-        // Prevent back navigation
+        // Disable back button
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
             history.go(1);
-            window.location.href = 'contentpage.php'; // Redirect to content page on back navigation
         };
     </script>
 </body>
 </html>
+
 
 
