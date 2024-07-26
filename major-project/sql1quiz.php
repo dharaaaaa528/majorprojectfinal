@@ -279,7 +279,7 @@ if ($stmt = $conn->prepare($sql)) {
                 minutes = minutes < 10 ? '0' + minutes : minutes;
                 seconds = seconds < 10 ? '0' + seconds : seconds;
 
-                timerElement.textContent = Time Left: ${minutes}:${seconds};
+                timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
 
                 if (timeLeft <= 60000) { // Less than or equal to 1 minute
                     timerElement.classList.add('red');
@@ -297,7 +297,7 @@ if ($stmt = $conn->prepare($sql)) {
                     const questionId = this.name.split('_')[1];
                     
                     if (questionId) {
-                        const sidebarLink = document.querySelector(.sidebar ul li a[data-question-id="${questionId}"]);
+                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
                         if (sidebarLink) {
                             sidebarLink.classList.add('answered');
                         }
@@ -321,7 +321,7 @@ if ($stmt = $conn->prepare($sql)) {
 
                 document.querySelectorAll('.question-container').forEach((questionContainer, index) => {
                     const questionId = index + 1;
-                    const isAnswered = document.querySelector(input[name="question_${questionContainer.querySelector('.options input').name.split('_')[1]}"]:checked);
+                    const isAnswered = document.querySelector(`input[name="question_${questionContainer.querySelector('.options input').name.split('_')[1]}"]:checked`);
                     
                     if (!isAnswered) {
                         unansweredQuestions.push(questionId);
@@ -331,7 +331,7 @@ if ($stmt = $conn->prepare($sql)) {
                 if (unansweredQuestions.length > 0) {
                     e.preventDefault(); // Prevent form submission
                     unansweredQuestions.forEach(questionId => {
-                        const sidebarLink = document.querySelector(.sidebar ul li a[data-question-id="${questionId}"]);
+                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
                         if (sidebarLink) {
                             sidebarLink.classList.add('blink');
                             setTimeout(() => {
@@ -351,6 +351,3 @@ if ($stmt = $conn->prepare($sql)) {
     </script>
 </body>
 </html>
-
-
-
