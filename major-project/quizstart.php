@@ -125,12 +125,29 @@ include 'topnav.php';  // Make sure this path is correct
 
             // Set timer in sessionStorage and redirect
             sessionStorage.setItem("startTime", Date.now());
-            sessionStorage.setItem("duration", 60 * 60); // 60 minutes in seconds
+            sessionStorage.setItem("duration", 20 * 60); // 20 minutes in seconds
             window.location.href = url;
         }
+
+        // Prevent forward navigation
+        window.addEventListener('popstate', function(event) {
+            if (sessionStorage.getItem('quiz_started') === 'true') {
+                history.pushState(null, null, location.href);
+            }
+        });
+
+        // Set quiz_started flag when quiz starts
+        document.querySelector('.start-button button').addEventListener('click', function() {
+            sessionStorage.setItem('quiz_started', 'true');
+        });
+
+        // Prevent back navigation
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            history.go(1);
+        };
     </script>
 </body>           
 </html>
-
 
 
