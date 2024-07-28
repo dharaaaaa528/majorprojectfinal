@@ -16,8 +16,8 @@ $isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_log
 
 $_SESSION['quiz_submitted'] = false;
 
-// Check if quiz ID is passed via GET or SESSION
-$quizId = isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : (isset($_SESSION['quiz_id']) ? intval($_SESSION['quiz_id']) : 1);
+// Explicitly set quiz ID to 2
+$quizId = 1;
 
 if (!isset($_SESSION['quiz_start_time'])) {
     $_SESSION['quiz_start_time'] = time();
@@ -124,26 +124,29 @@ if ($stmt = $conn->prepare($sql)) {
         .timer {
             font-size: 20px;
             font-weight: bold;
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
             padding: 10px;
             background-color: #007bff;
             color: #fff;
             border-radius: 5px;
+            z-index: 1000;
         }
 
         .timer.red {
             background-color: red;
-            animation: flash 1s infinite;
+            animation: flash 2s infinite;
         }
 
         @keyframes flash {
-            0%, 50%, 100% {
+            0%, 100% {
                 background-color: red;
+                color: white;
             }
-            25%, 75% {
+            50% {
                 background-color: white;
+                color: red;
             }
         }
 
@@ -193,7 +196,7 @@ if ($stmt = $conn->prepare($sql)) {
         }
 
         .sidebar ul li a.blink {
-            animation: blink-red 2s;
+            animation: blink-red 3s; /* Ensure the blinking is 3 seconds */
         }
 
         @keyframes blink-red {
@@ -270,6 +273,7 @@ if ($stmt = $conn->prepare($sql)) {
                     clearInterval(timerInterval);
                     timerElement.textContent = "Time's up!";
                     timerElement.classList.add('red');
+                    document.getElementById('quizForm').submit(); // Auto-submit the form
                     return;
                 }
 
@@ -281,73 +285,47 @@ if ($stmt = $conn->prepare($sql)) {
 
                 timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
 
-                if (timeLeft <= 60000) { // Less than or equal to 1 minute
+                if (timeLeft <= 300000) { // Less than or equal to 5 minutes
                     timerElement.classList.add('red');
                 }
             }
 
-            // Initial call
-            updateTimer();
-            // Update timer every second
-            const timerInterval = setInterval(updateTimer, 1000);
+            updateTimer(); // Initial call
+            let timerInterval = setInterval(updateTimer, 1000);
 
-            // Add event listeners to radio inputs
+            // Function to handle option selection
             document.querySelectorAll('input[type="radio"]').forEach(input => {
                 input.addEventListener('change', function() {
-                    const questionId = this.name.split('_')[1];
-                    
-                    if (questionId) {
-                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
-                        if (sidebarLink) {
-                            sidebarLink.classList.add('answered');
-                        }
-                    }
+                    let questionContainer = this.closest('.question-container');
+                    let questionId = questionContainer.id.split('_')[1];
+                    let questionLink = document.querySelector(`a[data-question-id="${questionId}"]`);
+                    questionLink.classList.add('answered');
                 });
             });
 
-            // Smooth scrolling for sidebar links
-            document.querySelectorAll('.sidebar ul li a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
-
-            // Check if all questions are answered before submitting
-            document.querySelector('.submit-btn').addEventListener('click', function(e) {
-                const unansweredQuestions = [];
-
-                document.querySelectorAll('.question-container').forEach((questionContainer, index) => {
-                    const questionId = index + 1;
-                    const isAnswered = document.querySelector(`input[name="question_${questionContainer.querySelector('.options input').name.split('_')[1]}"]:checked`);
-                    
-                    if (!isAnswered) {
-                        unansweredQuestions.push(questionId);
+            // Function to handle form submission
+            document.getElementById('quizForm').addEventListener('submit', function(event) {
+                let unanswered = [];
+                document.querySelectorAll('.question-container').forEach(container => {
+                    let questionId = container.id.split('_')[1];
+                    let selectedOption = container.querySelector('input[type="radio"]:checked');
+                    if (!selectedOption) {
+                        unanswered.push(questionId);
+                        let questionLink = document.querySelector(`a[data-question-id="${questionId}"]`);
+                        questionLink.classList.add('blink');
                     }
                 });
 
-                if (unansweredQuestions.length > 0) {
-                    e.preventDefault(); // Prevent form submission
-                    unansweredQuestions.forEach(questionId => {
-                        const sidebarLink = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
-                        if (sidebarLink) {
-                            sidebarLink.classList.add('blink');
-                            setTimeout(() => {
-                                sidebarLink.classList.remove('blink');
-                            }, 2000); // Blink for 2 seconds
-                        }
-                    });
+                if (unanswered.length > 0) {
+                    event.preventDefault();
+                    setTimeout(() => {
+                        document.querySelectorAll('a.blink').forEach(link => {
+                            link.classList.remove('blink');
+                        });
+                    }, 3000); // Remove blinking after 3 seconds
                 }
             });
         });
-
-        // Disable back button
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            history.go(1);
-        };
     </script>
 </body>
 </html>
