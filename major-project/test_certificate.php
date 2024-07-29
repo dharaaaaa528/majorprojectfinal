@@ -17,7 +17,7 @@ if ((!isset($_SESSION["login"]) || $_SESSION["login"] !== true) && (!isset($_SES
 $userId = $_SESSION["userid"];
 
 // Fetch all certificates for the user
-$sql = "SELECT id, quiz_id, file_path FROM certificates WHERE user_id = ?";
+$sql = "SELECT certificate_id, test_id, file_path FROM test_certificates WHERE user_id = ?";
 $certificates = [];
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $userId);
@@ -128,9 +128,9 @@ if ($stmt = $conn->prepare($sql)) {
                     <?php foreach ($certificates as $certificate): ?>
                         <?php
                         // Fetch the course name
-                        $courseSql = "SELECT name FROM quizzes WHERE id = ?";
+                        $courseSql = "SELECT name FROM tests WHERE test_id = ?";
                         if ($courseStmt = $conn->prepare($courseSql)) {
-                            $courseStmt->bind_param("i", $certificate['quiz_id']);
+                            $courseStmt->bind_param("i", $certificate['test_id']);
                             $courseStmt->execute();
                             $courseStmt->bind_result($courseName);
                             $courseStmt->fetch();
