@@ -17,15 +17,7 @@ if (!isset($_POST['test_id'])) {
 }
 
 $userId = $_SESSION['userid'];
-$testId = $_POST['test_id'];
-
-// Check if resubmission
-$isResubmission = isset($_POST['resubmission']) && $_POST['resubmission'] === 'true';
-
-if ($isResubmission) {
-    header("Location: sqltest.php?test_id=$testId");
-    exit();
-}
+$testId = intval($_POST['test_id']);
 
 // Fetch correct answers
 $correctAnswers = [];
@@ -50,20 +42,12 @@ if ($stmt = $conn->prepare($sql)) {
 // Calculate score
 $score = 0;
 $totalQuestions = count($correctAnswers);
-
-if ($totalQuestions === 0) {
-    echo "No questions found for this test.";
-    exit();
-}
-
 foreach ($correctAnswers as $questionId => $correctOption) {
     $selectedOption = isset($_POST["question_$questionId"]) ? $_POST["question_$questionId"] : null;
-
     if ($selectedOption == $correctOption) {
         $score++;
     }
 }
-
 $percentage = ($score / $totalQuestions) * 100;
 
 // Insert the attempt into test_attempts table
@@ -103,7 +87,7 @@ if ($stmt = $conn->prepare($sql)) {
 
 // Check if score is 40 or more and insert into test_progress
 if ($score >= 40) {
-    $status = 'Completed'; // or whatever status you want to set
+    $status = 'Completed';
     $attemptsCount = count($attempts);
 
     $sql = "INSERT INTO test_progress (user_id, test_id, score, status, attempts, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
@@ -137,40 +121,6 @@ if ($stmt = $conn->prepare($sql)) {
 } else {
     echo "Error preparing statement: " . $conn->error;
     exit();
-}
-
-// Calculate attempts left
-$totalAllowedAttempts = 3; // Adjust as needed
-$attemptsLeft = max(0, $totalAllowedAttempts - count($attempts));
-
-// Delete rows from userprogress table if failed attempts count is 3 or more
-if ($failedAttemptsCount >= 3) {
-    $sqlQuizIds = [1, 2, 3, 4];
-    $xssQuizIds = [5, 6, 7, 8];
-
-    if (in_array($testId, $sqlQuizIds)) {
-        $relatedQuizIds = implode(',', $sqlQuizIds);
-    } elseif (in_array($testId, $xssQuizIds)) {
-        $relatedQuizIds = implode(',', $xssQuizIds);
-    } else {
-        $relatedQuizIds = '';
-    }
-
-    if ($relatedQuizIds) {
-        $sql = "DELETE FROM userprogress WHERE user_id = ? AND quiz_id IN ($relatedQuizIds)";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("i", $userId);
-            if ($stmt->execute()) {
-                $stmt->close();
-            } else {
-                echo "Error executing statement: " . $stmt->error;
-                exit();
-            }
-        } else {
-            echo "Error preparing statement: " . $conn->error;
-            exit();
-        }
-    }
 }
 ?>
 <!DOCTYPE html>
@@ -237,6 +187,22 @@ if ($failedAttemptsCount >= 3) {
             background-color: black;
             color: white;
         }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -252,9 +218,10 @@ if ($failedAttemptsCount >= 3) {
             <p class="<?php echo ($score >= ($totalQuestions * 0.8)) ? 'pass' : 'fail'; ?>">
                 <?php echo ($score >= ($totalQuestions * 0.8)) ? 'Pass' : 'Fail'; ?>
             </p>
-            <p style="font-size: 1.5em; color: blue;">
-                Attempts Left: <?php echo $attemptsLeft; ?>
-            </p>
+           
+            <?php if ($score >= 0): ?>
+                <a href="choose_certificate1.php?test_id=<?php echo $testId; ?>" class="button">Generate Certificate</a>
+            <?php endif; ?>
         </div>
         <div class="attempts">
             <h2>Previous Attempts</h2>
@@ -274,23 +241,7 @@ if ($failedAttemptsCount >= 3) {
             </table>
         </div>
     </div>
-    <script>
-        // Prevent navigation and refresh
-        window.addEventListener('popstate', function () {
-            history.go(1); // Prevent backward navigation
-        });
-
-        // Prevent page reload and redirect to sqltest.php
-        window.addEventListener('beforeunload', function (e) {
-            var testId = <?php echo json_encode($testId); ?>;
-            e.preventDefault(); // Prevent default reload behavior
-            e.returnValue = ''; // Required for some browsers
-            window.location.href = 'sqltest.php?test_id=' + testId;
-        });
-
-        // Preventing the user from using the back button to navigate away from the page
-        history.pushState(null, null, location.href);
-    </script>
 </body>
 </html>
+
 
