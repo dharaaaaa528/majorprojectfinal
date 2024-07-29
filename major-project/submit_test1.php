@@ -19,7 +19,16 @@ if (!isset($_POST['test_id'])) {
 $userId = $_SESSION['userid'];
 $testId = intval($_POST['test_id']);
 
-// Fetch correct answers
+// Check if quiz was previously submitted in this session
+if (isset($_SESSION['quiz_submitted']) && $_SESSION['quiz_submitted'] === true) {
+    header("Location: contentpage.php");
+    exit();
+}
+
+// Initialize flag for redirection
+$_SESSION['quiz_submitted'] = true;
+
+// Handle quiz completion and score calculations
 $correctAnswers = [];
 $sql = "SELECT question_id, correct_option FROM test_options WHERE test_id = ?";
 if ($stmt = $conn->prepare($sql)) {
@@ -154,7 +163,10 @@ if ($stmt = $conn->prepare($sql)) {
     echo "Error preparing statement: " . $conn->error;
     exit();
 }
+
+// Display the results page
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -273,7 +285,19 @@ if ($stmt = $conn->prepare($sql)) {
             </table>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle page reload or navigation
+            window.addEventListener('beforeunload', function() {
+                // Clear the quiz submission flag on unload
+                sessionStorage.removeItem('quiz_submitted');
+            });
+        });
+    </script>
 </body>
 </html>
 
-
+  
+   
+</body>
+</html>

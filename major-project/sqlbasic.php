@@ -2,6 +2,7 @@
 require_once 'config.php';
 require_once 'header.php';
 
+unset($_SESSION['quiz_submitted']);
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -268,7 +269,7 @@ if ($stmt = $conn->prepare($sql)) {
     <!-- Main Quiz Container -->
     <div class="main-content">
         <div class="container">
-            <h1>SQL Technique 1 Test</h1>
+            <h1>SQL Basic Test</h1>
             <div class="timer" id="timer">Time Left: 60:00</div>
             <div class="quiz-content">
                 <form id="quizForm" action="submit_test1.php" method="POST">
@@ -299,9 +300,7 @@ if ($stmt = $conn->prepare($sql)) {
             </div>
         </div>
     </div>
-
-    
-    <script>
+        <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Timer logic
             var totalSeconds = 60 * 60; // 60 minutes
@@ -380,6 +379,7 @@ if ($stmt = $conn->prepare($sql)) {
             });
         });
     </script>
+   
     
    
 </body>
