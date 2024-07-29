@@ -36,13 +36,11 @@ if ($stmt = $conn->prepare($sql)) {
 
 // Calculate score
 $score = 0;
-$totalQuestions = count($correctAnswers); // Update to reflect the number of questions in the test
+$totalQuestions = count($correctAnswers);
 
 foreach ($correctAnswers as $questionId => $correctOption) {
-    // Get the selected option from POST data
     $selectedOption = isset($_POST["question_$questionId"]) ? $_POST["question_$questionId"] : null;
 
-    // If the selected option matches the correct option, increment the score
     if ($selectedOption == $correctOption) {
         $score++;
     }
@@ -91,7 +89,7 @@ if ($stmt = $conn->prepare($sql)) {
     <meta charset="UTF-8">
     <title>Test Results</title>
     <style>
-        bbody {
+        .body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -127,10 +125,12 @@ if ($stmt = $conn->prepare($sql)) {
 
         .result p.pass {
             color: green;
+            font-weight: bold;
         }
 
         .result p.fail {
             color: red;
+            font-weight: bold;
         }
 
         .attempts-table {
@@ -144,17 +144,21 @@ if ($stmt = $conn->prepare($sql)) {
         }
 
         .attempts-table th {
-            background-color: #f4f4f4;
+            background-color: black;
+            color: white;
         }
-    </style>
     </style>
 </head>
 <body>
     <div class="container">
         <div class="result">
             <h1>Test Result</h1>
-            <p>Score: <?php echo $score; ?>/<?php echo $totalQuestions; ?></p>
-            <p>Percentage: <?php echo round($percentage, 2); ?>%</p>
+            <p style="font-size: 1.5em; color: <?php echo ($score >= ($totalQuestions * 0.8)) ? 'green' : 'red'; ?>">
+                Score: <?php echo $score; ?>/<?php echo $totalQuestions; ?>
+            </p>
+            <p style="font-size: 1.5em; color: <?php echo ($score >= ($totalQuestions * 0.8)) ? 'green' : 'red'; ?>">
+                Percentage: <?php echo round($percentage, 2); ?>%
+            </p>
             <p class="<?php echo ($score >= ($totalQuestions * 0.8)) ? 'pass' : 'fail'; ?>">
                 <?php echo ($score >= ($totalQuestions * 0.8)) ? 'Pass' : 'Fail'; ?>
             </p>
@@ -179,3 +183,4 @@ if ($stmt = $conn->prepare($sql)) {
     </div>
 </body>
 </html>
+
