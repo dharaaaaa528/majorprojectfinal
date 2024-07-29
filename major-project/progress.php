@@ -25,7 +25,7 @@ function getCompletedQuizzesCount($pdo, $user_id, $quiz_ids) {
 // Function to fetch completed tests count from test_progress table
 function getCompletedTestsCount($pdo, $user_id, $test_ids) {
     $inClause = implode(',', array_fill(0, count($test_ids), '?'));
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM test_progress WHERE user_id = ? AND test_id IN ($inClause) AND score >= 7"); // Assuming passing score is 7
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM test_progress WHERE user_id = ? AND test_id IN ($inClause) AND status = 'completed'");
     $stmt->execute(array_merge([$user_id], $test_ids));
     return $stmt->fetchColumn();
 }
@@ -41,7 +41,7 @@ function getIncompleteQuizzes($pdo, $user_id, $quiz_ids) {
 // Function to get the list of incomplete tests
 function getIncompleteTests($pdo, $user_id, $test_ids) {
     $inClause = implode(',', array_fill(0, count($test_ids), '?'));
-    $stmt = $pdo->prepare("SELECT test_id, name FROM tests WHERE test_id IN ($inClause) AND test_id NOT IN (SELECT test_id FROM test_progress WHERE user_id = ? AND score >= 7)");
+    $stmt = $pdo->prepare("SELECT test_id, name FROM tests WHERE test_id IN ($inClause) AND test_id NOT IN (SELECT test_id FROM test_progress WHERE user_id = ? AND status = 'completed')");
     $stmt->execute(array_merge($test_ids, [$user_id]));
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -106,6 +106,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Progress</title>
     <style>
         .progress-bar-container {
             width: 80%;
@@ -172,7 +173,8 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
             background-color: rgba(0, 0, 0, 0.7);
             height: 100vh;
         }
-         .sub-menu {
+
+        .sub-menu {
             padding-left: 30px;
         }
 
