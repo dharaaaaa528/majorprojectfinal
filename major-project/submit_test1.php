@@ -11,8 +11,23 @@ if (!isset($_SESSION['userid'])) {
     exit();
 }
 
+if (!isset($_POST['test_id'])) {
+    // If the form has not been submitted, but the page is accessed directly, redirect to sqltest.php
+    header("Location: sqltest.php");
+    exit();
+}
+
 $userId = $_SESSION['userid'];
 $testId = $_POST['test_id'];
+
+// Check if resubmission
+$isResubmission = isset($_POST['resubmission']) && $_POST['resubmission'] === 'true';
+
+if ($isResubmission) {
+    // Redirect to sqltest.php on resubmission
+    header("Location: sqltest.php?test_id=$testId");
+    exit();
+}
 
 // Fetch correct answers
 $correctAnswers = [];
@@ -37,6 +52,11 @@ if ($stmt = $conn->prepare($sql)) {
 // Calculate score
 $score = 0;
 $totalQuestions = count($correctAnswers);
+
+if ($totalQuestions === 0) {
+    echo "No questions found for this test.";
+    exit();
+}
 
 foreach ($correctAnswers as $questionId => $correctOption) {
     $selectedOption = isset($_POST["question_$questionId"]) ? $_POST["question_$questionId"] : null;
@@ -181,6 +201,22 @@ if ($stmt = $conn->prepare($sql)) {
             </table>
         </div>
     </div>
+    <script>
+        // Prevent navigation and refresh
+        window.addEventListener('popstate', function () {
+            history.go(1); // Prevent backward navigation
+        });
+
+        // Prevent page reload and redirect to sqltest.php
+        window.addEventListener('beforeunload', function (e) {
+            var testId = <?php echo json_encode($testId); ?>;
+            e.preventDefault(); // Prevent default reload behavior
+            e.returnValue = ''; // Required for some browsers
+            window.location.href = 'sqltest.php?test_id=' + testId;
+        });
+
+        // Preventing the user from using the back button to navigate away from the page
+        history.pushState(null, null, location.href);
+    </script>
 </body>
 </html>
-
