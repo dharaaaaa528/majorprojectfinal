@@ -85,16 +85,48 @@ if ($stmt = $conn->prepare($sql)) {
     exit();
 }
 
-// Check if score is 40 or more and insert into test_progress
+// Check if score is 40 or more and insert or update in test_progress
 if ($score >= 40) {
     $status = 'Completed';
     $attemptsCount = count($attempts);
 
-    $sql = "INSERT INTO test_progress (user_id, test_id, score, status, attempts, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
+    // Check if the record exists
+    $sql = "SELECT * FROM test_progress WHERE user_id = ? AND test_id = ?";
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("iiisi", $userId, $testId, $score, $status, $attemptsCount);
+        $stmt->bind_param("ii", $userId, $testId);
         if ($stmt->execute()) {
-            $stmt->close();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                // Update the existing record
+                $sql = "UPDATE test_progress SET score = ?, status = ?, attempts = ?, created_at = NOW() WHERE user_id = ? AND test_id = ?";
+                if ($stmt = $conn->prepare($sql)) {
+                    $stmt->bind_param("isiii", $score, $status, $attemptsCount, $userId, $testId);
+                    if ($stmt->execute()) {
+                        $stmt->close();
+                    } else {
+                        echo "Error executing statement: " . $stmt->error;
+                        exit();
+                    }
+                } else {
+                    echo "Error preparing statement: " . $conn->error;
+                    exit();
+                }
+            } else {
+                // Insert a new record
+                $sql = "INSERT INTO test_progress (user_id, test_id, score, status, attempts, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
+                if ($stmt = $conn->prepare($sql)) {
+                    $stmt->bind_param("iiisi", $userId, $testId, $score, $status, $attemptsCount);
+                    if ($stmt->execute()) {
+                        $stmt->close();
+                    } else {
+                        echo "Error executing statement: " . $stmt->error;
+                        exit();
+                    }
+                } else {
+                    echo "Error preparing statement: " . $conn->error;
+                    exit();
+                }
+            }
         } else {
             echo "Error executing statement: " . $stmt->error;
             exit();
