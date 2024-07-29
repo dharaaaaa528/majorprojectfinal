@@ -12,7 +12,6 @@ if (!isset($_SESSION['userid'])) {
 }
 
 if (!isset($_POST['test_id'])) {
-    // If the form has not been submitted, but the page is accessed directly, redirect to sqltest.php
     header("Location: sqltest.php");
     exit();
 }
@@ -24,7 +23,6 @@ $testId = $_POST['test_id'];
 $isResubmission = isset($_POST['resubmission']) && $_POST['resubmission'] === 'true';
 
 if ($isResubmission) {
-    // Redirect to sqltest.php on resubmission
     header("Location: sqltest.php?test_id=$testId");
     exit();
 }
@@ -141,9 +139,12 @@ if ($stmt = $conn->prepare($sql)) {
     exit();
 }
 
+// Calculate attempts left
+$totalAllowedAttempts = 3; // Adjust as needed
+$attemptsLeft = max(0, $totalAllowedAttempts - count($attempts));
+
 // Delete rows from userprogress table if failed attempts count is 3 or more
 if ($failedAttemptsCount >= 3) {
-    // Determine which quizzes/tests are associated with the failed test
     $sqlQuizIds = [1, 2, 3, 4];
     $xssQuizIds = [5, 6, 7, 8];
 
@@ -250,6 +251,9 @@ if ($failedAttemptsCount >= 3) {
             </p>
             <p class="<?php echo ($score >= ($totalQuestions * 0.8)) ? 'pass' : 'fail'; ?>">
                 <?php echo ($score >= ($totalQuestions * 0.8)) ? 'Pass' : 'Fail'; ?>
+            </p>
+            <p style="font-size: 1.5em; color: blue;">
+                Attempts Left: <?php echo $attemptsLeft; ?>
             </p>
         </div>
         <div class="attempts">
