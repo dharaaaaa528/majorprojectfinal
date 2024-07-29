@@ -86,6 +86,15 @@ ob_end_flush();
         .sidebar a.profile-link {
             color: #56C2DD;
         }
+
+        .sub-menu {
+            padding-left: 30px;
+        }
+
+        .sub-menu a {
+            font-size: 16px;
+        }
+
         .content {
             color: white;
             margin-left: 200px;
@@ -97,7 +106,7 @@ ob_end_flush();
             align-items: center;
             height: 100vh;
             box-sizing: border-box;
-             background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             background-size: cover;
         }
 
@@ -156,6 +165,9 @@ ob_end_flush();
 <body>
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
+        <div class="sub-menu">
+            <a href="certificate_details.php"><u>Certificate Details</u></a>
+        </div>
         <a href="progress.php"><u>Progress</u></a>
         <a href="certificate.php"><u>Certifications</u></a>
         <a href="settings.php"><u>Settings</u></a>
@@ -194,5 +206,3 @@ ob_end_flush();
     </div>
 </body>
 </html>
-
-

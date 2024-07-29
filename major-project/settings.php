@@ -125,6 +125,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 .settings-container .submit-button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
+ .sub-menu {
+            padding-left: 30px;
+        }
+
+        .sub-menu a {
+            font-size: 16px;
+        }
 
 
        
@@ -134,6 +141,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
+        <div class="sub-menu">
+            <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
+        </div>
         <a href="progress.php"><u>Progress</u></a>
         <a href="certificate.php"><u>Certifications</u></a>
         <a href="settings.php" class="settings-link"><u>Settings</u></a>

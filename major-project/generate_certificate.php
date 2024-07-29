@@ -92,7 +92,7 @@ $scoreSql = "SELECT MAX(score) AS highest_score, MAX(created_at) AS created_at F
 if ($scoreStmt = $conn->prepare($scoreSql)) {
     $scoreStmt->bind_param("ii", $userId, $quizId);
     $scoreStmt->execute();
-    $scoreStmt->bind_result($highestScore, $createdAt);
+    $scoreStmt->bind_result($highestScore, $attemptCreatedAt);
     $scoreStmt->fetch();
     $scoreStmt->close();
 } else {
@@ -157,16 +157,16 @@ $pdf->SetXY($coordinates['course'][0], $coordinates['course'][1]);
 $pdf->Write(10, $courseName);
 
 $pdf->SetXY($coordinates['date'][0], $coordinates['date'][1]);
-$pdf->Write(10, date('F j, Y', strtotime($createdAt)));
+$pdf->Write(10, date('F j, Y', strtotime($attemptCreatedAt)));
 
 // Save the PDF to a file
-$filePath = 'certificates/certificate_' . $userId . '_' . $quizId . '.pdf';
+$filePath = 'certificates/certificate_' . $userId . '_' . $quizId . '_' . $templateId . '.pdf';
 $pdf->Output('F', $filePath); // Save to file
 
 // Save certificate information in the database
-$sql = "INSERT INTO certificates (user_id, quiz_id, file_path) VALUES (?, ?, ?)";
+$sql = "INSERT INTO certificates (user_id, quiz_id, template_id, file_path, attempt_created_at, course_name, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("iis", $userId, $quizId, $filePath);
+    $stmt->bind_param("iiisssss", $userId, $quizId, $templateId, $filePath, $attemptCreatedAt, $courseName, $firstName, $lastName);
     $stmt->execute();
     $certificateId = $stmt->insert_id; // Get the last inserted ID
     $stmt->close();
@@ -178,4 +178,3 @@ if ($stmt = $conn->prepare($sql)) {
 header("Location: certificate.php?id=" . $certificateId);
 exit();
 ?>
-

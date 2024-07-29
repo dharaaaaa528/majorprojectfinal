@@ -172,17 +172,28 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
             background-color: rgba(0, 0, 0, 0.7);
             height: 100vh;
         }
+         .sub-menu {
+            padding-left: 30px;
+        }
+
+        .sub-menu a {
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <a href="profile.php" class="profile-link"><u>Profile</u></a>
-    <a href="progress.php" class="progress-link"><u>Progress</u></a>
-    <a href="certificate.php"><u>Certifications</u></a>
-    <a href="settings.php"><u>Settings</u></a>
-</div>
 
+
+<div class="sidebar">
+        <a href="profile.php" class="profile-link"><u>Profile</u></a>
+        <div class="sub-menu">
+            <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
+        </div>
+         <a href="progress.php" class="progress-link"><u>Progress</u></a>
+        <a href="certificate.php"><u>Certifications</u></a>
+        <a href="settings.php"><u>Settings</u></a>
+    </div> 
 <div class="main-content">
     <h1>Progress</h1>
 

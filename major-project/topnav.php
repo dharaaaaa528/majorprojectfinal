@@ -19,6 +19,7 @@ if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE
     $stmt->execute([$_SESSION['userid']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     $username = $user['username'];
+    $role = $user['role']; // Fetch user role
     $_SESSION['profile_picture'] = $user['profile_picture']; // Store profile picture in session
 } else {
     // Regular login user information
@@ -26,6 +27,7 @@ if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE
     $stmt->execute([$_SESSION['username']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     $username = $user['username'];
+    $role = $user['role']; // Fetch user role
     $_SESSION['profile_picture'] = $user['profile_picture']; // Store profile picture in session
 }
 
@@ -229,10 +231,10 @@ if (isset($_GET['search'])) {
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content">
-            <?php if ($isCompletedSQL): ?>
+            <?php if ($isCompletedSQL || $role == 'admin'): ?>
                 <a href="sqltest.php">SQL Tests</a>
             <?php endif; ?>
-            <?php if ($isCompletedXSS): ?>
+            <?php if ($isCompletedXSS || $role == 'admin'): ?>
                 <a href="scripttest.php">XSS Tests</a>
             <?php endif; ?>
         </div>
@@ -269,7 +271,6 @@ if (isset($_GET['search'])) {
             <a href="profile.php">Profile</a>
             <a href="settings.php">Settings</a>
             <a href="logout.php">Logout</a>
-            
         </div>
     </div>
 </div>

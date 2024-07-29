@@ -100,11 +100,21 @@ if ($stmt = $conn->prepare($sql)) {
             height: 100vh;
              
         }
+         .sub-menu {
+            padding-left: 30px;
+        }
+
+        .sub-menu a {
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
+        <div class="sub-menu">
+            <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
+        </div>
         <a href="progress.php" class="progress-link"><u>Progress</u></a>
         <a href="certificate.php" class="certificate-link"><u>Certifications</u></a>
         <a href="settings.php"><u>Settings</u></a>
