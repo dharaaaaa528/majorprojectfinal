@@ -85,7 +85,7 @@ if ($stmt = $conn->prepare($sql)) {
 
 // Fetch all attempts
 $attempts = [];
-$sql = "SELECT attempt_id, score, attempt_date FROM test_attempts WHERE user_id = ? AND test_id = ?";
+$sql = "SELECT score, attempt_date FROM test_attempts WHERE user_id = ? AND test_id = ? ORDER BY attempt_id";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("ii", $userId, $testId);
     if ($stmt->execute()) {
@@ -120,6 +120,55 @@ if ($score >= 40) {
     } else {
         echo "Error preparing statement: " . $conn->error;
         exit();
+    }
+}
+
+// Count the number of failed attempts
+$failedAttemptsCount = 0;
+$sql = "SELECT COUNT(*) FROM test_attempts WHERE user_id = ? AND test_id = ? AND score < 40";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("ii", $userId, $testId);
+    if ($stmt->execute()) {
+        $stmt->bind_result($failedAttemptsCount);
+        $stmt->fetch();
+        $stmt->close();
+    } else {
+        echo "Error executing statement: " . $stmt->error;
+        exit();
+    }
+} else {
+    echo "Error preparing statement: " . $conn->error;
+    exit();
+}
+
+// Delete rows from userprogress table if failed attempts count is 3 or more
+if ($failedAttemptsCount >= 3) {
+    // Determine which quizzes/tests are associated with the failed test
+    $sqlQuizIds = [1, 2, 3, 4];
+    $xssQuizIds = [5, 6, 7, 8];
+
+    if (in_array($testId, $sqlQuizIds)) {
+        $relatedQuizIds = implode(',', $sqlQuizIds);
+    } elseif (in_array($testId, $xssQuizIds)) {
+        $relatedQuizIds = implode(',', $xssQuizIds);
+    } else {
+        $relatedQuizIds = '';
+    }
+
+    if ($relatedQuizIds) {
+        $sql = "DELETE FROM userprogress WHERE user_id = ? AND quiz_id IN ($relatedQuizIds)";
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("i", $userId);
+            if ($stmt->execute()) {
+                $stmt->close();
+            } else {
+                echo "Error executing statement: " . $stmt->error;
+                exit();
+            }
+        } else {
+            echo "Error preparing statement: " . $conn->error;
+            exit();
+        }
     }
 }
 ?>
@@ -207,13 +256,13 @@ if ($score >= 40) {
             <h2>Previous Attempts</h2>
             <table class="attempts-table">
                 <tr>
-                    <th>Attempt ID</th>
+                    <th>Attempt No</th>
                     <th>Score</th>
                     <th>Attempt Date</th>
                 </tr>
-                <?php foreach ($attempts as $attempt): ?>
+                <?php foreach ($attempts as $index => $attempt): ?>
                 <tr>
-                    <td><?php echo $attempt['attempt_id']; ?></td>
+                    <td><?php echo $index + 1; ?></td>
                     <td><?php echo $attempt['score']; ?>/<?php echo $totalQuestions; ?></td>
                     <td><?php echo $attempt['attempt_date']; ?></td>
                 </tr>
