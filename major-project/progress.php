@@ -22,10 +22,10 @@ function getCompletedQuizzesCount($pdo, $user_id, $quiz_ids) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Function to fetch completed tests count
+// Function to fetch completed tests count from test_progress table
 function getCompletedTestsCount($pdo, $user_id, $test_ids) {
     $inClause = implode(',', array_fill(0, count($test_ids), '?'));
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM test_attempts WHERE user_id = ? AND test_id IN ($inClause) AND score >= 7"); // Assuming passing score is 7
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM test_progress WHERE user_id = ? AND test_id IN ($inClause) AND score >= 7"); // Assuming passing score is 7
     $stmt->execute(array_merge([$user_id], $test_ids));
     return $stmt->fetchColumn();
 }
@@ -41,7 +41,7 @@ function getIncompleteQuizzes($pdo, $user_id, $quiz_ids) {
 // Function to get the list of incomplete tests
 function getIncompleteTests($pdo, $user_id, $test_ids) {
     $inClause = implode(',', array_fill(0, count($test_ids), '?'));
-    $stmt = $pdo->prepare("SELECT test_id, name FROM tests WHERE test_id IN ($inClause) AND test_id NOT IN (SELECT test_id FROM test_attempts WHERE user_id = ? AND score >= 7)");
+    $stmt = $pdo->prepare("SELECT test_id, name FROM tests WHERE test_id IN ($inClause) AND test_id NOT IN (SELECT test_id FROM test_progress WHERE user_id = ? AND score >= 7)");
     $stmt->execute(array_merge($test_ids, [$user_id]));
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -183,17 +183,15 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
 </head>
 <body>
 
-
-
 <div class="sidebar">
-        <a href="profile.php" class="profile-link"><u>Profile</u></a>
-        <div class="sub-menu">
-            <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
-        </div>
-         <a href="progress.php" class="progress-link"><u>Progress</u></a>
-        <a href="certificate.php"><u>Certifications</u></a>
-        <a href="settings.php"><u>Settings</u></a>
-    </div> 
+    <a href="profile.php" class="profile-link"><u>Profile</u></a>
+    <div class="sub-menu">
+        <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
+    </div>
+    <a href="progress.php" class="progress-link"><u>Progress</u></a>
+    <a href="certificate.php"><u>Certifications</u></a>
+    <a href="settings.php"><u>Settings</u></a>
+</div> 
 <div class="main-content">
     <h1>Progress</h1>
 
@@ -269,4 +267,3 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
 
 </body>
 </html>
-
