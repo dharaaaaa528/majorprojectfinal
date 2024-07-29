@@ -169,7 +169,8 @@ ob_end_flush();
             <a href="certificate_details.php"><u>Certificate Details</u></a>
         </div>
         <a href="progress.php"><u>Progress</u></a>
-        <a href="certificate.php"><u>Certifications</u></a>
+        <a href="certificate.php"><u>Quiz Certifications</u></a>
+        <a href="test_certificate.php"><u>Test Certifications</u></a>
         <a href="settings.php"><u>Settings</u></a>
     </div>  
     <div class="content">

@@ -145,7 +145,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
         </div>
         <a href="progress.php"><u>Progress</u></a>
-        <a href="certificate.php"><u>Certifications</u></a>
+        <a href="certificate.php"><u>Quiz Certifications</u></a>
+        <a href="test_certificate.php"><u>Test Certifications</u></a>
         <a href="settings.php" class="settings-link"><u>Settings</u></a>
     </div>
     <div class="content">
