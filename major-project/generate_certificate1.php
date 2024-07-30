@@ -93,6 +93,26 @@ if ($scoreStmt = $conn->prepare($scoreSql)) {
     exit();
 }
 
+// Check if a certificate already exists with the same attempt date
+$certCheckSql = "SELECT COUNT(*) FROM test_certificates WHERE user_id = ? AND test_id = ? AND attempt_date = ?";
+if ($certCheckStmt = $conn->prepare($certCheckSql)) {
+    $certCheckStmt->bind_param("iis", $userId, $testId, $attemptCreatedAt);
+    $certCheckStmt->execute();
+    $certCheckStmt->bind_result($certCount);
+    $certCheckStmt->fetch();
+    $certCheckStmt->close();
+    
+    if ($certCount > 0) {
+        echo '<h2>Certificate Already Generated</h2>';
+        echo '<p>You have already generated a certificate for this test. You can return to the content page.</p>';
+        echo '<a href="contentpage.php"><button>Return to Content Page</button></a>';
+        exit();
+    }
+} else {
+    echo "Error checking existing certificates: " . $conn->error;
+    exit();
+}
+
 // Create the certificate PDF
 $pdf = new Fpdi();
 $templateFile = '';
@@ -143,18 +163,19 @@ $pdf->SetXY($coordinates['name'][0], $coordinates['name'][1]);
 $pdf->Write(10, "$firstName $lastName");
 
 $pdf->SetXY($coordinates['test'][0], $coordinates['test'][1]);
-$pdf->Write(10, "$testName ($category)");
+$pdf->Write(10, "$testName");
 
 $pdf->SetXY($coordinates['date'][0], $coordinates['date'][1]);
 $pdf->Write(10, date('j F Y', strtotime($attemptCreatedAt)));
 
-$filePath = 'certificates/certificate_' . $userId . '_' .  $templateId . '.pdf';
+// Generate a unique file name for the certificate
+$filePath = 'certificates/certificate_' . $userId . '_' . time() . '_' . $templateId . '.pdf';
 $pdf->Output('F', $filePath);
 
 // Save certificate information in the database
 $sql = "INSERT INTO test_certificates 
-    (user_id, test_id, template_id, first_name, last_name,  file_path, attempt_date, test_name) 
-    VALUES (?, ?, ?, ?, ?, ?, ?,  ?)";
+    (user_id, test_id, template_id, first_name, last_name, file_path, attempt_date, test_name) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 // Prepare the SQL statement
 if ($stmt = $conn->prepare($sql)) {

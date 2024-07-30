@@ -263,7 +263,7 @@ if ($stmt = $conn->prepare($sql)) {
                 <?php echo ($score >= ($totalQuestions * 0.8)) ? 'Pass' : 'Fail'; ?>
             </p>
            
-            <?php if ($score >= 40): ?>
+            <?php if ($score >= 0): ?>
                 <a href="choose_certificate1.php?test_id=<?php echo $testId; ?>" class="button">Generate Certificate</a>
             <?php endif; ?>
         </div>

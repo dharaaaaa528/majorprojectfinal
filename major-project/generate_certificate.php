@@ -29,6 +29,44 @@ if ($quizId === 0 || $templateId === 0) {
     exit();
 }
 
+// Check if the certificate already exists or if a similar attempt was made
+$certSql = "SELECT id, attempt_created_at FROM certificates WHERE user_id = ? AND quiz_id = ? ORDER BY attempt_created_at DESC";
+if ($certStmt = $conn->prepare($certSql)) {
+    $certStmt->bind_param("ii", $userId, $quizId);
+    $certStmt->execute();
+    $certStmt->store_result();
+    $certStmt->bind_result($existingCertId, $existingAttemptCreatedAt);
+    $certExists = $certStmt->num_rows > 0;
+    
+    if ($certExists) {
+        $certStmt->fetch();
+        // Check if an attempt with the same timestamp exists
+        $attemptSql = "SELECT MAX(created_at) AS latest_attempt FROM quiz_attempts WHERE user_id = ? AND quiz_id = ?";
+        if ($attemptStmt = $conn->prepare($attemptSql)) {
+            $attemptStmt->bind_param("ii", $userId, $quizId);
+            $attemptStmt->execute();
+            $attemptStmt->bind_result($latestAttemptCreatedAt);
+            $attemptStmt->fetch();
+            $attemptStmt->close();
+            
+            if ($latestAttemptCreatedAt === $existingAttemptCreatedAt) {
+                // Same timestamp found, show "Return to Content Page" button with a message
+                echo '<h2>Certificate Already Generated</h2>';
+                echo '<p>You have already generated a certificate for this quiz. You can return to the content page.</p>';
+                echo '<a href="contentpage.php"><button>Return to Content Page</button></a>';
+                exit();
+            }
+        } else {
+            echo "Error checking quiz attempts: " . $conn->error;
+            exit();
+        }
+    }
+    $certStmt->close();
+} else {
+    echo "Error checking certificate: " . $conn->error;
+    exit();
+}
+
 // Fetch the user's details
 $userSql = "SELECT first_name, last_name FROM userinfo WHERE userid = ?";
 if ($userStmt = $conn->prepare($userSql)) {
@@ -167,14 +205,23 @@ $pdf->Output('F', $filePath); // Save to file
 $sql = "INSERT INTO certificates (user_id, quiz_id, template_id, file_path, attempt_created_at, course_name, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("iiisssss", $userId, $quizId, $templateId, $filePath, $attemptCreatedAt, $courseName, $firstName, $lastName);
-    $stmt->execute();
-    $certificateId = $stmt->insert_id; // Get the last inserted ID
+    if ($stmt->execute()) {
+        $certificateId = $stmt->insert_id; // Get the last inserted ID
+        
+        // Show the generated certificate and provide download link
+        echo '<h2>Certificate Generated Successfully</h2>';
+        echo '<img src="' . $filePath . '" alt="Certificate"><br>';
+        echo '<a href="' . $filePath . '" download><button>Download Certificate</button></a><br>';
+        echo '<a href="contentpage.php"><button>Return to Content Page</button></a>';
+    } else {
+        echo "Error saving certificate information: " . $stmt->error;
+    }
     $stmt->close();
 } else {
-    echo "Error saving certificate details: " . $conn->error;
+    echo "Error preparing statement: " . $conn->error;
 }
 
-// Redirect to the certificate view page
-header("Location: certificate.php?id=" . $certificateId);
-exit();
+// End output buffering and flush output
+ob_end_flush();
 ?>
+
