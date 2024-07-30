@@ -198,7 +198,7 @@ $pdf->SetXY($coordinates['date'][0], $coordinates['date'][1]);
 $pdf->Write(10, date('j F Y', strtotime($attemptCreatedAt)));
 
 // Save the PDF to a file
-$filePath = 'certificates/certificate_' . $userId . '_' . $quizId . '_' . $templateId . '.pdf';
+$filePath = 'certificates/certificate_' . $userId . '_' . $quizId . '_' . $templateId . '_' . time() . '.pdf';
 $pdf->Output('F', $filePath); // Save to file
 
 // Save certificate information in the database
@@ -206,13 +206,10 @@ $sql = "INSERT INTO certificates (user_id, quiz_id, template_id, file_path, atte
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("iiisssss", $userId, $quizId, $templateId, $filePath, $attemptCreatedAt, $courseName, $firstName, $lastName);
     if ($stmt->execute()) {
-        $certificateId = $stmt->insert_id; // Get the last inserted ID
-        
-        // Show the generated certificate and provide download link
-        echo '<h2>Certificate Generated Successfully</h2>';
-        echo '<img src="' . $filePath . '" alt="Certificate"><br>';
-        echo '<a href="' . $filePath . '" download><button>Download Certificate</button></a><br>';
-        echo '<a href="contentpage.php"><button>Return to Content Page</button></a>';
+        $certificateId = $stmt->insert_id;
+        // Redirect to the certificate.php page with a success message
+        header("Location: certificate.php?cert_id=" . $certificateId);
+        exit();
     } else {
         echo "Error saving certificate information: " . $stmt->error;
     }
@@ -221,7 +218,5 @@ if ($stmt = $conn->prepare($sql)) {
     echo "Error preparing statement: " . $conn->error;
 }
 
-// End output buffering and flush output
-ob_end_flush();
+$conn->close();
 ?>
-
