@@ -10,12 +10,13 @@ session_start();
 if (isset($_POST['submit'])) {
     $username = trim($_POST['username']);
     $phoneno = trim($_POST['phoneno']);
+    $email = trim($_POST['email']);
 
-    if (empty($username) || empty($phoneno)) {
-        $error_message = 'Please fill in both fields.';
+    if (empty($username) || empty($phoneno) || empty($email)) {
+        $error_message = 'Please fill in all fields.';
     } else {
-        $stmt = $conn->prepare("SELECT userid, email FROM userinfo WHERE username = ? AND phoneno = ?");
-        $stmt->bind_param("ss", $username, $phoneno);
+        $stmt = $conn->prepare("SELECT userid, email FROM userinfo WHERE username = ? AND phoneno = ? AND email = ?");
+        $stmt->bind_param("sss", $username, $phoneno, $email);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -33,7 +34,7 @@ if (isset($_POST['submit'])) {
             // Send OTP email using PHPMailer
             $mail = new PHPMailer(true);
             try {
-                //Server settings
+                // Server settings
                 $mail->isSMTP();
                 $mail->Host = 'smtp.mail.yahoo.com';
                 $mail->SMTPAuth = true;
@@ -42,11 +43,11 @@ if (isset($_POST['submit'])) {
                 $mail->SMTPSecure = 'tls'; // Enable TLS encryption
                 $mail->Port = 587;
 
-                //Recipients
+                // Recipients
                 $mail->setFrom('dgandhi50@yahoo.com', 'dhara gandhi');
                 $mail->addAddress($email);
 
-                //Content
+                // Content
                 $mail->isHTML(true);
                 $mail->Subject = 'Password Reset OTP';
                 $mail->Body = "Your OTP for password reset is: <b>$otp</b>";
@@ -60,7 +61,7 @@ if (isset($_POST['submit'])) {
 
             $stmt->close();
         } else {
-            $error_message = 'Invalid username or phone number.';
+            $error_message = 'Invalid username, phone number, or email.';
         }
     }
 }
@@ -72,8 +73,7 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <title>Reset Password</title>
     <style>
-    
-         body {
+        body {
             font-family: Arial, sans-serif;
             background-color: #121212;
             color: #ffffff;
@@ -153,9 +153,12 @@ if (isset($_POST['submit'])) {
                 <label for="phoneno">Phone Number:</label>
                 <input type="text" id="phoneno" name="phoneno" required>
             </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
             <button type="submit" name="submit">Send OTP</button>
         </form>
     </div>
 </body>
 </html>
-
