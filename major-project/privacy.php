@@ -16,6 +16,7 @@ require_once 'topnavmain.php';
             width: 100%;
             z-index: 1000;
             background-color: #333;
+             height: 100px;
         }
 
         body {
@@ -26,10 +27,8 @@ require_once 'topnavmain.php';
             background-repeat: no-repeat;
             background-position: center;
             background-attachment: fixed;
-            color: white;
-            padding-top: 80px; /* Adjusted to match navbar height */
-            padding-left: 20px;
-            padding-right: 20px;
+            color: white; /* Adjusted to match navbar height */
+           
             height: 100vh;
         }
 

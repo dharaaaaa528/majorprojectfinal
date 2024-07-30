@@ -27,9 +27,6 @@ require_once 'topnavmain.php';
             background-position: center;
             background-attachment: fixed;
             color: white;
-            padding-top: 80px; /* Adjusted to match navbar height */
-            padding-left: 20px;
-            padding-right: 20px;
             height: 100vh;
         }
 
