@@ -141,7 +141,7 @@ switch ($templateId) {
         $coordinates = [
             'name' => [30, 120],
             'test' => [20, 180],
-            'date' => [80, 180]
+            'date' => [85, 180]
         ];
         break;
     default:

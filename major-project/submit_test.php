@@ -269,7 +269,7 @@ if ($stmt = $conn->prepare($sql)) {
             <p class="<?php echo ($score >= 40) ? 'pass' : 'fail'; ?>">
                 <?php echo ($score >= 40) ? 'Pass' : 'Fail'; ?>
             </p>
-            <?php if ($score >= 0): ?>
+            <?php if ($score >= 40): ?>
                 <a href="choose_certificate1.php?test_id=<?php echo $testId; ?>" class="button">Generate Certificate</a>
             <?php endif; ?>
         </div>
