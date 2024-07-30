@@ -157,7 +157,7 @@ $pdf->SetXY($coordinates['course'][0], $coordinates['course'][1]);
 $pdf->Write(10, $courseName);
 
 $pdf->SetXY($coordinates['date'][0], $coordinates['date'][1]);
-$pdf->Write(10, date('F j, Y', strtotime($attemptCreatedAt)));
+$pdf->Write(10, date('j F Y', strtotime($attemptCreatedAt)));
 
 // Save the PDF to a file
 $filePath = 'certificates/certificate_' . $userId . '_' . $quizId . '_' . $templateId . '.pdf';

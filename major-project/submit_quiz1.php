@@ -116,12 +116,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
-            // Fetch all attempts for the user
-            $sql_fetch_attempts = "SELECT id, score, created_at FROM quiz_attempts WHERE user_id = ? AND quiz_id = ?";
+            // Fetch all attempts for the user, ordered by latest attempt first
+            $sql_fetch_attempts = "SELECT id, score, DATE_FORMAT(created_at, '%d/%m/%Y') as formatted_date FROM quiz_attempts WHERE user_id = ? AND quiz_id = ? ORDER BY created_at DESC";
             if ($stmt_fetch_attempts = $conn->prepare($sql_fetch_attempts)) {
                 $stmt_fetch_attempts->bind_param("ii", $userId, $quizId);
                 $stmt_fetch_attempts->execute();
-                $stmt_fetch_attempts->bind_result($attemptId, $attemptScore, $attemptCreatedAt);
+                $stmt_fetch_attempts->bind_result($attemptId, $attemptScore, $formattedDate);
 
                 // Display quiz result and attempts table
                 echo "<!DOCTYPE html>
@@ -168,6 +168,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         }
                         th {
                             background-color: black;
+                            color: white;
                         }
                         .highest-score {
                             margin-top: 20px;
@@ -208,17 +209,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 $highestScore = 0;
                 $attemptNumber = 1;
+                $attempts = [];
                 while ($stmt_fetch_attempts->fetch()) {
+                    $attempts[] = [
+                        'attemptNumber' => $attemptNumber,
+                        'score' => $attemptScore,
+                        'formattedDate' => $formattedDate
+                    ];
+                    $attemptNumber++;
+                }
+
+                $totalAttempts = count($attempts);
+                foreach ($attempts as $attempt) {
                     echo "<tr>
-                            <td>$attemptNumber</td>
-                            <td>$attemptScore</td>
-                            <td>$attemptCreatedAt</td>
+                            <td>" . ($totalAttempts--) . "</td>
+                            <td>{$attempt['score']}</td>
+                            <td>{$attempt['formattedDate']}</td>
                         </tr>";
                     // Track highest score
-                    if ($attemptScore > $highestScore) {
-                        $highestScore = $attemptScore;
+                    if ($attempt['score'] > $highestScore) {
+                        $highestScore = $attempt['score'];
                     }
-                    $attemptNumber++;
                 }
                 echo "</table>";
                 
@@ -232,25 +243,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // JavaScript to disable back button and handle navigation
                 echo "<script>
-                        history.pushState(null, null, location.href);
-                        window.onpopstate = function () {
-                            history.go(1);
+                    (function() {
+                        window.history.replaceState(null, '', window.location.href);
+                        window.onpopstate = function() {
+                            window.history.replaceState(null, '', window.location.href);
                         };
-                        // End quiz session to prevent back navigation
-                        sessionStorage.setItem('quiz_submitted', true);
-                    </script>";
+                    })();
+                </script>";
+
+                echo "</div>
+                </body>
+                </html>";
 
                 $stmt_fetch_attempts->close();
             } else {
-                echo "Error fetching attempts: " . $conn->error;
+                echo "Error preparing fetch attempts statement: " . $conn->error;
             }
-            $stmt_insert_attempt->close();
         } else {
-            echo "Error storing quiz attempt: " . $stmt_insert_attempt->error;
+            echo "Error executing attempt insertion statement: " . $stmt_insert_attempt->error;
         }
+        $stmt_insert_attempt->close();
     } else {
-        echo "Error preparing statement: " . $conn->error;
+        echo "Error preparing attempt insertion statement: " . $conn->error;
     }
 }
 ?>
-

@@ -146,7 +146,7 @@ $pdf->SetXY($coordinates['test'][0], $coordinates['test'][1]);
 $pdf->Write(10, "$testName ($category)");
 
 $pdf->SetXY($coordinates['date'][0], $coordinates['date'][1]);
-$pdf->Write(10, date('F j, Y', strtotime($attemptCreatedAt)));
+$pdf->Write(10, date('j F Y', strtotime($attemptCreatedAt)));
 
 $filePath = 'certificates/certificate_' . $userId . '_' .  $templateId . '.pdf';
 $pdf->Output('F', $filePath);
