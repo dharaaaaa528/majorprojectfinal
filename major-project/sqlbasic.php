@@ -52,7 +52,7 @@ if (empty($questionIds)) {
 }
 
 // Fetch test questions and options based on the fetched question IDs
-$sql = "SELECT tq.question_id, tq.question_text, topt.option1, topt.option2, topt.option3, topt.option4, topt.correct_option 
+$sql = "SELECT tq.question_id, tq.question_text, topt.option1, topt.option2, topt.option3, topt.option4, topt.correct_option
         FROM test_questions tq
         INNER JOIN test_options topt ON tq.question_id = topt.question_id
         WHERE tq.question_id IN (" . implode(',', array_fill(0, count($questionIds), '?')) . ")";
@@ -61,7 +61,7 @@ if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param($types, ...$questionIds);
     $stmt->execute();
     $stmt->bind_result($questionId, $questionText, $option1, $option2, $option3, $option4, $correctOption);
-
+    
     while ($stmt->fetch()) {
         if (!isset($questions[$questionId])) {
             $questions[$questionId] = [
@@ -89,7 +89,6 @@ if ($stmt = $conn->prepare($sql)) {
     <meta charset="UTF-8">
     <title>SQL Technique 1 Test</title>
     <style>
-        /* Your CSS code here */
         body {
             background-size: cover;
             background-repeat: no-repeat;
@@ -285,7 +284,7 @@ if ($stmt = $conn->prepare($sql)) {
                                 <?php foreach ($question['options'] as $optionIndex => $option): ?>
                                     <div class="option">
                                         <label>
-                                            <input type="radio" name="question_<?php echo $questionId; ?>" value="<?php echo $optionIndex; ?>">
+                                            <input type="radio" name="question_<?php echo $questionId; ?>" value="<?php echo $optionIndex; ?>" class="answer-option" data-question-id="question_<?php echo $index; ?>">
                                             <?php echo htmlspecialchars($option); ?>
                                         </label>
                                     </div>
@@ -300,87 +299,72 @@ if ($stmt = $conn->prepare($sql)) {
             </div>
         </div>
     </div>
-        <script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Timer logic
             var totalSeconds = 60 * 60; // 60 minutes
-            var timerElement = document.getElementById('timer');
+            var timerElement = document.getElementById("timer");
             var interval = setInterval(function() {
                 totalSeconds--;
                 var minutes = Math.floor(totalSeconds / 60);
                 var seconds = totalSeconds % 60;
-                timerElement.textContent = "Time Left: " + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-                
-                if (totalSeconds <= 300) {
-                    timerElement.classList.add('red');
-                }
-                
+                timerElement.textContent = "Time Left: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
                 if (totalSeconds <= 0) {
                     clearInterval(interval);
-                    document.getElementById('quizForm').submit(); // Submit the form when time runs out
+                    document.getElementById("quizForm").submit();
+                }
+
+                if (totalSeconds <= 5 * 60) {
+                    timerElement.classList.add("red");
                 }
             }, 1000);
 
-            // Add smooth scrolling to sidebar links
-            var sidebarLinks = document.querySelectorAll('.sidebar ul li a');
-            sidebarLinks.forEach(function(link) {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    var targetId = link.getAttribute('href').substring(1);
-                    var targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth' });
+            // Side navigation link highlight on answer
+            var answerOptions = document.querySelectorAll('.answer-option');
+            answerOptions.forEach(function(option) {
+                option.addEventListener('change', function() {
+                    var questionId = this.getAttribute('data-question-id');
+                    var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
+                    if (navLink) {
+                        navLink.classList.add('answered');
                     }
                 });
             });
 
-            // Highlight answered questions in the sidebar
-            var form = document.getElementById('quizForm');
-            var radioButtons = form.querySelectorAll('input[type="radio"]');
-            radioButtons.forEach(function(radio) {
-                radio.addEventListener('change', function() {
-                    var questionId = radio.name.split('_')[1];
-                    var sidebarLink = document.querySelector('.sidebar ul li a[href="#question_' + questionId + '"]');
-                    if (sidebarLink) {
-                        sidebarLink.classList.add('answered');
-                    }
-                });
-            });
-
-            // Handle blinking effect for unanswered questions
-            form.addEventListener('submit', function(event) {
+            // Handle form submission
+            document.getElementById('quizForm').addEventListener('submit', function(e) {
                 var unansweredQuestions = [];
-                for (var i = 1; i <= <?php echo count($question); ?>; i++) {
-                    var radios = form.querySelectorAll('input[name="question_' + i + '"]');
-                    var answered = false;
-                    radios.forEach(function(radio) {
-                        if (radio.checked) {
-                            answered = true;
+                var questionContainers = document.querySelectorAll('.question-container');
+                questionContainers.forEach(function(container) {
+                    var questionId = container.id;
+                    var isAnswered = container.querySelector('input[type="radio"]:checked');
+                    var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
+                    if (!isAnswered) {
+                        unansweredQuestions.push(questionId);
+                        if (navLink) {
+                            navLink.classList.add('blink');
+                        }
+                    } else {
+                        if (navLink) {
+                            navLink.classList.remove('blink');
+                            navLink.classList.add('answered');
+                        }
+                    }
+                });
+
+                if (unansweredQuestions.length > 0) {
+                    e.preventDefault(); // Prevent form submission
+                    
+                    unansweredQuestions.forEach(function(questionId) {
+                        var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
+                        if (navLink) {
+                            navLink.classList.add('blink');
                         }
                     });
-                    if (!answered) {
-                        unansweredQuestions.push(i);
-                        var sidebarLink = document.querySelector('.sidebar ul li a[href="#question_' + i + '"]');
-                        if (sidebarLink) {
-                            sidebarLink.classList.add('blink');
-                        }
-                    }
-                }
-                if (unansweredQuestions.length > 0) {
-                    event.preventDefault();
-                    alert('Please answer all questions before submitting.');
-                    // Scroll to the first unanswered question
-                    var firstUnansweredQuestion = unansweredQuestions[0];
-                    var targetElement = document.getElementById('question_' + firstUnansweredQuestion);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth' });
-                    }
                 }
             });
         });
     </script>
-   
-    
-   
 </body>
 </html>
