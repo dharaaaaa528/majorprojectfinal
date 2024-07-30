@@ -240,6 +240,7 @@ if ($stmt = $conn->prepare($sql)) {
 
         .question-container {
             scroll-margin-top: 100px; /* Adjust based on your header height */
+            margin-bottom: 30px; /* Increased space between questions */
         }
     </style>
 </head>
@@ -285,7 +286,7 @@ if ($stmt = $conn->prepare($sql)) {
             </div>
         </div>
     </div>
-            <script>
+     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Timer logic
             var totalSeconds = 60 * 60; // 60 minutes
@@ -364,6 +365,5 @@ if ($stmt = $conn->prepare($sql)) {
             });
         });
     </script>
-   
 </body>
 </html>
