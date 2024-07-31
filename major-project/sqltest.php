@@ -9,7 +9,7 @@ include 'topnav.php';  // Make sure this path is correct
     <title>Select Test</title>
     <style>
     body {
-       font-family: Arial, sans-serif;
+        font-family: Arial, sans-serif;
         background-color: black;
         color: white;
         margin: 0;
@@ -17,13 +17,10 @@ include 'topnav.php';  // Make sure this path is correct
         display: flex;
         flex-direction: column;
         height: 100vh;
-        font-family: Arial, sans-serif;
-        background-size: cover; /* Makes the image cover the entire page */
-        background-size: cover; /* Makes the image cover the entire page */
-        background-repeat: no-repeat; /* Prevents the image from repeating */
-        background-position: center; /* Centers the image */
-        background-attachment: fixed; /* Fixes the image while scrolling */       
-    
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
     }
 
     nav {
@@ -41,43 +38,42 @@ include 'topnav.php';  // Make sure this path is correct
 
     .container {
         text-align: center;
-        background-color: darkgrey; /* White background */
-        color: black; /* Black text */
-        padding: 40px; /* Padding around content */
-        border-radius: 10px; /* Rounded corners */
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
-        max-width: 80%; /* Limit maximum width */
-        width: 500px; /* Fixed width */
+        background-color: darkgrey;
+        color: black;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        max-width: 80%;
+        width: 500px;
     }
 
     .container h1 {
-        font-size: 2em; /* Increase font size */
+        font-size: 2em;
         font-weight: bold;
-        margin-bottom: 20px; /* Increase margin */
+        margin-bottom: 20px;
     }
 
     .container label {
-        font-size: 1em; /* Increase font size */
+        font-size: 1em;
         font-weight: bold;
     }
 
     .container button {
         margin-top: 20px;
-        padding: 25px 80px; /* Adjust padding for larger buttons */
+        padding: 25px 80px;
         font-size: 1.5em;
         border-radius: 10px;
         border: none;
         background-color: black;
         color: white;
         cursor: pointer;
-        width: 100%; /* Make button full-width */
-        max-width: 100%; /* Limit maximum width */
+        width: 100%;
+        max-width: 100%;
     }
 
     .container button:hover {
         background-color: grey;
     }
-        
     </style>
 </head>
 <body>
@@ -86,20 +82,20 @@ include 'topnav.php';  // Make sure this path is correct
     </nav>
     <div class="main-content">
         <div class="container">
-            <h1> SQL INJECTION TEST</h1>
-            <form action="sqlbasic.php" method="post">
-                <label for="test">Select a level you would like to attempt:</label>
-                <br>
-                <button type="submit" name="test" value="basic">BASIC</button>
-             </form>
-             <form action="sqlintermidiate.php" method="post">
-                <button type="submit" name="test" value="intermidiate">INTERMIDIATE</button>
+            <h1>SQL INJECTION TEST</h1>
+            <label for="technique">Select a level you would like to attempt:</label>
+            <br>
+            <form action="teststartbasic.php" method="get">
+                <button type="submit" name="technique" value="SQL Test Basic">BASIC</button>
             </form>
-            <form action="sqladvanced.php" method="post">
-                <button type="submit" name="test" value="advanced">ADVANCED</button>
+            <form action="teststartintermediate.php" method="get">
+                <button type="submit" name="technique" value="SQL Test Intermediate">INTERMEDIATE</button>
             </form>
-            <form action="sqlallinone.php" method="post">
-                <button type="submit" name="test" value="advanced">ALL IN ONE</button>
+            <form action="teststartadvanced.php" method="get">
+                <button type="submit" name="technique" value="SQL Test Advanced">ADVANCED</button>
+            </form>
+            <form action="teststartallinone.php" method="get">
+                <button type="submit" name="technique" value="SQL Test AllInOne">ALL IN ONE</button>
             </form>
         </div>
     </div>

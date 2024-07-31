@@ -6,7 +6,7 @@ include 'topnav.php';  // Make sure this path is correct
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Technique 1 Quiz</title>
+    <title>SQL Technique Quiz Start</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,6 +23,7 @@ include 'topnav.php';  // Make sure this path is correct
         html, body {
             height: 100%;
         }
+
         .content {
             display: flex;
             flex-direction: column;
@@ -36,17 +37,21 @@ include 'topnav.php';  // Make sure this path is correct
             border-radius: 10px;
             padding: 20px;
         }
+
         .quiz-details h1 {
             margin-bottom: 10px;
         }
+
         .quiz-details .details {
             margin-bottom: 20px;
         }
+
         .start-button {
             position: absolute;
             bottom: 20px;
             right: 20px;
         }
+
         .start-button button {
             background-color: gray;
             color: white;
@@ -56,6 +61,7 @@ include 'topnav.php';  // Make sure this path is correct
             cursor: pointer;
             font-size: 16px;
         }
+
         .start-button button:hover {
             background-color: darkgray;
         }
@@ -68,7 +74,7 @@ include 'topnav.php';  // Make sure this path is correct
         <?php
         if (isset($_GET['technique'])) {
             $technique = htmlspecialchars($_GET['technique']);
-            echo "<h1>$technique Quiz</h1>";
+            echo "<h1>$technique </h1>";
         } else {
             echo "<h1>No Technique Selected</h1>";
         }
@@ -77,12 +83,10 @@ include 'topnav.php';  // Make sure this path is correct
         <h3>Please read the below details carefully!</h3>
         <p>1. Duration: 20 Minutes</p>
         <p>2. Marks to pass: 70% (7/10)</p>
-        <p>3. There are 10 questions in this quiz. To pass and get a certificate of completion you would be required to get at least 7 of them correct. Try to complete as many questions as you can.</p>
-        <p>4. Click on the generate certificate after the end of the quiz to get your certificate</p>
-        <p>5. The quiz would automatically submit at the end of 20 minutes. No changes after that would be registered.</p>
-        <p>6. Click on the "Click here to start" button to start the quiz.</p>
-        <p>7. Note: The timer would automatically start once you click on the button.</p>
-        <p>8. Note: Failure to click on the generate certificate button would result in no certificate being generated.</p>
+        <p>3. There are 10 questions in this test. To pass and get a certificate of completion you would be required to get at least 7 of them correct. Try to complete as many questions as you can.</p>
+        <p>4. The test would automatically submit at the end of 20 minutes. No changes after that would be registered.</p>
+        <p>5. Click on the "Click here to start" button to start the quiz.</p>
+        <p>6. Note: The timer would automatically start once you click on the button.</p>
         <h4>All the best!!</h4>
             
         <div class="start-button">
@@ -96,32 +100,15 @@ include 'topnav.php';  // Make sure this path is correct
             var url = "";
 
             switch (technique) {
-                case "SQL Technique 1":
-                    url = "sql1quiz.php";
+                case "SQL Test Advanced":
+                    url = "sqladvanced.php";
                     break;
-                case "SQL Technique 2":
-                    url = "sql2quiz.php";
+                case "XSS Test Advanced":
+                    url = "xssadvanced.php";
                     break;
-                case "SQL Technique 3":
-                    url = "sql3quiz.php";
-                    break;
-                case "SQL Technique 4":
-                    url = "sql4quiz.php";
-                    break;
-                case "XS Script Technique 1":
-                    url = "script1quiz.php";
-                    break;
-                case "XS Script Technique 2":
-                    url = "script2quiz.php";
-                    break;
-                case "XS Script Technique 3":
-                    url = "script3quiz.php";
-                    break;
-                case "XS Script Technique 4":
-                    url = "script4quiz.php";
-                    break;
+               
                 default:
-                    alert("No valid technique selected" + technique);
+                    alert("No valid technique selected: " + technique);
                     return;
             }
 
@@ -151,5 +138,3 @@ include 'topnav.php';  // Make sure this path is correct
     </script>
 </body>           
 </html>
-
-
