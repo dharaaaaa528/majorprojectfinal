@@ -17,7 +17,7 @@ $isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_log
 
 $_SESSION['quiz_submitted'] = false;
 
-// Set test ID to 3 (assuming 3 is for SQL Advanced Test)
+// Set test ID to 2
 $testId = 3;
 
 if (!isset($_SESSION['quiz_start_time'])) {
@@ -29,7 +29,7 @@ $_SESSION['test_id'] = $testId;
 
 $questions = []; // Initialize $questions as an empty array
 
-// Fetch 30 random question IDs (20 open-ended + 10 "try it now")
+// Fetch 50 random question IDs first
 $questionIds = [];
 $sql = "SELECT question_id FROM test_questions WHERE test_id = ? ORDER BY RAND() LIMIT 30";
 if ($stmt = $conn->prepare($sql)) {
@@ -52,21 +52,20 @@ if (empty($questionIds)) {
 }
 
 // Fetch test questions based on the fetched question IDs
-$sql = "SELECT question_id, question_text, question_type
+$sql = "SELECT question_id, question_text
         FROM test_questions
         WHERE question_id IN (" . implode(',', array_fill(0, count($questionIds), '?')) . ")";
 if ($stmt = $conn->prepare($sql)) {
     $types = str_repeat('i', count($questionIds));
     $stmt->bind_param($types, ...$questionIds);
     $stmt->execute();
-    $stmt->bind_result($questionId, $questionText, $questionType);
+    $stmt->bind_result($questionId, $questionText);
     
     while ($stmt->fetch()) {
         if (!isset($questions[$questionId])) {
             $questions[$questionId] = [
                 'id' => $questionId,
-                'text' => $questionText,
-                'type' => $questionType
+                'text' => $questionText
             ];
         }
     }
@@ -80,7 +79,7 @@ if ($stmt = $conn->prepare($sql)) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SQL Advanced Test</title>
+    <title>SQL Intermediate Test</title>
     <style>
         body {
             background-image: url('background.jpg');
@@ -243,23 +242,6 @@ if ($stmt = $conn->prepare($sql)) {
             scroll-margin-top: 100px; /* Adjust based on your header height */
             margin-bottom: 30px; /* Increased space between questions */
         }
-
-        .editor-container {
-            margin-top: 10px;
-            margin-bottom: 20px;
-            background-color: #333;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .editor-container textarea {
-            width: 100%;
-            height: 100px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            resize: none;
-        }
     </style>
 </head>
 <body>
@@ -280,7 +262,7 @@ if ($stmt = $conn->prepare($sql)) {
     <!-- Main Quiz Container -->
     <div class="main-content">
         <div class="container">
-            <h1>SQL Advanced Test</h1>
+            <h1>SQL Intermediate Test</h1>
             <div class="timer" id="timer">Time Left: 60:00</div>
             <div class="quiz-content">
                 <form id="quizForm" action="submit_test.php" method="POST">
@@ -292,15 +274,9 @@ if ($stmt = $conn->prepare($sql)) {
                             <div class="question-text">
                                 <?php echo $index . '. ' . htmlspecialchars($question['text']); ?>
                             </div>
-                            <?php if ($question['type'] == 'open-ended'): ?>
-                                <div class="options">
-                                    <input type="text" name="question_<?php echo $questionId; ?>" placeholder="Enter your answer here" data-question-id="<?php echo $index; ?>">
-                                </div>
-                            <?php elseif ($question['type'] == 'try-it-now'): ?>
-                                <div class="editor-container">
-                                    <textarea name="question_<?php echo $questionId; ?>" placeholder="Write your SQL code here" data-question-id="<?php echo $index; ?>"></textarea>
-                                </div>
-                            <?php endif; ?>
+                            <div class="options">
+                                <input type="text" name="question_<?php echo $questionId; ?>" placeholder="Enter your answer here" data-question-id="<?php echo $index; ?>">
+                            </div>
                         </div>
                     <?php 
                     $index++;
@@ -313,73 +289,88 @@ if ($stmt = $conn->prepare($sql)) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const timerElement = document.getElementById('timer');
-            let totalTime = 60 * 60; // 60 minutes in seconds
-            const endTime = Date.now() + totalTime * 1000;
+            var timerElement = document.getElementById('timer');
+            var endTime = new Date().getTime() + 60 * 60 * 1000; // 1 hour from now
 
             function updateTimer() {
-                const now = Date.now();
-                const timeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
+                var now = new Date().getTime();
+                var timeLeft = endTime - now;
 
-                const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-                const seconds = String(timeLeft % 60).padStart(2, '0');
+                if (timeLeft <= 0) {
+                    timerElement.textContent = "Time's up!";
+                    return;
+                }
 
-                timerElement.textContent = `Time Left: ${minutes}:${seconds}`;
+                var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                timerElement.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-                if (timeLeft <= 300) { // Less than 5 minutes left
+                if (timeLeft <= 5 * 60 * 1000) {
                     timerElement.classList.add('red');
                 }
 
-                if (timeLeft > 0) {
-                    requestAnimationFrame(updateTimer);
-                } else {
-                    alert('Time is up! Submitting your answers.');
-                    document.getElementById('quizForm').submit();
-                }
+                setTimeout(updateTimer, 1000);
             }
 
-            requestAnimationFrame(updateTimer);
+            updateTimer();
 
-            // Side Navigation Highlighting and Blinking
-            const questionLinks = document.querySelectorAll('.sidebar ul li a');
-            const answerInputs = document.querySelectorAll('input[type="text"], textarea');
-
-            questionLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector(link.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-                });
-            });
-
-            answerInputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    const questionId = input.getAttribute('data-question-id');
-                    const link = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
-
-                    if (input.value.trim() !== '') {
-                        link.classList.add('answered');
-                        link.classList.remove('blink');
-                    } else {
-                        link.classList.remove('answered');
-                        link.classList.add('blink');
+            // Smooth scrolling for sidebar links
+            var sidebarLinks = document.querySelectorAll('.sidebar a');
+            sidebarLinks.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    var targetId = this.getAttribute('href').substring(1);
+                    var targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 70, // Adjust scroll offset as needed
+                            behavior: 'smooth'
+                        });
                     }
                 });
             });
 
-            document.getElementById('quizForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const unansweredQuestions = Array.from(answerInputs).filter(input => input.value.trim() === '');
-                if (unansweredQuestions.length > 0) {
-                    unansweredQuestions.forEach(input => {
-                        const questionId = input.getAttribute('data-question-id');
-                        const link = document.querySelector(`.sidebar ul li a[data-question-id="${questionId}"]`);
-                        link.classList.add('blink');
-                    });
-                    alert('You have unanswered questions.');
-                } else {
-                    this.submit();
-                }
+            // Update sidebar link color based on input
+            var inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    var questionId = this.getAttribute('data-question-id');
+                    var link = document.querySelector('.sidebar a[data-question-id="' + questionId + '"]');
+                    if (link) {
+                        link.classList.add('answered');
+                    }
+                });
             });
+
+            // Validate all questions are answered before submitting
+            document.getElementById('quizForm').addEventListener('submit', function(event) {
+    var unansweredQuestions = [];
+    var inputs = document.querySelectorAll('input[type="text"]');
+
+    inputs.forEach(function(input) {
+        if (input.value.trim() === "") {
+            unansweredQuestions.push(input.getAttribute('data-question-id'));
+        }
+    });
+
+    // Reset blinking class for all links
+    sidebarLinks.forEach(function(link) {
+        link.classList.remove('blink');
+        // Trigger reflow to restart animation
+        void link.offsetWidth;
+    });
+
+    if (unansweredQuestions.length > 0) {
+        event.preventDefault(); // Prevent form submission
+        unansweredQuestions.forEach(function(questionId) {
+            var link = document.querySelector('.sidebar a[data-question-id="' + questionId + '"]');
+            if (link) {
+                link.classList.add('blink');
+            }
+        });
+    }
+});
+
         });
     </script>
 </body>
