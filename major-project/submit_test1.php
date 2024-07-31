@@ -164,6 +164,51 @@ if ($stmt = $conn->prepare($sql)) {
     exit();
 }
 
+// Calculate attempts left
+$totalAttemptsAllowed = 3;
+$attemptsCount = count($attempts);
+$remainingAttempts = $totalAttemptsAllowed - $attemptsCount;
+
+// If the user fails the quiz three times, delete all relevant records
+if ($failedAttemptsCount >= 3 && $score < 40) {
+    $quizIds = [1, 2, 3, 4];
+    $quizIdsPlaceholder = implode(',', array_fill(0, count($quizIds), '?'));
+    
+    // Delete from userprogress table
+    $sql = "DELETE FROM userprogress WHERE user_id = ? AND quiz_id IN ($quizIdsPlaceholder)";
+    if ($stmt = $conn->prepare($sql)) {
+        $types = str_repeat('i', count($quizIds) + 1);
+        $params = array_merge([$userId], $quizIds);
+        $stmt->bind_param($types, ...$params);
+        if ($stmt->execute()) {
+            $stmt->close();
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            exit();
+        }
+    } else {
+        echo "Error preparing statement: " . $conn->error;
+        exit();
+    }
+    // Delete from test_attempts table
+    $sql = "DELETE FROM test_attempts WHERE user_id = ? AND test_id = ? AND score < 40";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("ii", $userId, $testId);
+        if ($stmt->execute()) {
+            $stmt->close();
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            exit();
+        }
+    } else {
+        echo "Error preparing statement: " . $conn->error;
+        exit();
+    }
+
+    // Delete from test_attempts table
+
+}
+
 // Display the results page
 ?>
 
@@ -223,69 +268,91 @@ if ($stmt = $conn->prepare($sql)) {
         }
 
         .attempts-table th, .attempts-table td {
-            padding: 10px;
             border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
         }
 
         .attempts-table th {
-            background-color: black;
+            background-color: #4CAF50;
             color: white;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
         }
 
         .button {
             display: inline-block;
             padding: 10px 20px;
-            margin-top: 20px;
             font-size: 1em;
             color: #fff;
-            background-color: #007bff;
+            background-color: #4CAF50;
             border: none;
             border-radius: 5px;
+            text-decoration: none;
             cursor: pointer;
+            margin: 5px;
         }
 
         .button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
+        }
+
+        .button.reload {
+            background-color: #f44336;
+        }
+
+        .button.reload:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="result">
-            <h1>Test Result</h1>
-            <p style="font-size: 1.5em; color: <?php echo ($score >= ($totalQuestions * 0.8)) ? 'green' : 'red'; ?>">
-                Score: <?php echo $score; ?>/<?php echo $totalQuestions; ?>
+            <h1>Test Results</h1>
+            <p><?php echo "Score: $score / $totalQuestions"; ?></p>
+            <p><?php echo "Percentage: " . number_format($percentage, 2) . "%"; ?></p>
+            <p class="<?php echo $score >= 40 ? 'pass' : 'fail'; ?>">
+                <?php echo $score >= 40 ? 'Congratulations! You have passed the test.' : 'Sorry, you have failed the test.'; ?>
             </p>
-            <p style="font-size: 1.5em; color: <?php echo ($score >= ($totalQuestions * 0.8)) ? 'green' : 'red'; ?>">
-                Percentage: <?php echo round($percentage, 2); ?>%
-            </p>
-            <p class="<?php echo ($score >= ($totalQuestions * 0.8)) ? 'pass' : 'fail'; ?>">
-                <?php echo ($score >= ($totalQuestions * 0.8)) ? 'Pass' : 'Fail'; ?>
-            </p>
-           
+            <?php if ($score >= 40): ?>
+                <p>Click the button below to generate your certificate.</p>
+            <?php else: ?>
+                <?php if ($attemptsCount < 3): ?>
+                    <p>You have <?php echo $remainingAttempts; ?> attempt(s) left.</p>
+                <?php else: ?>
+                    <p>You have failed the test three times. You must redo the quizzes.</p>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+
+        <table class="attempts-table">
+            <tr>
+                <th>Attempt</th>
+                <th>Score</th>
+                <th>Date</th>
+            </tr>
+            <?php foreach ($attempts as $index => $attempt): ?>
+                <tr>
+                    <td><?php echo $index + 1; ?></td>
+                    <td><?php echo $attempt['score']; ?></td>
+                    <td><?php echo date("d-m-Y H:i:s", strtotime($attempt['attempt_date'])); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+
+        <div class="button-container">
             <?php if ($score >= 40): ?>
                 <a href="choose_certificate1.php?test_id=<?php echo $testId; ?>" class="button">Generate Certificate</a>
             <?php endif; ?>
-        </div>
-        <div class="attempts">
-            <h2>Previous Attempts</h2>
-            <table class="attempts-table">
-                <tr>
-                    <th>Attempt No</th>
-                    <th>Score</th>
-                    <th>Attempt Date</th>
-                </tr>
-                <?php foreach ($attempts as $index => $attempt): ?>
-                <tr>
-                    <td><?php echo $index + 1; ?></td>
-                    <td><?php echo $attempt['score']; ?>/<?php echo $totalQuestions; ?></td>
-                    <td><?php echo $attempt['attempt_date']; ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
+            <a href="contentpage.php" class="button reload">Reload</a>
         </div>
     </div>
-    <script>
+</body>
+ <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Handle page reload or navigation
             window.addEventListener('beforeunload', function() {
@@ -294,10 +361,4 @@ if ($stmt = $conn->prepare($sql)) {
             });
         });
     </script>
-</body>
-</html>
-
-  
-   
-</body>
 </html>

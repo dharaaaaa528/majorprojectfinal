@@ -1,6 +1,58 @@
 <?php
 include 'topnav.php';  // Make sure this path is correct
+
+// Connect to the database
+require_once 'config.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$userId = $_SESSION['userid'];
+
+// Function to check if the user has completed quizzes 1, 2, 3, and 4
+function hasCompletedRequiredQuizzes($conn, $userId) {
+    $requiredQuizzes = [1, 2, 3, 4];
+    $placeholders = implode(',', array_fill(0, count($requiredQuizzes), '?'));
+    $sql = "SELECT COUNT(*) FROM userprogress WHERE user_id = ? AND quiz_id IN ($placeholders)";
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $types = str_repeat('i', count($requiredQuizzes) + 1);
+        $stmt->bind_param($types, $userId, ...$requiredQuizzes);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+        return $count == count($requiredQuizzes);
+    } else {
+        return false;
+    }
+}
+
+// Function to check if the user has a passing score for a specific test
+function hasPassingScore($conn, $userId, $testId) {
+    $sql = "SELECT score FROM test_attempts WHERE user_id = ? AND test_id = ? AND score >= 40";
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param("ii", $userId, $testId);
+        $stmt->execute();
+        $stmt->store_result();
+        $hasPassingScore = $stmt->num_rows > 0;
+        $stmt->close();
+        return $hasPassingScore;
+    } else {
+        return false;
+    }
+}
+
+$completedRequiredQuizzes = hasCompletedRequiredQuizzes($conn, $userId);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,72 +60,77 @@ include 'topnav.php';  // Make sure this path is correct
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Test</title>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: black;
-        color: white;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-attachment: fixed;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+        }
 
-    nav {
-        background-color: #333;
-        width: 100%;
-    }
+        nav {
+            background-color: #333;
+            width: 100%;
+        }
 
-    .main-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-grow: 1;
-        background-color: rgba(0, 0, 0, 0.1);
-    }
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
 
-    .container {
-        text-align: center;
-        background-color: darkgrey;
-        color: black;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-        max-width: 80%;
-        width: 500px;
-    }
+        .container {
+            text-align: center;
+            background-color: darkgrey;
+            color: black;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            max-width: 80%;
+            width: 500px;
+        }
 
-    .container h1 {
-        font-size: 2em;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+        .container h1 {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
 
-    .container label {
-        font-size: 1em;
-        font-weight: bold;
-    }
+        .container label {
+            font-size: 1em;
+            font-weight: bold;
+        }
 
-    .container button {
-        margin-top: 20px;
-        padding: 25px 80px;
-        font-size: 1.5em;
-        border-radius: 10px;
-        border: none;
-        background-color: black;
-        color: white;
-        cursor: pointer;
-        width: 100%;
-        max-width: 100%;
-    }
+        .container button {
+            margin-top: 20px;
+            padding: 25px 80px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            border: none;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            max-width: 100%;
+        }
 
-    .container button:hover {
-        background-color: grey;
-    }
+        .container button:hover {
+            background-color: grey;
+        }
+
+        .container button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -85,18 +142,27 @@ include 'topnav.php';  // Make sure this path is correct
             <h1>SQL INJECTION TEST</h1>
             <label for="technique">Select a level you would like to attempt:</label>
             <br>
-            <form action="teststartbasic.php" method="get">
-                <button type="submit" name="technique" value="SQL Test Basic">BASIC</button>
-            </form>
-            <form action="teststartintermediate.php" method="get">
-                <button type="submit" name="technique" value="SQL Test Intermediate">INTERMEDIATE</button>
-            </form>
-            <form action="teststartadvanced.php" method="get">
-                <button type="submit" name="technique" value="SQL Test Advanced">ADVANCED</button>
-            </form>
-            <form action="teststartallinone.php" method="get">
-                <button type="submit" name="technique" value="SQL Test AllInOne">ALL IN ONE</button>
-            </form>
+            <?php 
+            // Test IDs for different levels
+            $tests = [
+                'basic' => 1,
+                'intermediate' => 2,
+                'advanced' => 3,
+                'allinone' => 4
+            ];
+
+            // Display buttons conditionally
+            foreach ($tests as $level => $testId) {
+                $hasPassingScore = hasPassingScore($conn, $userId, $testId);
+                $disabled = $hasPassingScore ? 'disabled' : '';
+                $buttonText = strtoupper($level);
+                $valueText = "SQL Test " . ucfirst($level);
+                $formAction = "teststart$level.php";
+                echo "<form action='$formAction' method='get'>
+                        <button type='submit' name='technique' value='$valueText' $disabled>$buttonText</button>
+                      </form>";
+            }
+            ?>
         </div>
     </div>
 </body>
