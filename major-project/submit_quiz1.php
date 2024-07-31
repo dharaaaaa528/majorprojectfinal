@@ -198,8 +198,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             You scored " . $score . " out of 10.<br>
                             Percentage: " . number_format($percentage, 2) . "%<br>
                             Status: " . ($pass ? "Pass" : "Fail") . "
-                        </div>
-                        <h2>Quiz Attempts</h2>
+                        </div>";
+                
+                if ($pass) {
+                    echo "<a href='choose_certificate.php?quiz_id=$quizId' class='button'>Generate Certificate</a>";
+                }
+                
+                echo "<h2>Quiz Attempts</h2>
                         <table>
                             <tr>
                                 <th>Attempt Number</th>
@@ -237,9 +242,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<div class='highest-score'>Highest Score: $highestScore</div>";
                 
                 echo "<a href='contentpage.php' class='button'>Go Back to Content</a>";
-                if ($pass) {
-                    echo "<a href='choose_certificate.php?quiz_id=$quizId' class='button'>Generate Certificate</a>";
-                }
 
                 // JavaScript to disable back button and handle navigation
                 echo "<script>
@@ -251,20 +253,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     })();
                 </script>";
 
-                echo "</div>
-                </body>
-                </html>";
+                echo "</div></body></html>";
 
                 $stmt_fetch_attempts->close();
             } else {
-                echo "Error preparing fetch attempts statement: " . $conn->error;
+                echo "Error preparing attempts fetch statement: " . $conn->error;
             }
         } else {
-            echo "Error executing attempt insertion statement: " . $stmt_insert_attempt->error;
+            echo "Error executing quiz attempt insertion: " . $stmt_insert_attempt->error;
         }
         $stmt_insert_attempt->close();
     } else {
-        echo "Error preparing attempt insertion statement: " . $conn->error;
+        echo "Error preparing quiz attempt insertion statement: " . $conn->error;
     }
+} else {
+    echo "Invalid request method.";
 }
 ?>
