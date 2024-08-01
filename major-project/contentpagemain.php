@@ -106,15 +106,86 @@
                 <p>
                     This technique leverages the fact that the condition <code>1=1</code> is always true, allowing attackers to manipulate SQL queries to return all rows from a table.
                 </p>
-                <h3>Example</h3>
                 <div class="example">
-                    <pre><code>
+<pre><code>
 txtUserId = getRequestString("UserId");
 txtSQL = "SELECT * FROM Users WHERE UserId = " + txtUserId;
 
 If 'txtUserId' is set to '105 OR 1=1', the query becomes:
 
 SELECT * FROM users WHERE '1'='1';
+                    </code></pre>
+                    </div>
+                    <h3>Example</h3>
+                <p> 
+Imagine you have a simple login form on a website where a user enters their username and password. The application takes these inputs and creates an SQL query to check if the credentials are correct.</p>
+            
+                
+                <div class="example">
+                    <pre><code>
+SELECT * FROM users WHERE username = 'user' AND password = 'pass';
+ </code></pre>
+  </div>
+ <p> In this query:<br>
+
+'user' is the username entered by the user.<br>
+'pass' is the password entered by the user. </p>
+<p> Normal Execution
+<br><br>
+When a legitimate user logs in, the inputs are safe, and the query checks for a match in the database. If the credentials are correct, it returns the user’s data.
+
+Injecting <code>1=1</code>
+An attacker might enter something malicious instead of a normal username and password. <br><br> For example:
+
+<code>Username: user' OR 1=1 --
+Password: (left blank) </code>
+<br><br>
+This causes the query to look like this: </p>
+<div class="example">
+<pre><code>
+SELECT * FROM users WHERE username = 'user' OR 1=1 --' AND password = '';
+
+</code></pre>
+</div>
+<p>Breaking Down the Injection <br>
+<code>user' </code>: Closes the username value.
+<code>OR 1=1 </code>: This part always evaluates to true because <code>1=1 </code> is always true.
+--: This is a comment indicator in SQL, which means everything after it is ignored. So, the rest of the query (including the password check) is ignored.
+<br><br>
+Result of the Injection
+<br><br>
+The modified query effectively becomes: </p>
+<div class="example">
+<pre><code>
+SELECT * FROM users WHERE username = 'user' OR 1=1;
+ </code></pre>
+                </div>
+<p>Since 1=1 is always true, the query will return all rows from the users table, potentially allowing the attacker to bypass authentication and log in without knowing the actual password.</p>
+<h3>Why is This Dangerous?</h3>
+<p>
+
+Bypass Authentication: Attackers can gain unauthorized access to the system.<br>
+Data Exposure: Attackers can retrieve all data from the users table.<br>
+Potential Data Manipulation: If the attacker can execute queries, they might also insert, update, or delete data. </p>
+
+                
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent this type of SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use stored procedures.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
+                <div class="example">
+                    <pre><code>
+txtUserId = getRequestString("UserId");
+sql = "SELECT * FROM Users WHERE UserId = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setInt(1, Integer.parseInt(txtUserId));
+resultSet = preparedStmt.executeQuery();
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -128,6 +199,7 @@ SELECT * FROM users WHERE '1'='1';
                 </div>
             </div>
             <div class="technique" id="technique2">
+                <div class="technique" id="technique2">
                 <h2>Technique 2: SQL Injection Based on ""="" is Always True</h2>
                 <p>
                     This technique uses the condition <code>""=""</code> which is always true, allowing attackers to gain unauthorized access to data.
@@ -153,9 +225,72 @@ uName = getRequestString("username");
 uPass = getRequestString("userpassword");
 sql = 'SELECT * FROM Users WHERE Name = "' + uName + '" AND Pass = "' + uPass + '"';
 
-If 'uName' and 'uPass' are set to '=' or '='=', the query becomes:
+If 'uName' and 'uPass' are set to '=' or '='='', the query becomes:
 
 SELECT * FROM Users WHERE Name = "" OR ""="" AND Pass = "" OR ""="";
+                    </code></pre>
+                </div>
+                <h3>Example Scenario</h3>
+                <p>Imagine you have a simple login form on a website where a user enters their username and password. The application takes these inputs and creates an SQL query to check if the credentials are correct.<br><br> Here’s a simple version of what that query might look like:</p>
+                <div class="example">
+                    <pre><code>
+SELECT * FROM users WHERE username = 'user' AND password = 'pass';
+                     </code></pre>
+                </div>
+                <p>In this query:
+<br>
+<code>'user'</code> is the username entered by the user.<br>
+<code>'pass'</code> is the password entered by the user.</p>
+<p>Normal Execution <br>
+When a legitimate user logs in, the inputs are safe, and the query checks for a match in the database. If the credentials are correct, it returns the user’s data.
+<br><br>
+Injecting ""="" <br>
+An attacker might enter something malicious instead of a normal username and password. <br>For example:
+<br>
+Username: <code>user"</code> OR <code>""="</code><br>
+Password: (left blank)</p>
+<p>This causes the query to look like this:</p>
+<div class="example">
+                    <pre><code>
+SELECT * FROM users WHERE username = 'user" OR ""="' AND password = '';
+
+                     </code></pre>
+                </div>
+                <p>Breaking Down the Injection<br>
+1.<code>user" </code>: Closes the username value.<br>
+2.<code>OR ""=" </code>: This part always evaluates to true because ""="" is always true.<br>
+3.<code>AND password = '';</code>: This part is ignored because of the <code>OR ""=""</code>.</p>
+<p>Result of the Injection<br>
+The modified query effectively becomes:</p>
+<div class="example">
+                    <pre><code>
+SELECT * FROM users WHERE username = 'user" OR ""="';
+ </code></pre>
+                </div>
+            <p>Since <code>""="" </code>is always true, the query will return all rows from the <code>users</code> table, potentially allowing the attacker to bypass authentication and log in without knowing the actual password.</p>
+<h3>Why is This Dangerous?</h3>
+<p>1.Bypass Authentication: Attackers can gain unauthorized access to the system.<br>
+2.Data Exposure: Attackers can retrieve all data from the users table.<br>
+3.Potential Data Manipulation: If the attacker can execute queries, they might also insert, update, or delete data.</p>
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent this type of SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use stored procedures.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
+                <div class="example">
+                    <pre><code>
+uName = getRequestString("username");
+uPass = getRequestString("userpassword");
+sql = "SELECT * FROM Users WHERE Name = ? AND Pass = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setString(1, uName);
+preparedStmt.setString(2, uPass);
+resultSet = preparedStmt.executeQuery();
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -170,18 +305,91 @@ SELECT * FROM Users WHERE Name = "" OR ""="" AND Pass = "" OR ""="";
             </div>
             <div class="technique" id="technique3">
                 <h2>Technique 3: SQL Injection Based on Batched SQL Statements</h2>
+                <h3>What are Batched SQL Statements?</h3>
+                <p>Batched SQL statements are multiple SQL commands combined into a single string and sent to the database for execution. This can be efficient, but it also opens up a risk for SQL injection if not handled properly.</p>
+                <h3>How Does SQL Injection with Batched Statements Work?</h3>
                 <p>
-                    This method exploits the ability to run multiple SQL statements in a single query, potentially performing destructive actions like dropping tables.
+                When an application concatenates user input directly into a batch of SQL statements, an attacker can inject additional SQL commands. This can lead to executing unintended SQL statements.
+                </p>
+                <p>
+                    This method exploits the ability to run multiple SQL statements in a single query, potentially allowing an attacker to execute arbitrary commands.
                 </p>
                 <h3>Example</h3>
                 <div class="example">
                     <pre><code>
 txtUserId = getRequestString("UserId");
-txtSQL = "SELECT * FROM Users WHERE UserId = " + txtUserId;
+txtSQL = "SELECT * FROM Users WHERE UserId = " + txtUserId + "; DROP TABLE Students";
 
-If 'txtUserId' is set to '105; DROP TABLE Suppliers', the query becomes:
+If 'txtUserId' is set to '105; DROP TABLE Students', the query becomes:
 
-SELECT * FROM Users WHERE UserId = 105; DROP TABLE Suppliers;
+SELECT * FROM Users WHERE UserId = 105; DROP TABLE Students;
+                    </code></pre>
+                </div>
+                <h3>Example Scenario</h3>
+                <p>Let's say you have an application that updates user information and logs the update in the database. The application might construct a batched SQL statement like this:</p>
+                <div class="example">
+                    <pre><code>
+UPDATE users SET email = 'newemail@example.com' WHERE id = 1; INSERT INTO log (action) VALUES ('Updated email');
+
+                    </code></pre>
+                </div>
+                <p>Normal Execution <br>
+When a legitimate user updates their email, the batched SQL statement runs multiple commands:
+<br><br>
+1.Update the user's email.<br>
+2.Log the update action.</p>
+<h3>Injecting Malicious SQL</h3>
+<p>An attacker can exploit this if user input is not properly sanitized. Suppose the application takes user input for the email and constructs the SQL statement like this:</p>
+<div class="example">
+                    <pre><code>
+$email = $_POST['email']; // User-provided email
+$sql = "UPDATE users SET email = '$email' WHERE id = 1; INSERT INTO log (action) VALUES ('Updated email');";
+$conn->query($sql);
+ </code></pre>
+                </div>
+                <h3>Malicious Input</h3>
+                <p>An attacker might provide an email input like this:</p>
+                <div class="example">
+                    <pre><code>
+newemail@example.com'; DROP TABLE users; --
+ </code></pre>
+                </div>
+               <p>This input causes the SQL statement to be:</p>
+               <div class="example">
+                    <pre><code>
+UPDATE users SET email = 'newemail@example.com'; DROP TABLE users; --' WHERE id = 1; INSERT INTO log (action) VALUES ('Updated email');
+ </code></pre>
+                </div>
+                <p>Breaking Down the Injection <br>
+1.<code>UPDATE users SET email = 'newemail@example.com';</code>: This part updates the email as expected.<br>
+2.<code>DROP TABLE users;:</code> This part drops the <code>users</code>code table, deleting all user data.<br>
+3.<code>--' WHERE id = 1; INSERT INTO log (action) VALUES ('Updated email');</code>: This part is commented out and ignored because of the <code>--</code> (SQL comment syntax).<br><br>
+
+Result of the Injection<br>
+The injected <code>DROP TABLE users;</code> command is executed, leading to the deletion of the entire <code>users</code> table.</p>
+
+<h3>Why is This Dangerous?</h3>
+<p>1.Data Deletion: Attackers can delete critical tables.<br>
+2.Data Manipulation: Attackers can insert, update, or delete data maliciously.<br>
+3.Unauthorized Access: Attackers can execute commands that they shouldn't have permission to run.</p>
+               
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent this type of SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use stored procedures.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
+                <div class="example">
+                    <pre><code>
+txtUserId = getRequestString("UserId");
+sql = "SELECT * FROM Users WHERE UserId = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setInt(1, Integer.parseInt(txtUserId));
+resultSet = preparedStmt.executeQuery();
                     </code></pre>
                 </div>
                 <div class="button-group">
@@ -195,66 +403,89 @@ SELECT * FROM Users WHERE UserId = 105; DROP TABLE Suppliers;
                 </div>
             </div>
             <div class="technique" id="technique4">
-                <h2>Technique 4: Comment-Based SQL Injection</h2>
+                <h2>Technique 4: SQL Injection Based on Blind SQL Injection</h2>
                 <p>
-                    Comment-based SQL injection is a technique used by attackers to manipulate SQL queries by injecting comments into the code. This method exploits vulnerabilities in an application’s handling of SQL queries by including SQL comment syntax to manipulate the intended query structure. This can effectively alter the intended query execution, potentially giving attackers unauthorized access to the database.
+                Blind SQL injection is a type of SQL injection attack where the attacker is unable to see the direct results of their payloads. Instead of retrieving data directly from the database, the attacker infers information based on the application's behavior and responses to crafted SQL queries. This method can be time-consuming but is very effective when the application does not return error messages or query results.
                 </p>
-                <h3>How It Works</h3>
+                <h3>Types of Blind SQL Injection</h3>
                 <p>
-                    <ul>
-                        <li>SQL Comment Syntax: SQL comments can be added using -- (double dash) for single-line comments or /* ... */ for multi-line comments.</li>
-                    </ul>
-                </p>
-                <h3>Example of a Vulnerable Query</h3>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' AND password = 'password';
-                    </code></pre>
-                </div>
-                <h3>Injection Technique</h3>
+                1. Boolean-based Blind SQL Injection:</p>
+
+<li>This technique relies on sending different payloads to the server and observing changes in the application's response to infer information.</li>
+<li>The attacker sends queries that result in a true or false response and observes how the application behaves (e.g., different content or error messages).</li>
+<p>2. Time-based Blind SQL Injection:</p>
+
+<li>This technique uses time delays to infer information from the database.</li>
+<li>The attacker sends queries that cause the database to wait for a specified time before responding, and the response time indicates whether the condition in the query was true or false.</li>
+                
                 <p>
-                    An attacker might input the following into a login form:
+                    Blind SQL Injection method is used when the attacker cannot see the result of the SQL query directly, but can infer information based on the behavior of the application.
                 </p>
-                <p>Username: admin --</p>
-                <p>Password: (leave blank)</p>
-                <h3>Resulting Query</h3>
+                <h3>Example</h3>
+                <p>
+                    Consider a web application that displays a generic error message when a query fails. An attacker can inject SQL that causes a query to fail and observe the application's response.
+                </p>
+                <h4>Injection Example</h4>
                 <div class="example">
                     <pre><code>
-SELECT * FROM Users WHERE username = 'admin' -- AND password = '';
+Original Query:
+SELECT * FROM Users WHERE UserId = '105';
+
+Injection:
+105' AND 1=1 -- (true condition, query succeeds)
+105' AND 1=2 -- (false condition, query fails)
                     </code></pre>
                 </div>
-                <p>Here, -- comments out the rest of the query, turning it into:</p>
+                <h4>Resulting Behavior</h4>
+                <p>
+                    The attacker can determine whether the injection was successful based on the application's response to each query.
+                </p>
+                <h3>Example Scenario</h3>
+                <p>Consider a vulnerable login form with the following SQL query:</p>
                 <div class="example">
                     <pre><code>
-SELECT * FROM Users WHERE username = 'admin';
+SELECT * FROM users WHERE username = 'user' AND password = 'pass';
+
                     </code></pre>
                 </div>
-                <p>Since '1'='1' is always true, this query bypasses authentication.</p>
-                <h3>Detailed Examples</h3>
-                <h4>Basic Authentication Bypass</h4>
-                <p>Original input fields:</p>
+                
+                <h3>Boolean-based Blind SQL Injection</h3>
+                <p>An attacker wants to determine if the application is vulnerable and whether a user with the username "admin" exists.</p>
+                <p>1. True Condition:</p>
+                <li>Input: <code>admin' </code> AND <code>'1'='1</code></li>
+                <li>Resulting Query:<code> SELECT * FROM users WHERE username = 'admin' AND '1'='1' AND password = 'pass';</code></li>
+                <li>If <code>"admin"</code> exists, the query is true and the application behaves normally.</li>
+                
+                <p>2. False Condition:</p>
+                <li>Input:<code> admin'</code> AND<code>'1'='2</code> </li>
+                <li>Resulting Query:<code> SELECT * FROM users WHERE username = 'admin' AND '1'='2' AND password = 'pass';</code></li>
+                <li>The query is false and the application behaves differently (e.g., an error message or a different page).</li>
+                <p>By comparing responses, the attacker can infer whether the username "admin" exists.</p>
+                <h3>Time-based Blind SQL Injection</h3>
+                <p>An attacker can infer information based on the response time of the application.</p>
+                <p>1.If the user <code>"admin"</code> exists:</p>
+                <li>Input:<code> admin' AND IF((SELECT COUNT(*) FROM users WHERE username = 'admin') > 0, SLEEP(5), 0) -- </code></li>
+                <li>Resulting Query:<code> SELECT * FROM users WHERE username = 'admin' AND IF((SELECT COUNT(*) FROM users WHERE username = 'admin') > 0, SLEEP(5), 0) AND password = 'pass';</code></li>
+                <li>If "admin" exists, the query causes a 5-second delay.</li>
+                <p>2.If the user "admin" does not exist:</p>
+                <li>The application responds immediately, indicating the username does not exist.</li>
+                <h3>Mitigation</h3>
+                <p>
+                    To prevent blind SQL injection, you should:
+                </p>
+                <ul>
+                    <li>Use prepared statements and parameterized queries.</li>
+                    <li>Implement proper input validation and sanitization.</li>
+                    <li>Use web application firewalls (WAF) to detect and block SQL injection attempts.</li>
+                </ul>
+                <h4>Example of Prepared Statement</h4>
                 <div class="example">
                     <pre><code>
-SELECT * FROM Users WHERE username = 'admin' AND password = 'password';
-                    </code></pre>
-                </div>
-                <h4>Resulting query:</h4>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' -- AND password = '';
-                    </code></pre>
-                </div>
-                <h4>Multi-line Comments</h4>
-                <p>Using multi-line comments to bypass security checks:</p>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' AND password = 'password' /* login bypass */;
-                    </code></pre>
-                </div>
-                <h4>Resulting query:</h4>
-                <div class="example">
-                    <pre><code>
-SELECT * FROM Users WHERE username = 'admin' /* login bypass */;
+txtUserId = getRequestString("UserId");
+sql = "SELECT * FROM Users WHERE UserId = ?";
+preparedStmt = conn.prepareStatement(sql);
+preparedStmt.setInt(1, Integer.parseInt(txtUserId));
+resultSet = preparedStmt.executeQuery();
                     </code></pre>
                 </div>
                 <div class="button-group">
