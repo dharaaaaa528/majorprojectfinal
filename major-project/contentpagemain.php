@@ -24,12 +24,13 @@
         }
         .sidebar {
             width: 150px !important;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: black;
             color: #fff;
             padding: 20px;
             display: flex;
             flex-direction: column;
-            height: 490vh; /* Ensure the sidebar spans the full height of the viewport */
+            height: 1070vh; /* Ensure the sidebar spans the full height of the viewport */
+            border-right: 2px solid white;
         }
         .sidebar ul {
             list-style-type: none;

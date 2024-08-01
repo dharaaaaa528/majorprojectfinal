@@ -47,7 +47,7 @@ $isAdmin = ($user['role'] === 'admin');
             padding: 20px;
             display: flex;
             flex-direction: column;
-            height: 450vh; /* Ensure the sidebar spans the full height of the viewport */
+            height: 1070vh; /* Ensure the sidebar spans the full height of the viewport */
             border-right: 2px solid white;
         }
         .sidebar ul {
