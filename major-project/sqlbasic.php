@@ -301,70 +301,66 @@ if ($stmt = $conn->prepare($sql)) {
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Timer logic
-            var totalSeconds = 60 * 60; // 60 minutes
-            var timerElement = document.getElementById("timer");
-            var interval = setInterval(function() {
-                totalSeconds--;
-                var minutes = Math.floor(totalSeconds / 60);
-                var seconds = totalSeconds % 60;
-                timerElement.textContent = "Time Left: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    // Timer logic
+    var totalSeconds = 60 * 60; // 60 minutes
+    var timerElement = document.getElementById("timer");
+    var interval = setInterval(function() {
+        totalSeconds--;
+        var minutes = Math.floor(totalSeconds / 60);
+        var seconds = totalSeconds % 60;
+        timerElement.textContent = "Time Left: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 
-                if (totalSeconds <= 0) {
-                    clearInterval(interval);
-                    document.getElementById("quizForm").submit();
-                }
+        if (totalSeconds <= 0) {
+            clearInterval(interval);
+            document.getElementById("quizForm").submit();
+        }
 
-                if (totalSeconds <= 5 * 60) {
-                    timerElement.classList.add("red");
-                }
-            }, 1000);
+        if (totalSeconds <= 5 * 60) {
+            timerElement.classList.add("red");
+        }
+    }, 1000);
 
-            // Side navigation link highlight on answer
-            var answerOptions = document.querySelectorAll('.answer-option');
-            answerOptions.forEach(function(option) {
-                option.addEventListener('change', function() {
-                    var questionId = this.getAttribute('data-question-id');
-                    var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
-                    if (navLink) {
-                        navLink.classList.add('answered');
-                    }
-                });
-            });
-
-            // Handle form submission
-            document.getElementById('quizForm').addEventListener('submit', function(e) {
-                var unansweredQuestions = [];
-                var questionContainers = document.querySelectorAll('.question-container');
-                questionContainers.forEach(function(container) {
-                    var questionId = container.id;
-                    var isAnswered = container.querySelector('input[type="radio"]:checked');
-                    var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
-                    if (!isAnswered) {
-                        unansweredQuestions.push(questionId);
-                        if (navLink) {
-                            navLink.classList.add('blink');
-                        }
-                    } else {
-                        if (navLink) {
-                            navLink.classList.remove('blink');
-                            navLink.classList.add('answered');
-                        }
-                    }
-                });
-
-                if (unansweredQuestions.length > 0) {
-                    e.preventDefault(); // Prevent form submission
-                    
-                    unansweredQuestions.forEach(function(questionId) {
-                        var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
-                        if (navLink) {
-                            navLink.classList.add('blink');
-                        }
-                    });
-                }
-            });
+    // Side navigation link highlight on answer
+    var answerOptions = document.querySelectorAll('.answer-option');
+    answerOptions.forEach(function(option) {
+        option.addEventListener('change', function() {
+            var questionId = this.getAttribute('data-question-id');
+            var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
+            if (navLink) {
+                navLink.classList.add('answered');
+            }
         });
+    });
+
+    // Handle form submission
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+        var unansweredQuestions = [];
+        var questionContainers = document.querySelectorAll('.question-container');
+        questionContainers.forEach(function(container) {
+            var questionId = container.id;
+            var isAnswered = container.querySelector('input[type="radio"]:checked');
+            var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
+            if (!isAnswered) {
+                unansweredQuestions.push(questionId);
+            }
+        });
+
+        if (unansweredQuestions.length > 0) {
+            e.preventDefault(); // Prevent form submission
+
+            unansweredQuestions.forEach(function(questionId) {
+                var navLink = document.querySelector('.sidebar ul li a[href="#' + questionId + '"]');
+                if (navLink) {
+                    // Trigger blink animation
+                    navLink.classList.remove('blink');
+                    void navLink.offsetWidth; // Trigger reflow to restart animation
+                    navLink.classList.add('blink');
+                }
+            });
+        }
+    });
+});
+
     </script>
 </body>
 </html>

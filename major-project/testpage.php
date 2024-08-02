@@ -152,6 +152,10 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
                 <h2><?php echo htmlspecialchars($quiz['name']); ?></h2>
                 <p><?php echo htmlspecialchars($quiz['description']); ?></p>
                 <div class="button-group">
+                    <!-- Assign unique href based on quiz ID -->
+                    <form action="sqltry<?php echo htmlspecialchars($quiz['id']); ?>.php" method="get" style="margin: 0;">
+                        <button type="submit">Try It Now!</button>
+                    </form>
                     <form action="quizstart.php" method="get" style="margin: 0;">
                         <input type="hidden" name="technique" value="<?php echo htmlspecialchars($quiz['name']); ?>">
                         <button type="submit">Attempt Quiz</button>
