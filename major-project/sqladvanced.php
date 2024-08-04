@@ -18,7 +18,7 @@ $isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_log
 $_SESSION['quiz_submitted'] = false;
 
 // Set test ID to 2
-$testId = 2;
+$testId = 3;
 
 if (!isset($_SESSION['quiz_start_time'])) {
     $_SESSION['quiz_start_time'] = time();

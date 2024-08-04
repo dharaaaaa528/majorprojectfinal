@@ -113,6 +113,29 @@ if (!$modalShown) {
         .button:hover {
             background-color: darkgrey;
         }
+        .main-content {
+            text-align: center;
+            padding: 20px;
+            margin-top: 80px; /* Adjust if topnav height is different */
+           background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .main-content h1 {
+            font-size: 50px;
+            margin-bottom: 20px;
+             
+        }
+
+        .main-content p {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+
+        .main-content img {
+            max-width: 100%;
+            height: auto;
+        }
+        
     </style>
 </head>
 <body>
@@ -152,10 +175,10 @@ if (!$modalShown) {
 </script>
 
 <!-- Content area -->
-<div class="content">
-    <h1>Welcome to Our Website</h1>
-    <p>This is a sample text content to show how you can add text to your webpage.</p>
-    <p>Feel free to customize the styling and content to fit your needs.</p>
+<div class="main-content">
+    <h1>Master the Art of Secure Coding</h1>
+    <p>"Learn and Practice SQL & JavaScript Injection Techniques in a safe environment"</p>
+    <p>Not Sure Where To Begin?</p>	
 </div>
 
 <!-- Button container -->
