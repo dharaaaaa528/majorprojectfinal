@@ -142,7 +142,7 @@ if (!$quiz) {
     <div class="container">
         <div class="edit-content">
             <h1>Edit Quiz Content</h1>
-            <form action="edit_content.php" method="post">
+            <form action="edit_content2.php" method="post">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($quiz['id']); ?>">
                 <div class="form-group">
                     <label for="name">Quiz Name:</label>

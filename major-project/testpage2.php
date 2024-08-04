@@ -77,6 +77,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             margin: 20px;
             color: #000; /* Black text for readability */
             overflow-y: auto; /* Ensure content scrolls if too long */
+            position: relative; /* For positioning the delete button */
         }
         .technique {
             margin-bottom: 20px;
@@ -84,6 +85,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             border: 1px solid #ccc;
             border-radius: 10px;
             background-color: #fff; /* White background for each technique block */
+            position: relative; /* For positioning the delete button */
         }
         .technique h2 {
             margin-top: 0;
@@ -127,6 +129,24 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             display: inline-block;
             margin-right: 10px; /* Space between buttons */
         }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .delete-btn:hover {
+            background: darkred;
+        }
     </style>
 </head>
 <body>
@@ -144,6 +164,8 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
         <div class="content">
             <?php foreach ($quizzes as $quiz): ?>
             <div class="technique">
+                <!-- Delete button -->
+                <button class="delete-btn" onclick="confirmDelete(<?php echo htmlspecialchars($quiz['id']); ?>)">X</button>
                 <h2><?php echo htmlspecialchars($quiz['name']); ?></h2>
                 <p><?php echo $quiz['description']; // Render HTML content ?></p>
                 <div class="button-group">
@@ -174,5 +196,14 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
+
+    <!-- JavaScript to handle confirmation dialog -->
+    <script>
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this quiz?')) {
+                window.location.href = 'delete_content2.php?id=' + id;
+            }
+        }
+    </script>
 </body>
 </html>

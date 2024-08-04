@@ -77,8 +77,10 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             margin: 20px;
             color: #000; /* Black text for readability */
             overflow-y: auto; /* Ensure content scrolls if too long */
+            position: relative; /* Position relative to place the delete button */
         }
         .technique {
+            position: relative;
             margin-bottom: 20px;
             padding: 20px;
             border: 1px solid #ccc;
@@ -127,12 +129,37 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             display: inline-block;
             margin-right: 10px; /* Space between buttons */
         }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .delete-btn:hover {
+            background-color: darkred;
+        }
     </style>
+    <script>
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this content?')) {
+                window.location.href = 'delete_content.php?id=' + id;
+            }
+        }
+    </script>
 </head>
 <body>
-    <?php 
-    include 'topnav.php'; 
-    ?>
+    <?php include 'topnav.php'; ?>
     <div class="container">
         <div class="sidebar">
             <ul>
@@ -140,10 +167,11 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
                 <li><a href="contentpage.php">SQL techniques</a></li>
                 <li><a href="contentpage2.php">XSScript techniques</a></li>
             </ul>
-        </div>       
+        </div>
         <div class="content">
             <?php foreach ($quizzes as $quiz): ?>
             <div class="technique">
+                <button class="delete-btn" onclick="confirmDelete(<?php echo htmlspecialchars($quiz['id']); ?>)">X</button>
                 <h2><?php echo htmlspecialchars($quiz['name']); ?></h2>
                 <p><?php echo $quiz['description']; // Render HTML content ?></p>
                 <div class="button-group">
