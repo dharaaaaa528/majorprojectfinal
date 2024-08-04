@@ -18,7 +18,7 @@ $isGoogleLoggedIn = isset($_SESSION['google_loggedin']) && $_SESSION['google_log
 $_SESSION['quiz_submitted'] = false;
 
 // Set test ID to 2
-$testId = 3;
+$testId = 2;
 
 if (!isset($_SESSION['quiz_start_time'])) {
     $_SESSION['quiz_start_time'] = time();
@@ -31,7 +31,7 @@ $questions = []; // Initialize $questions as an empty array
 
 // Fetch 50 random question IDs first
 $questionIds = [];
-$sql = "SELECT question_id FROM test_questions WHERE test_id = ? ORDER BY RAND() LIMIT 30";
+$sql = "SELECT question_id FROM test_questions WHERE test_id = ? ORDER BY RAND() LIMIT 50";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $testId);
     $stmt->execute();
@@ -79,7 +79,7 @@ if ($stmt = $conn->prepare($sql)) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SQL Intermediate Test</title>
+    <title>SQL Advanced Test</title>
     <style>
         body {
             background-image: url('background.jpg');
