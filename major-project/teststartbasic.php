@@ -89,6 +89,8 @@ include 'topnav.php';  // Make sure this path is correct
         <p>6. Click on the "Click here to start" button to start the quiz.</p>
         <p>7. Note: The timer would automatically start once you click on the button.</p>
         <p>8. Note: Failure to click on the generate certificate button would result in no certificate being generated.</p>
+        <p>9. Note: If you fail the test you would have to redo the SQL/XSS quizzes before you can try the test again.</p>
+        <p>10. Note: On passing the test the test button for that level would be locked.</p>
         
         <h4>All the best!!</h4>
             

@@ -81,12 +81,16 @@ include 'topnav.php';  // Make sure this path is correct
         ?>
         
         <h3>Please read the below details carefully!</h3>
-        <p>1. Duration: 20 Minutes</p>
-        <p>2. Marks to pass: 70% (7/10)</p>
-        <p>3. There are 10 questions in this test. To pass and get a certificate of completion you would be required to get at least 7 of them correct. Try to complete as many questions as you can.</p>
-        <p>4. The test would automatically submit at the end of 20 minutes. No changes after that would be registered.</p>
-        <p>5. Click on the "Click here to start" button to start the quiz.</p>
-        <p>6. Note: The timer would automatically start once you click on the button.</p>
+        <p>1. Duration: 60 Minutes</p>
+        <p>2. Marks to pass: 80% (40/50)</p>
+        <p>3. There are 50 OPEN ENDED QUESTIONS in this test. To pass and get a certificate of completion you would be required to get at least 40 of them correct. Try to complete as many questions as you can.</p>
+        <p>4. Click on the generate certificate after the end of the test to get your certificate</p>
+        <p>5. The test would automatically submit at the end of 60 minutes. No changes after that would be registered.</p>
+        <p>6. Click on the "Click here to start" button to start the quiz.</p>
+        <p>7. Note: The timer would automatically start once you click on the button.</p>
+        <p>8. Note: Failure to click on the generate certificate button would result in no certificate being generated.</p>
+        <p>9. Note: If you fail the test you would have to redo the SQL/XSS quizzes before you can try the test again.</p>
+        <p>10. Note: On passing the test the test button for that level would be locked.</p>
         <h4>All the best!!</h4>
             
         <div class="start-button">
