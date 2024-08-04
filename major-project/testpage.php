@@ -171,7 +171,9 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
         <div class="content">
             <?php foreach ($quizzes as $quiz): ?>
             <div class="technique">
+                <?php if ($isAdmin): ?>
                 <button class="delete-btn" onclick="confirmDelete(<?php echo htmlspecialchars($quiz['id']); ?>)">X</button>
+                <?php endif; ?>
                 <h2><?php echo htmlspecialchars($quiz['name']); ?></h2>
                 <p><?php echo $quiz['description']; // Render HTML content ?></p>
                 <div class="button-group">

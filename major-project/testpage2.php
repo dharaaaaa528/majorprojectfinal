@@ -150,9 +150,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
     </style>
 </head>
 <body>
-    <?php 
-    include 'topnav.php'; 
-    ?>
+    <?php include 'topnav.php'; ?>
     <div class="container">
         <div class="sidebar">
             <ul>
@@ -164,8 +162,10 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
         <div class="content">
             <?php foreach ($quizzes as $quiz): ?>
             <div class="technique">
-                <!-- Delete button -->
+                <?php if ($isAdmin): ?>
+                <!-- Delete button visible only to admin -->
                 <button class="delete-btn" onclick="confirmDelete(<?php echo htmlspecialchars($quiz['id']); ?>)">X</button>
+                <?php endif; ?>
                 <h2><?php echo htmlspecialchars($quiz['name']); ?></h2>
                 <p><?php echo $quiz['description']; // Render HTML content ?></p>
                 <div class="button-group">
@@ -187,12 +187,10 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <?php endforeach; ?>
             <div class="create-quiz-button">
-                <?php
-                if ($isAdmin) {
-                    echo '<a href="create_quiz.php" class="btn">Create Quiz</a>';
-                    echo '<a href="add_content.php" class="btn">Add Content</a>';
-                }
-                ?>
+                <?php if ($isAdmin): ?>
+                <a href="create_quiz.php" class="btn">Create Quiz</a>
+                <a href="add_content.php" class="btn">Add Content</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
