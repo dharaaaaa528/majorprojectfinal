@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'] ?? '';
     $type = $_POST['type'] ?? '';
     $technique_no = $_POST['technique_no'] ?? '';
+
     
     // Validate the input
     if (empty($name) || empty($type) || empty($technique_no)) {
@@ -37,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result) {
             $success = 'Content added successfully!';
         } else {
-            $error = 'Failed to add quiz. Please try again.';
+            $error = 'Failed to add content. Please try again.';
         }
     }
 }
@@ -49,7 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Content</title>
-    <link rel="stylesheet" href="#">
+    <script src="https://cdn.tiny.cloud/1/7ftyh23mussj5lq3rapie4ao0yw95h1pp6jrgbr7uoxzo6gs/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#description',
+            plugins: 'advlist autolink lists link image charmap preview anchor textcolor',
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        });
+    </script>
     <style>
         body {
             margin: 0;
@@ -130,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" id="name" name="name" required>
 
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4"></textarea>
+                <textarea id="description" name="description" rows="10"></textarea>
 
                 <label for="type">Type:</label>
                 <select id="type" name="type" required>
@@ -141,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="technique_no">Technique Number:</label>
                 <input type="number" id="technique_no" name="technique_no" required>
 
-                <button type="submit">Add Quiz</button>
+                <button type="submit">Add Content</button>
             </form>
         </div>
     </div>
