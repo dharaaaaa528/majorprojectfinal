@@ -171,43 +171,50 @@ $remainingAttempts = $totalAttemptsAllowed - $attemptsCount;
 
 // If the user fails the quiz three times, delete all relevant records
 if ($failedAttemptsCount >= 3 && $score < 40) {
-    $quizIds = [1, 2, 3, 4];
-    $quizIdsPlaceholder = implode(',', array_fill(0, count($quizIds), '?'));
+    $quizIds = [];
+    if (in_array($testId, [1, 2, 3, 4])) {
+        $quizIds = [1, 2, 3, 4];
+    } elseif (in_array($testId, [5, 6, 7, 8])) {
+        $quizIds = [5, 6, 7, 8];
+    }
     
-    // Delete from userprogress table
-    $sql = "DELETE FROM userprogress WHERE user_id = ? AND quiz_id IN ($quizIdsPlaceholder)";
-    if ($stmt = $conn->prepare($sql)) {
-        $types = str_repeat('i', count($quizIds) + 1);
-        $params = array_merge([$userId], $quizIds);
-        $stmt->bind_param($types, ...$params);
-        if ($stmt->execute()) {
-            $stmt->close();
+    if (!empty($quizIds)) {
+        $quizIdsPlaceholder = implode(',', array_fill(0, count($quizIds), '?'));
+        
+        // Delete from userprogress table
+        $sql = "DELETE FROM userprogress WHERE user_id = ? AND quiz_id IN ($quizIdsPlaceholder)";
+        if ($stmt = $conn->prepare($sql)) {
+            $types = str_repeat('i', count($quizIds) + 1);
+            $params = array_merge([$userId], $quizIds);
+            $stmt->bind_param($types, ...$params);
+            if ($stmt->execute()) {
+                $stmt->close();
+            } else {
+                echo "Error executing statement: " . $stmt->error;
+                exit();
+            }
         } else {
-            echo "Error executing statement: " . $stmt->error;
+            echo "Error preparing statement: " . $conn->error;
             exit();
         }
-    } else {
-        echo "Error preparing statement: " . $conn->error;
-        exit();
-    }
-    // Delete from test_attempts table
-    $sql = "DELETE FROM test_attempts WHERE user_id = ? AND test_id = ? AND score < 40";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("ii", $userId, $testId);
-        if ($stmt->execute()) {
-            $stmt->close();
+        
+        // Delete from test_attempts table
+        $sql = "DELETE FROM test_attempts WHERE user_id = ? AND test_id = ? AND score < 40";
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("ii", $userId, $testId);
+            if ($stmt->execute()) {
+                $stmt->close();
+            } else {
+                echo "Error executing statement: " . $stmt->error;
+                exit();
+            }
         } else {
-            echo "Error executing statement: " . $stmt->error;
+            echo "Error preparing statement: " . $conn->error;
             exit();
         }
-    } else {
-        echo "Error preparing statement: " . $conn->error;
-        exit();
     }
-
-    // Delete from test_attempts table
-
 }
+
 
 // Display the results page
 ?>

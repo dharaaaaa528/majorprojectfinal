@@ -177,11 +177,18 @@ $totalAttemptsAllowed = 3;
 $attemptsCount = count($attempts);
 $remainingAttempts = $totalAttemptsAllowed - $attemptsCount;
 
-// If the user fails the quiz three times, delete all relevant records
-if ($failedAttemptsCount >= 3 && $score < 40) {
+// Determine the quiz IDs to delete based on the test_id
+$quizIds = [];
+if (in_array($testId, [1, 2, 3, 4])) {
     $quizIds = [1, 2, 3, 4];
+} elseif (in_array($testId, [5, 6, 7, 8])) {
+    $quizIds = [5, 6, 7, 8];
+}
+
+// If the user fails the quiz three times, delete all relevant records
+if ($failedAttemptsCount >= 3 && $score < 40 && !empty($quizIds)) {
     $quizIdsPlaceholder = implode(',', array_fill(0, count($quizIds), '?'));
-    
+
     // Delete from userprogress table
     $sql = "DELETE FROM userprogress WHERE user_id = ? AND quiz_id IN ($quizIdsPlaceholder)";
     if ($stmt = $conn->prepare($sql)) {
@@ -198,6 +205,8 @@ if ($failedAttemptsCount >= 3 && $score < 40) {
         echo "Error preparing statement: " . $conn->error;
         exit();
     }
+
+    // Delete from test_attempts table
     $sql = "DELETE FROM test_attempts WHERE user_id = ? AND test_id = ? AND score < 40";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ii", $userId, $testId);
@@ -211,13 +220,10 @@ if ($failedAttemptsCount >= 3 && $score < 40) {
         echo "Error preparing statement: " . $conn->error;
         exit();
     }
-    // Delete from test_attempts table
-    
 }
 
 // Display the results page
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
