@@ -128,9 +128,12 @@ if ($stmt = $conn->prepare($sql)) {
             margin-bottom: 10px;
         }
 
-        .option input {
-            margin-right: 10px;
-        }
+       .options input {
+        margin-right: 10px;
+        width: 100%; /* Adjust this value to set the desired width */
+        padding: 10px; /* Add padding for better appearance */
+        box-sizing: border-box; /* Ensure padding and border are included in the total width */
+    }
 
         .submit-btn {
             margin-top: 20px;
