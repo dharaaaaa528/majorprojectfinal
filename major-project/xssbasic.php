@@ -268,7 +268,7 @@ if ($stmt = $conn->prepare($sql)) {
     <!-- Main Quiz Container -->
     <div class="main-content">
         <div class="container">
-            <h1>SQL Basic Test</h1>
+            <h1>XSS Basic Test</h1>
             <div class="timer" id="timer">Time Left: 60:00</div>
             <div class="quiz-content">
                 <form id="quizForm" action="submit_test1.php" method="POST">
