@@ -34,17 +34,17 @@ function hasCompletedRequiredQuizzes($conn, $userId) {
     }
 }
 
-// Function to check if the user has a passing score for a specific test
-function hasPassingScore($conn, $userId, $testId) {
-    $sql = "SELECT score FROM test_attempts WHERE user_id = ? AND test_id = ? AND score >= 40";
+// Function to check if the user has any progress for a specific test
+function hasTestProgress($conn, $userId, $testId) {
+    $sql = "SELECT COUNT(*) FROM test_progress WHERE user_id = ? AND test_id = ?";
     $stmt = $conn->prepare($sql);
     if ($stmt) {
         $stmt->bind_param("ii", $userId, $testId);
         $stmt->execute();
-        $stmt->store_result();
-        $hasPassingScore = $stmt->num_rows > 0;
+        $stmt->bind_result($count);
+        $stmt->fetch();
         $stmt->close();
-        return $hasPassingScore;
+        return $count > 0; // Return true if there is progress
     } else {
         return false;
     }
@@ -148,13 +148,13 @@ $completedRequiredQuizzes = hasCompletedRequiredQuizzes($conn, $userId);
                 'basic' => 1,
                 'intermediate' => 2,
                 'advanced' => 3,
-                'allinone' => 4
+                
             ];
 
             // Display buttons conditionally
             foreach ($tests as $level => $testId) {
-                $hasPassingScore = hasPassingScore($conn, $userId, $testId);
-                $disabled = $hasPassingScore ? 'disabled' : '';
+                $hasTestProgress = hasTestProgress($conn, $userId, $testId);
+                $disabled = $hasTestProgress ? 'disabled' : '';
                 $buttonText = strtoupper($level);
                 $valueText = "SQL Test " . ucfirst($level);
                 $formAction = "teststart$level.php";
@@ -167,4 +167,3 @@ $completedRequiredQuizzes = hasCompletedRequiredQuizzes($conn, $userId);
     </div>
 </body>
 </html>
-
