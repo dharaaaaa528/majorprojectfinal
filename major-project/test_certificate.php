@@ -17,7 +17,7 @@ if ((!isset($_SESSION["login"]) || $_SESSION["login"] !== true) && (!isset($_SES
 $userId = $_SESSION["userid"];
 
 // Fetch all certificates for the user
-$sql = "SELECT certificate_id, test_id, file_path FROM test_certificates WHERE user_id = ?";
+$sql = "SELECT certificate_id, test_id, file_path, certificate_date FROM test_certificates WHERE user_id = ?";
 $certificates = [];
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $userId);
@@ -40,24 +40,29 @@ if ($stmt = $conn->prepare($sql)) {
     <title>My Certificates</title>
     <style>
         .certificate-container {
-       
             border-radius: 25px;
             margin: 20px 0;
             position: relative;
-           
-           
         }
-        .certificate-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-       
-        .certificate-image {
+        .certificate-table {
             width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .certificate-table th, .certificate-table td {
+            border: 3px solid black;
+            padding: 8px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        .certificate-table th {
+            background-color: #f2f2f2;
+            color: black;
+        }
+        .certificate-image {
+            width: 150px; /* Adjust size as needed */
             height: auto;
-            cursor: pointer;
+            cursor: pointer; /* Indicate that the image is clickable */
         }
         .course-name {
             margin-top: 10px;
@@ -74,7 +79,6 @@ if ($stmt = $conn->prepare($sql)) {
             padding-top: 20px;
             color: #fff;
             border-right: 2px solid white;
-            
         }
         .sidebar a {
             padding: 15px;
@@ -98,12 +102,10 @@ if ($stmt = $conn->prepare($sql)) {
             overflow-y: auto;
             background-color: rgba(0, 0, 0, 0.7);
             height: 100vh;
-             
         }
-         .sub-menu {
+        .sub-menu {
             padding-left: 30px;
         }
-
         .sub-menu a {
             font-size: 16px;
         }
@@ -116,17 +118,31 @@ if ($stmt = $conn->prepare($sql)) {
             <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
         </div>
         <a href="progress.php" class="progress-link"><u>Progress</u></a>
-        <a href="certificate.php" ><u> Quiz Certifications</u></a>
-           <a href="test_certificate.php" class="certificate-link"><u> Test Certifications</u></a>
+        <a href="certificate.php" ><u>Quiz Certifications</u></a>
+        <a href="test_certificate.php" class="certificate-link"><u>Test Certifications</u></a>
         <a href="settings.php"><u>Settings</u></a>
     </div>
     <div class="main-content">
         <div class="certificate-container">
             <h1>Your Certificates</h1>
-            <div class="certificate-grid">
-                <?php if (count($certificates) > 0): ?>
-                    <?php foreach ($certificates as $certificate): ?>
-                        <?php
+            <?php
+            // Initialize categories
+            $categories = [
+                'SQL' => [1, 2, 3, 4],
+                'XSS' => [5, 6, 7, 8]
+            ];
+
+            foreach ($categories as $category => $testIds) {
+                echo "<h2>$category Certificates</h2>";
+                echo "<table class='certificate-table'>";
+                echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
+                echo "<tbody>";
+
+                $hasCategoryCertificates = false;
+                foreach ($certificates as $certificate) {
+                    if (in_array($certificate['test_id'], $testIds)) {
+                        $hasCategoryCertificates = true;
+
                         // Fetch the course name
                         $courseSql = "SELECT name FROM tests WHERE test_id = ?";
                         if ($courseStmt = $conn->prepare($courseSql)) {
@@ -145,24 +161,28 @@ if ($stmt = $conn->prepare($sql)) {
                             // If file does not exist, use a placeholder
                             $filePath = 'path/to/placeholder.jpg'; // Make sure this placeholder file exists
                         }
-                        ?>
-                        <div class="certificate-item">
-                            <a href="<?php echo htmlspecialchars($filePath); ?>" target="_blank">
-                                <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Certificate Image" class="certificate-image">
-                            </a>
-                            <p class="course-name">Course: <?php echo htmlspecialchars($courseName); ?></p>
-                            <a href="<?php echo htmlspecialchars($filePath); ?>" download>Download Certificate</a>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No certificates found.</p>
-                <?php endif; ?>
-            </div>
+
+                        // Format date and time
+                        $createdAt = date('d-m-Y H:i:s', strtotime($certificate['certificate_date'])); // Format date and time
+
+                        echo "<tr>";
+                        echo "<td><img src='" . htmlspecialchars($filePath) . "' alt='Certificate Image' class='certificate-image' onclick=\"window.open('" . htmlspecialchars($filePath) . "', '_blank')\"></td>";
+                        echo "<td>" . htmlspecialchars($courseName) . "</td>";
+                        echo "<td>" . htmlspecialchars($createdAt) . "</td>";
+                        echo "<td><a href='" . htmlspecialchars($filePath) . "' download>Download</a></td>";
+                        echo "</tr>";
+                    }
+                }
+
+                if (!$hasCategoryCertificates) {
+                    echo "<tr><td colspan='4'>No certificates found for this category.</td></tr>";
+                }
+
+                echo "</tbody></table>";
+            }
+            ?>
         </div>
     </div>
 </body>
 </html>
-
-
-
 
