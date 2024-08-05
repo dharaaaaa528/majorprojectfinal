@@ -37,15 +37,15 @@ if (isset($_SESSION['username'])) {
 $created_date = date("Y-m-d H:i:s");
 
 // Check if 'questions' array is set and is an array
-if (isset($_POST['questions']) && is_array($_POST['questions'])) {
-    foreach ($_POST['questions'] as $index => $questionData) {
-        // Initialize question variables with a default empty string
-        $question = isset($questionData['question']) ? $questionData['question'] : '';
-        $option1 = isset($questionData['option1']) ? $questionData['option1'] : '';
-        $option2 = isset($questionData['option2']) ? $questionData['option2'] : '';
-        $option3 = isset($questionData['option3']) ? $questionData['option3'] : '';
-        $option4 = isset($questionData['option4']) ? $questionData['option4'] : '';
-        $correct_option = isset($questionData['correct_option']) ? intval($questionData['correct_option']) : 0;
+if (isset($_POST['question_text']) && is_array($_POST['question_text'])) {
+    foreach ($_POST['question_text'] as $index => $questionText) {
+        // Initialize question variables
+        $question = $questionText;
+        $option1 = isset($_POST['option_1'][$index]) ? $_POST['option_1'][$index] : '';
+        $option2 = isset($_POST['option_2'][$index]) ? $_POST['option_2'][$index] : '';
+        $option3 = isset($_POST['option_3'][$index]) ? $_POST['option_3'][$index] : '';
+        $option4 = isset($_POST['option_4'][$index]) ? $_POST['option_4'][$index] : '';
+        $correct_option = isset($_POST['correct_option'][$index]) ? intval($_POST['correct_option'][$index]) : 0;
         
         // Validate correct_option
         if ($correct_option < 1 || $correct_option > 4) {

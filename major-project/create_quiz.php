@@ -1,3 +1,30 @@
+<?php
+require_once 'config.php';
+require_once 'header.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Fetch quizzes from the database
+$quizzes = [];
+$sql = "SELECT id, name FROM quizzes";
+if ($result = $conn->query($sql)) {
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $quizzes[] = $row;
+        }
+    }
+} else {
+    echo "Error: " . $conn->error;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +35,7 @@
         :root {
             --container-background-light: #ffffff;
             --container-background-dark: #2c2c2c;
-            --text-color-light: #333333;
+            --text-color-light: black;
             --text-color-dark: #ffffff;
             --button-background-light: #007bff;
             --button-background-dark: #0056b3;
@@ -20,24 +47,26 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-image: url('background.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         .container {
             background-color: var(--container-background-light);
             padding: 30px;
-            border-radius: 15px; /* Rounded corners */
+            border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             max-width: 500px;
             width: 100%;
             transition: background-color 0.3s, color 0.3s;
+            margin: auto;
+            color: var(--text-color-light);
         }
 
         .dark-mode .container {
@@ -45,10 +74,15 @@
             color: var(--text-color-dark);
         }
 
+        .dark-mode body {
+            color: var(--text-color-dark);
+            background-color: var(--container-background-dark);
+        }
+
         h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: inherit; /* Inherit color from container */
+            color: inherit;
         }
 
         form {
@@ -63,11 +97,12 @@
         label {
             display: block;
             margin-bottom: 5px;
-            color: inherit; /* Inherit color from container */
+            color: inherit;
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="number"],
+        select {
             width: calc(100% - 22px);
             padding: 10px;
             margin-top: 5px;
@@ -162,7 +197,7 @@
         }
 
         .back-button-link {
-            text-decoration: none; /* Remove underline from link */
+            text-decoration: none;
         }
 
         .back-button {
@@ -236,57 +271,59 @@
             text-decoration: underline;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h2>Create New Quiz Questions</h2>
-        <form id="quiz-form" action="store_quiz.php" method="post">
+        <form id="quiz-form">
             <div class="form-group">
-                <label for="quiz_id">Quiz ID:</label>
-                <input type="number" id="quiz_id" name="quiz_id" required>
+                <label for="quiz_id">Quiz:</label>
+                <select id="quiz_id" name="quiz_id" required>
+                    <?php if (count($quizzes) > 0): ?>
+                        <?php foreach ($quizzes as $quiz): ?>
+                            <option value="<?= $quiz['id'] ?>"><?= $quiz['name'] ?> (ID: <?= $quiz['id'] ?>)</option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No quizzes available</option>
+                    <?php endif; ?>
+                </select>
             </div>
 
             <div id="questions-container">
                 <!-- Initial Question Block -->
                 <div class="question-container">
                     <div class="form-group">
-                        <label for="question_1">Question:</label>
-                        <input type="text" id="question_1" name="questions[0][question]" required>
+                        <label for="question_text">Question:</label>
+                        <input type="text" name="question_text[]" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="option1">Option 1:</label>
-                        <input type="text" id="option1" name="questions[0][option1]" required>
+                        <label for="option_1">Option 1:</label>
+                        <input type="text" name="option_1[]" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="option2">Option 2:</label>
-                        <input type="text" id="option2" name="questions[0][option2]" required>
+                        <label for="option_2">Option 2:</label>
+                        <input type="text" name="option_2[]" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="option3">Option 3:</label>
-                        <input type="text" id="option3" name="questions[0][option3]" required>
+                        <label for="option_3">Option 3:</label>
+                        <input type="text" name="option_3[]" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="option4">Option 4:</label>
-                        <input type="text" id="option4" name="questions[0][option4]" required>
+                        <label for="option_4">Option 4:</label>
+                        <input type="text" name="option_4[]" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="correct_option_1">Correct Option (1-4):</label>
-                        <input type="number" id="correct_option_1" name="questions[0][correct_option]" min="1" max="4" required>
+                        <label for="correct_option">Correct Option:</label>
+                        <input type="number" name="correct_option[]" min="1" max="4" required>
                     </div>
-
-                    <span class="remove-question" onclick="removeQuestion(this)">Remove Question</span>
                 </div>
             </div>
 
-            <button type="button" onclick="addQuestion()">Add Another Question</button>
-            <input type="submit" value="Create Quiz Questions">
+            <button type="button" id="add-question">Add Another Question</button>
+            <input type="submit" value="Submit">
         </form>
-        <div class="switch-container">
+        <div id="result"></div>
             <a href="contentpage.php" class="back-button-link">
                 <button class="back-button">
                     <div class="icon">
@@ -298,68 +335,80 @@
                     <p class="text">Go Back</p>
                 </button>
             </a>
+        <div class="switch-container">
+            <span>Toggle Dark Mode</span>
             <label class="switch">
-                <input type="checkbox" id="mode-toggle">
+                <input type="checkbox">
                 <span class="slider"></span>
             </label>
         </div>
     </div>
-
     <script>
-        let questionIndex = 1; // Start indexing from 1
+        document.addEventListener("DOMContentLoaded", function() {
+            // Toggle Dark Mode
+            const toggleSwitch = document.querySelector('.switch input[type="checkbox"]');
+            const container = document.querySelector('.container');
+            const body = document.body;
 
-        function addQuestion() {
-            questionIndex++;
-            const container = document.getElementById('questions-container');
-            const questionBlock = document.createElement('div');
-            questionBlock.classList.add('question-container');
+            toggleSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    body.classList.add('dark-mode');
+                    container.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                    container.classList.remove('dark-mode');
+                }
+            });
 
-            questionBlock.innerHTML = `
-                <div class="form-group">
-                    <label for="question_${questionIndex}">Question:</label>
-                    <input type="text" id="question_${questionIndex}" name="questions[${questionIndex - 1}][question]" required>
-                </div>
+            // Add another question
+            $('#add-question').click(function() {
+                const questionHtml = `
+                    <div class="question-container">
+                        <div class="form-group">
+                            <label for="question_text">Question:</label>
+                            <input type="text" name="question_text[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="option_1">Option 1:</label>
+                            <input type="text" name="option_1[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="option_2">Option 2:</label>
+                            <input type="text" name="option_2[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="option_3">Option 3:</label>
+                            <input type="text" name="option_3[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="option_4">Option 4:</label>
+                            <input type="text" name="option_4[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correct_option">Correct Option:</label>
+                            <input type="number" name="correct_option[]" min="1" max="4" required>
+                        </div>
+                    </div>`;
+                $('#questions-container').append(questionHtml);
+            });
 
-                <div class="form-group">
-                    <label for="option1_${questionIndex}">Option 1:</label>
-                    <input type="text" id="option1_${questionIndex}" name="questions[${questionIndex - 1}][option1]" required>
-                </div>
+            // Handle form submission via AJAX
+            $('#quiz-form').submit(function(e) {
+                e.preventDefault();
 
-                <div class="form-group">
-                    <label for="option2_${questionIndex}">Option 2:</label>
-                    <input type="text" id="option2_${questionIndex}" name="questions[${questionIndex - 1}][option2]" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="option3_${questionIndex}">Option 3:</label>
-                    <input type="text" id="option3_${questionIndex}" name="questions[${questionIndex - 1}][option3]" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="option4_${questionIndex}">Option 4:</label>
-                    <input type="text" id="option4_${questionIndex}" name="questions[${questionIndex - 1}][option4]" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="correct_option_${questionIndex}">Correct Option (1-4):</label>
-                    <input type="number" id="correct_option_${questionIndex}" name="questions[${questionIndex - 1}][correct_option]" min="1" max="4" required>
-                </div>
-
-                <span class="remove-question" onclick="removeQuestion(this)">Remove Question</span>
-            `;
-
-            container.appendChild(questionBlock);
-        }
-
-        function removeQuestion(element) {
-            element.parentElement.remove();
-        }
-
-        const toggle = document.getElementById('mode-toggle');
-        const container = document.querySelector('.container');
-
-        toggle.addEventListener('change', () => {
-            document.body.classList.toggle('dark-mode');
+                $.ajax({
+                    type: 'POST',
+                    url: 'store_quiz.php',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        $('#result').html('<p>Quiz submitted successfully!</p>');
+                        $('#quiz-form')[0].reset();
+                    },
+                    error: function() {
+                        $('#result').html('<p>There was an error submitting the quiz. Please try again.</p>');
+                    }
+                });
+            });
         });
     </script>
 </body>

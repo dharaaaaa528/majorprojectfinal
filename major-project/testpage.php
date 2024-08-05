@@ -46,14 +46,14 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             min-height: 100vh; /* Ensure the container spans the full height of the viewport */
         }
         .sidebar {
-            width: 150px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
+            width: 150px !important;
+            background-color:black;
+            color: black;
             padding: 20px;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Ensure the sidebar spans the full height of the viewport */
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for visual separation */
+            height: 1070vh; /* Ensure the sidebar spans the full height of the viewport */
+            border-right: 2px solid white; /* Optional shadow for visual separation */
         }
         .sidebar ul {
             list-style-type: none;
