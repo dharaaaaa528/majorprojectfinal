@@ -128,9 +128,13 @@ if ($stmt = $conn->prepare($sql)) {
             margin-bottom: 10px;
         }
 
-        .option input {
-            margin-right: 10px;
-        }
+        .options input {
+        margin-right: 10px;
+        width: 100%; /* Adjust this value to set the desired width */
+        padding: 10px; /* Add padding for better appearance */
+        box-sizing: border-box; /* Ensure padding and border are included in the total width */
+    }
+        
 
         .submit-btn {
             margin-top: 20px;
@@ -262,7 +266,7 @@ if ($stmt = $conn->prepare($sql)) {
     <!-- Main Quiz Container -->
     <div class="main-content">
         <div class="container">
-            <h1>SQL Intermediate Test</h1>
+            <h1>SQL Advanced Test</h1>
             <div class="timer" id="timer">Time Left: 60:00</div>
             <div class="quiz-content">
                 <form id="quizForm" action="submit_test.php" method="POST">
