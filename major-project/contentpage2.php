@@ -96,7 +96,7 @@ include 'header.php';
     <div class="container">
         <div class="sidebar">
             <ul>
-                <li><a href="profile.php">Profile</a></li>
+                <li><a href="progress.php">Progress</a></li>
                 <li><a href="contentpage.php">SQL techniques</a></li>
                 <li><a href="contentpage2.php">XSScript techniques</a></li>
             </ul>
