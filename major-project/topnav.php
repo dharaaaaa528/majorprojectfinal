@@ -271,6 +271,7 @@ if (isset($_GET['search'])) {
             <a href="profile.php">Profile</a>
             <a href="settings.php">Settings</a>
             <a href="logout.php">Logout</a>
+            <a href="delete_account.php">Delete Account</a>
         </div>
     </div>
 </div>
