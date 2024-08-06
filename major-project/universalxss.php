@@ -10,27 +10,22 @@ include 'header.php';  // Make sure this path is correct
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
+            background-color: #f0f0f0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
-            background-size: cover;
+            margin: 0;
             background-repeat: no-repeat;
+            background-position: center;
             background-attachment: fixed;
-            color: #000;
+            color: black;
+            padding: 0;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            color: black;
+        html, body {
+            height: 100%;
         }
 
         h1 {
@@ -38,64 +33,79 @@ include 'header.php';  // Make sure this path is correct
             margin-bottom: 20px;
         }
 
-        form {
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 600px;
+            z-index: 1; /* Ensure the container is above the background image */
+            color: black;
+        }
+        .container h1 {
             margin-bottom: 20px;
         }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
+        .container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center elements inside the form */
         }
-
-        textarea {
+        .container textarea {
             width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical;
+            border-radius: 5px;
+            color: black;
         }
-
-        input[type="submit"] {
+        .container button {
             padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .output {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-            text-align: center;
-        }
-
-        .back-button {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .back-button a {
-            padding: 10px 20px;
+            border-radius: 5px;
             background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
+            color: #fff;
             cursor: pointer;
-            text-decoration: none;
         }
-
-        .back-button a:hover {
+        .container button:hover {
             background-color: #0056b3;
         }
-
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #000000;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            color: white; /* Changed font color to white */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white; /* Ensure table text color is also white */
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+        
         .box {
             border: 1px solid #ddd;
             padding: 10px;
@@ -117,11 +127,12 @@ include 'header.php';  // Make sure this path is correct
 </head>
 <body>
     <div class="container">
-        <h1>Universal XSS Editor</h1>
+        <h1>Universal XSS Demo</h1>
+        <p>Try entering a script and a non script content and look at the different outputs.</p>
         <form method="post">
-            <label for="userInput">Enter your script!</label>
-            <textarea id="userInput" name="userInput" rows="10" cols="50"></textarea><br>
-            <input type="submit" value="Submit">
+            <p><strong>Script: &lt;script&gt;test&lt;/script&gt;<br>Non script: test</strong></p>
+            <textarea id="userInput" name="userInput" rows="10" cols="50" placeholder="Enter your script here"></textarea><br>
+            <button type="submit">Submit</button>
         </form>
         <?php
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -145,9 +156,9 @@ include 'header.php';  // Make sure this path is correct
             echo "<p>No input received.</p>";
         }
         ?>
-        <div class="back-button">
+    </div>
+            <div class="back-button">
             <a href="contentpage2.php">Go Back to Content</a>
         </div>
-    </div>
 </body>
 </html>

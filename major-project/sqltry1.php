@@ -124,7 +124,7 @@ $conn->close();
             color: #fff;
             cursor: pointer;
             text-decoration: none;
-            text-align: center;v
+            text-align: center;
         }
         .back-button:hover {
             background-color: #0056b3;
