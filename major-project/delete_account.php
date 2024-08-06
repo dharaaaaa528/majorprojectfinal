@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'header.php';
+require_once 'topnav.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -42,16 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Delete Account</title>
     <style>
-        body {
+         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #000;
+            color: #fff;
         }
         .container {
             background-color: #fff;
@@ -62,6 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             text-align: center;
             color:black;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+             margin-left: 600px;
+             margin-top: 200px;
         }
         .container h1 {
             margin-bottom: 20px;
@@ -93,9 +95,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .error {
             color: red;
         }
+        .sidebar {
+            width: 200px;
+            background-color: #000;
+            height: calc(100vh - 20px);
+            position: absolute;
+            top: 99px;
+            left: 0;
+            padding-top: 20px;
+            color: #fff;
+            border-right: 2px solid white;
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        
+        .sidebar a.details1-link {
+            color: #56C2DD;
+        }
+        .sub-menu {
+            padding-left: 30px;
+        }
+
+        .sub-menu a {
+            font-size: 16px;
+        }
+        
     </style>
 </head>
 <body>
+<div class="sidebar">
+        <a href="profile.php" class="profile-link"><u>Profile</u></a>
+        <div class="sub-menu">
+            <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
+        </div>
+        <div class="sub-menu">
+        <a href="delete_account.php" class="details1-link"><u>Delete Account</u></a>
+    </div>
+        <a href="progress.php"><u>Progress</u></a>
+        <a href="certificate.php"><u>Quiz Certifications</u></a>
+        <a href="test_certificate.php"><u>Test Certifications</u></a>
+        <a href="settings.php"><u>Settings</u></a>
+    </div>  
     <div class="container">
         <h1>Delete Your Account</h1>
         <p>Are you sure you want to delete your account? This action cannot be undone.</p>

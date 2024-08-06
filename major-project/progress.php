@@ -190,6 +190,9 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
     <div class="sub-menu">
         <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
     </div>
+    <div class="sub-menu">
+        <a href="delete_account.php" class="details1-link"><u>Delete Account</u></a>
+    </div>
     <a href="progress.php" class="progress-link"><u>Progress</u></a>
     <a href="certificate.php"><u>Quiz Certifications</u></a>
     <a href="test_certificate.php"><u>Test Certifications</u></a>
