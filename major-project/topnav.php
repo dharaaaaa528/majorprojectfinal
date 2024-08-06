@@ -18,17 +18,17 @@ if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE
     $stmt = $pdo->prepare('SELECT * FROM userinfo WHERE userid = ?');
     $stmt->execute([$_SESSION['userid']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    $username = $user['username'];
-    $role = $user['role']; // Fetch user role
-    $_SESSION['profile_picture'] = $user['profile_picture']; // Store profile picture in session
+    $username = htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8');
+    $role = htmlspecialchars($user['role'], ENT_QUOTES, 'UTF-8'); // Fetch and sanitize user role
+    $_SESSION['profile_picture'] = htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8'); // Store and sanitize profile picture in session
 } else {
     // Regular login user information
     $stmt = $pdo->prepare('SELECT * FROM userinfo WHERE username = ?');
     $stmt->execute([$_SESSION['username']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    $username = $user['username'];
-    $role = $user['role']; // Fetch user role
-    $_SESSION['profile_picture'] = $user['profile_picture']; // Store profile picture in session
+    $username = htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8');
+    $role = htmlspecialchars($user['role'], ENT_QUOTES, 'UTF-8'); // Fetch and sanitize user role
+    $_SESSION['profile_picture'] = htmlspecialchars($user['profile_picture'], ENT_QUOTES, 'UTF-8'); // Store and sanitize profile picture in session
 }
 
 // Debugging: Log session data
@@ -55,6 +55,7 @@ $isCompletedXSS = hasCompletedQuizzes($pdo, $_SESSION['userid'], [5, 6, 7, 8]);
 // Handle search functionality
 if (isset($_GET['search'])) {
     $searchQuery = strtolower(trim($_GET['search']));
+    $searchQuery = htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); // Sanitize search query
     
     switch ($searchQuery) {
         case 'sql injection':
@@ -246,34 +247,36 @@ if (isset($_GET['search'])) {
     <div class="search-bar-container">
         <div class="search-bar">
             <form method="GET" action="">
-                <input type="text" name="search" placeholder="Type your search query here">
+                <input type="text" name="search" placeholder="Type your search query here" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search'], ENT_QUOTES, 'UTF-8') : ''; ?>">
                 <input type="submit" value="Search">
             </form>
             <?php
             if (isset($searchError)) {
-                echo "<p>$searchError</p>";
+                echo "<p>" . htmlspecialchars($searchError, ENT_QUOTES, 'UTF-8') . "</p>";
             }
             ?>
         </div>
     </div>
     
     <div class="dropdown" style="margin-left: auto;">
-        <button class="dropbtn">
+    <button class="dropbtn">
             <?php if (isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture'])): ?>
                 <img src="<?php echo htmlspecialchars($_SESSION['profile_picture']); ?>" alt="Profile Picture" width="30" height="30" style="border-radius: 50%;">
             <?php else: ?>
                 <img src="profile.png" alt="Default Profile Picture" width="30" height="30" style="border-radius: 50%;">
             <?php endif; ?>
             <?= htmlspecialchars($username) ?> 
+       
             <i class="fa fa-caret-down"></i>
         </button>
-        <div class="dropdown-content" style="right: 0; left: auto;">
+         <div class="dropdown-content" style="right: 0; left: auto;">
             <a href="profile.php">Profile</a>
             <a href="settings.php">Settings</a>
             <a href="logout.php">Logout</a>
-            
         </div>
     </div>
+    
+    
 </div>
 
 </body>
