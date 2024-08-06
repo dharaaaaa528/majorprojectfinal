@@ -49,8 +49,8 @@ function getIncompleteTests($pdo, $user_id, $test_ids) {
 // Define quiz and test IDs for SQL and XSS
 $sql_quiz_ids = [1, 2, 3, 4];
 $xss_quiz_ids = [5, 6, 7, 8];
-$sql_test_ids = [1, 2, 3, 4];
-$xss_test_ids = [5, 6, 7, 8];
+$sql_test_ids = [1, 2, 3];
+$xss_test_ids = [5, 6, 7];
 
 // Fetch completed quizzes and tests counts
 $user_id = $_SESSION['userid'];
