@@ -30,7 +30,7 @@ include 'header.php';  // Make sure this path is correct
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            color:black;
+            color: black;
         }
 
         h1 {
@@ -95,21 +95,52 @@ include 'header.php';  // Make sure this path is correct
         .back-button a:hover {
             background-color: #0056b3;
         }
+
+        .box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            margin-top: 10px;
+        }
+
+        .non-sanitized-box {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        .sanitized-box {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Universal XSS Editor</h1>
-        <form method="get">
-            <label for="imgSrc">Enter your script!</label>
-            <textarea id="imgSrc" name="imgSrc" rows="10" cols="50"></textarea><br>
+        <form method="post">
+            <label for="userInput">Enter your script!</label>
+            <textarea id="userInput" name="userInput" rows="10" cols="50"></textarea><br>
             <input type="submit" value="Submit">
         </form>
         <?php
-        if (isset($_GET['imgSrc'])) {
-            $imgSrc = $_GET['imgSrc'];
-            echo "<h2>Result:</h2>";
-            echo "<div class='output'>$imgSrc</div>";
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Get the user input
+            $userInput = $_POST['userInput'];
+            
+            // Display non-sanitized output
+            echo "<h2>Non-Sanitized Output:</h2>";
+            echo "<div class='box non-sanitized-box'><p>" . $userInput . "</p></div>";
+            
+            // Display sanitized output
+            echo "<h2>Sanitized Output:</h2>";
+            // Extract and display only the script content
+            if (preg_match('/<script\b[^>]*>(.*?)<\/script>/is', $userInput, $matches)) {
+                $scriptContent = htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8');
+                echo "<div class='box sanitized-box'><p>" . $scriptContent . "</p></div>";
+            } else {
+                echo "<div class='box sanitized-box'><p>No script content found.</p></div>";
+            }
         } else {
             echo "<p>No input received.</p>";
         }
