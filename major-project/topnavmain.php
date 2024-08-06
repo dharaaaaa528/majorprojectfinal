@@ -4,7 +4,8 @@ require_once 'server.php';
 // Handle search functionality
 if (isset($_GET['search'])) {
     $searchQuery = strtolower(trim($_GET['search']));
-    
+    $searchQuery = htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); // Escape HTML characters to prevent XSS
+
     switch ($searchQuery) {
         case 'sql injection':
             header("Location: contentpagemain.php");
@@ -57,7 +58,7 @@ if (isset($_GET['search'])) {
             text-align: center;
             padding: 14px 20px;
             text-decoration: none;
-             font-size: 20px;
+            font-size: 20px;
         }
         .topnav a:hover {
             background-color: #ddd;
@@ -165,7 +166,7 @@ if (isset($_GET['search'])) {
 
 <div class="topnav">
     <a href="#" class="branding">
-        <img src="logo3.jpg" alt="Logo"  class="logo">
+        <img src="logo3.jpg" alt="Logo" class="logo">
     </a>
     <a href="main.php">Home</a>
     <!-- Content dropdown -->
@@ -202,5 +203,3 @@ if (isset($_GET['search'])) {
 
 </body>
 </html>
-
-
