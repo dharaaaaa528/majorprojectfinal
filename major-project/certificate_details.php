@@ -27,25 +27,62 @@ $query->bind_result($firstName, $lastName);
 $query->fetch();
 $query->close();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $newFirstName = htmlspecialchars($_POST['first_name']);
-    $newLastName = htmlspecialchars($_POST['last_name']);
+$error = '';
 
-    // Update user info in the database
-    $updateQuery = $conn->prepare("UPDATE userinfo SET first_name = ?, last_name = ? WHERE userid = ?");
-    if ($updateQuery === false) {
-        die('Prepare failed: ' . htmlspecialchars($conn->error));
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $newFirstName = trim(htmlspecialchars($_POST['first_name']));
+    $newLastName = trim(htmlspecialchars($_POST['last_name']));
+    
+    // Validation function
+    function validateName($name) {
+        // Check length
+        if (strlen($name) < 2 || strlen($name) > 50) {
+            return "Name must be between 2 and 50 characters.";
+        }
+        // Check for invalid characters
+        if (!preg_match("/^[a-zA-ZÀ-ÿ '-]+$/", $name)) {
+            return "Name contains invalid characters. Only letters, apostrophes, hyphens, and spaces are allowed.";
+        }
+        return true;
     }
-    $updateQuery->bind_param("ssi", $newFirstName, $newLastName, $userId);
-    if ($updateQuery->execute()) {
-        $firstName = $newFirstName;
-        $lastName = $newLastName;
+    
+    // Validate first and last names
+    $firstNameError = validateName($newFirstName);
+    $lastNameError = validateName($newLastName);
+    
+    if ($firstNameError === true && $lastNameError === true) {
+        // Update user info in the database
+        $updateQuery = $conn->prepare("UPDATE userinfo SET first_name = ?, last_name = ? WHERE userid = ?");
+        if ($updateQuery === false) {
+            die('Prepare failed: ' . htmlspecialchars($conn->error));
+        }
+        $updateQuery->bind_param("ssi", $newFirstName, $newLastName, $userId);
+        if ($updateQuery->execute()) {
+            $firstName = $newFirstName;
+            $lastName = $newLastName;
+            // Clear error message on successful update
+            $_SESSION['error'] = '';
+        }
+        $updateQuery->close();
+        // Redirect to avoid resubmission on refresh
+        header("Location: certificate_details.php");
+        exit();
+    } else {
+        // Set error message
+        $_SESSION['error'] = $firstNameError !== true ? $firstNameError : $lastNameError;
+        // Redirect to avoid resubmission on refresh
+        header("Location: certificate_details.php");
+        exit();
     }
-    $updateQuery->close();
 }
+
+// Retrieve error message from session
+$error = isset($_SESSION['error']) ? $_SESSION['error'] : '';
+$_SESSION['error'] = ''; // Clear the error message for future requests
 
 ob_end_flush();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,13 +90,14 @@ ob_end_flush();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
+        /* Existing styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #000;
             color: #fff;
         }
-        
+
         .profile-picture img {
             border-radius: 50%;
             width: 150px;
@@ -152,7 +190,7 @@ ob_end_flush();
         .profile-edit a:hover {
             text-decoration: underline;
         }
-        
+
         .sidebar a:hover {
             background-color: #575757;
         }
@@ -163,7 +201,6 @@ ob_end_flush();
          .sidebar a.profile-link {
             color: #56C2DD;
         }
-        
 
         .upload-container {
             display: flex;
@@ -191,6 +228,18 @@ ob_end_flush();
             text-align: left;
             color: black;
         }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 300px;
+            text-align: center;
+            font-size: 16px;
+        }
     </style>
     <script>
         function showUpdateForm() {
@@ -205,7 +254,7 @@ ob_end_flush();
         <div class="sub-menu">
             <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
         </div>
-        <div class="sub-menu">
+          <div class="sub-menu">
         <a href="delete_account.php" class="details1-link"><u>Delete Account</u></a>
     </div>
         <a href="progress.php"><u>Progress</u></a>
@@ -226,6 +275,12 @@ ob_end_flush();
             <div class="profile-info">
                 <p><strong>Last Name:</strong> <?php echo htmlspecialchars($lastName); ?></p>
             </div>
+
+            <?php if ($error): ?>
+                <div class="error-message">
+                    <p><strong>Error:</strong> <?php echo htmlspecialchars($error); ?></p>
+                </div>
+            <?php endif; ?>
             
             <button id="updateButton" onclick="showUpdateForm()">Update Profile</button>
 
