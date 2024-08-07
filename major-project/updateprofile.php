@@ -1,4 +1,5 @@
 <?php
+ob_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -105,11 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['send_otp'])) {
+    header('Content-Type: application/json'); // Set content type to JSON
+    ob_clean();
     // Handle OTP request via AJAX
     // Generate OTP
     $otp = rand(100000, 999999); // Generate a 6-digit OTP
     $_SESSION['otp'] = $otp; // Store OTP in session for verification later
-
+    
     // Send OTP email
     $mail = new PHPMailer(true);
     try {
@@ -121,21 +124,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mail->Password = 'hkrnqbzyizzxtcsi'; // Your SMTP password
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
-
+        
         $mail->setFrom('dgandhi50@yahoo.com', 'dhara gandhi');
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'Your OTP Code';
         $mail->Body = "Your OTP code is <b>$otp</b>";
-
+        
         $mail->send();
         $_SESSION['otp_sent'] = true;
-        echo "OTP has been sent to your email.";
+        echo json_encode(['status' => 'success', 'message' => 'OTP has been sent to your email.']);
     } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        echo json_encode(['status' => 'error', 'message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
     }
+    ob_end_flush();
     exit();
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -247,17 +253,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     </style>
     <script>
-        function sendOTP(event) {
-            event.preventDefault(); // Prevent form submission
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "?send_otp=true", true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    alert(xhr.responseText);
+function sendOTP(event) {
+    event.preventDefault(); // Prevent form submission
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "?send_otp=true", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            try {
+                var response = JSON.parse(xhr.responseText);
+                console.log(response); // Debugging line to log response
+                if (response.status === 'success') {
+                    alert(response.message);
+                } else {
+                    alert("Failed to send OTP. Please try again.");
                 }
-            };
-            xhr.send();
+            } catch (e) {
+                console.error("Error parsing response:", e); // Log parsing error
+                console.error("Response received:", xhr.responseText); // Log raw response
+                alert("An error occurred while processing the OTP request.");
+            }
+        } else if (xhr.readyState == 4) {
+            // Handle non-200 status codes
+            alert("Failed to send OTP. Server returned status: " + xhr.status);
         }
+    };
+    xhr.send();
+}
+
+      
         
         function togglePasswordVisibility(fieldId, toggleButtonId) {
             var passwordField = document.getElementById(fieldId);
