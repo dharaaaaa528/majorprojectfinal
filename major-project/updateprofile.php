@@ -50,53 +50,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (!password_verify($current_password, $hashed_password)) {
                     echo "<script>alert('Current password is incorrect');</script>";
                 } else {
-                    // Validate OTP
-                    if (isset($_SESSION['otp']) && $_SESSION['otp'] == $otp) {
-                        // Proceed to update username and password
-                        // Check for duplicate username
-                        $duplicate = $conn->prepare("SELECT userid FROM userinfo WHERE username = ? AND userid != ?");
-                        if ($duplicate === false) {
-                            die("MySQL prepare statement error (duplicate): " . $conn->error);
-                        }
-                        $duplicate->bind_param("si", $new_username, $userId);
-                        $duplicate->execute();
-                        $duplicate->store_result();
-
-                        if ($duplicate->num_rows > 0) {
-                            echo "<script>alert('Username is already taken');</script>";
-                        } else {
-                            // Prepare query to update user info
-                            if ($new_password) {
-                                // Hash the new password
-                                $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
-
-                                // Update username and password
-                                $query = $conn->prepare("UPDATE userinfo SET username = ?, password = ? WHERE userid = ?");
-                                $query->bind_param("ssi", $new_username, $new_password_hashed, $userId);
-                            } else {
-                                // Update only username
-                                $query = $conn->prepare("UPDATE userinfo SET username = ? WHERE userid = ?");
-                                $query->bind_param("si", $new_username, $userId);
+                    // Validate OTP and check expiration
+                    if (isset($_SESSION['otp']) && isset($_SESSION['otp_time'])) {
+                        $current_time = time();
+                        $otp_lifetime = 60; // 3 minutes in seconds
+                        
+                        if ($current_time - $_SESSION['otp_time'] > $otp_lifetime) {
+                            echo "<script>alert('OTP has expired. Please request a new OTP.');</script>";
+                        } elseif ($_SESSION['otp'] == $otp) {
+                            // Proceed to update username and password
+                            // Check for duplicate username
+                            $duplicate = $conn->prepare("SELECT userid FROM userinfo WHERE username = ? AND userid != ?");
+                            if ($duplicate === false) {
+                                die("MySQL prepare statement error (duplicate): " . $conn->error);
                             }
+                            $duplicate->bind_param("si", $new_username, $userId);
+                            $duplicate->execute();
+                            $duplicate->store_result();
 
-                            // Execute query and update session variables
-                            if ($query->execute()) {
-                                $_SESSION['username'] = $new_username;
+                            if ($duplicate->num_rows > 0) {
+                                echo "<script>alert('Username is already taken');</script>";
+                            } else {
+                                // Prepare query to update user info
                                 if ($new_password) {
-                                    $_SESSION['password'] = $new_password; // Store the plain text password temporarily
+                                    // Hash the new password
+                                    $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
+
+                                    // Update username and password
+                                    $query = $conn->prepare("UPDATE userinfo SET username = ?, password = ? WHERE userid = ?");
+                                    $query->bind_param("ssi", $new_username, $new_password_hashed, $userId);
+                                } else {
+                                    // Update only username
+                                    $query = $conn->prepare("UPDATE userinfo SET username = ? WHERE userid = ?");
+                                    $query->bind_param("si", $new_username, $userId);
                                 }
 
-                                // Redirect back to profile page
-                                header("Location: profile.php");
-                                exit();
-                            } else {
-                                die("Error updating record: " . $conn->error);
+                                // Execute query and update session variables
+                                if ($query->execute()) {
+                                    $_SESSION['username'] = $new_username;
+                                    if ($new_password) {
+                                        $_SESSION['password'] = $new_password; // Store the plain text password temporarily
+                                    }
+
+                                    // Redirect back to profile page
+                                    header("Location: profile.php");
+                                    exit();
+                                } else {
+                                    die("Error updating record: " . $conn->error);
+                                }
+                                $query->close();
                             }
-                            $query->close();
+                            $duplicate->close();
+                        } else {
+                            echo "<script>alert('Invalid OTP');</script>";
                         }
-                        $duplicate->close();
                     } else {
-                        echo "<script>alert('Invalid OTP');</script>";
+                        echo "<script>alert('OTP not found or session expired.');</script>";
                     }
                 }
             } else {
@@ -112,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Generate OTP
     $otp = rand(100000, 999999); // Generate a 6-digit OTP
     $_SESSION['otp'] = $otp; // Store OTP in session for verification later
+    $_SESSION['otp_time'] = time(); // Store OTP generation time in session
     
     // Send OTP email
     $mail = new PHPMailer(true);
@@ -129,7 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'Your OTP Code';
-        $mail->Body = "Your OTP code is <b>$otp</b>";
+        $mail->Body    = "Your OTP code is <b>$otp</b>. This code will expire in 1 minute.";
+        $mail->AltBody = "Your OTP code is $otp. This code will expire in 1 minute.";
         
         $mail->send();
         $_SESSION['otp_sent'] = true;
@@ -140,9 +151,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ob_end_flush();
     exit();
 }
-
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -255,6 +265,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script>
 function sendOTP(event) {
     event.preventDefault(); // Prevent form submission
+    var sendButton = document.querySelector('.send-button');
+    
+    // Disable the button and start the countdown
+    sendButton.disabled = true;
+    startCountdown(sendButton, 30);
+
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "?send_otp=true", true);
     xhr.onreadystatechange = function() {
@@ -280,21 +296,37 @@ function sendOTP(event) {
     xhr.send();
 }
 
-      
-        
-        function togglePasswordVisibility(fieldId, toggleButtonId) {
-            var passwordField = document.getElementById(fieldId);
-            var toggleButton = document.getElementById(toggleButtonId);
+function startCountdown(button, seconds) {
+    var remainingTime = seconds;
 
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                toggleButton.innerHTML = "<img src='eye-slash1.png' alt='Hide password'>";
-            } else {
-                passwordField.type = "password";
-                toggleButton.innerHTML = "<img src='eye1.png' alt='Show password'>";
-            }
+    button.textContent = "Send OTP (" + remainingTime + "s)";
+    
+    var countdownInterval = setInterval(function() {
+        remainingTime--;
+        button.textContent = "Send OTP (" + remainingTime + "s)";
+        
+        if (remainingTime <= 0) {
+            clearInterval(countdownInterval);
+            button.textContent = "Send OTP";
+            button.disabled = false;
         }
-    </script>
+    }, 1000);
+}
+
+function togglePasswordVisibility(fieldId, toggleButtonId) {
+    var passwordField = document.getElementById(fieldId);
+    var toggleButton = document.getElementById(toggleButtonId);
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleButton.innerHTML = "<img src='eye-slash1.png' alt='Hide password'>";
+    } else {
+        passwordField.type = "password";
+        toggleButton.innerHTML = "<img src='eye1.png' alt='Show password'>";
+    }
+}
+</script>
+    
 </head>
 <body>
     <div class="form-container">
