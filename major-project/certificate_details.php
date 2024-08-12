@@ -29,53 +29,6 @@ $query->close();
 
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $newFirstName = trim(htmlspecialchars($_POST['first_name']));
-    $newLastName = trim(htmlspecialchars($_POST['last_name']));
-    
-    // Validation function
-    function validateName($name) {
-        // Check length
-        if (strlen($name) < 2 || strlen($name) > 50) {
-            return "Name must be between 2 and 50 characters.";
-        }
-        // Check for invalid characters
-        if (!preg_match("/^[a-zA-ZÀ-ÿ '-]+$/", $name)) {
-            return "Name contains invalid characters. Only letters, apostrophes, hyphens, and spaces are allowed.";
-        }
-        return true;
-    }
-    
-    // Validate first and last names
-    $firstNameError = validateName($newFirstName);
-    $lastNameError = validateName($newLastName);
-    
-    if ($firstNameError === true && $lastNameError === true) {
-        // Update user info in the database
-        $updateQuery = $conn->prepare("UPDATE userinfo SET first_name = ?, last_name = ? WHERE userid = ?");
-        if ($updateQuery === false) {
-            die('Prepare failed: ' . htmlspecialchars($conn->error));
-        }
-        $updateQuery->bind_param("ssi", $newFirstName, $newLastName, $userId);
-        if ($updateQuery->execute()) {
-            $firstName = $newFirstName;
-            $lastName = $newLastName;
-            // Clear error message on successful update
-            $_SESSION['error'] = '';
-        }
-        $updateQuery->close();
-        // Redirect to avoid resubmission on refresh
-        header("Location: certificate_details.php");
-        exit();
-    } else {
-        // Set error message
-        $_SESSION['error'] = $firstNameError !== true ? $firstNameError : $lastNameError;
-        // Redirect to avoid resubmission on refresh
-        header("Location: certificate_details.php");
-        exit();
-    }
-}
-
 // Retrieve error message from session
 $error = isset($_SESSION['error']) ? $_SESSION['error'] : '';
 $_SESSION['error'] = ''; // Clear the error message for future requests
@@ -240,6 +193,36 @@ ob_end_flush();
             text-align: center;
             font-size: 16px;
         }
+        /* Button styling */
+.profile-edit {
+    background-color: #56C2DD;
+    width: 300px; /* Set the desired width for the button */
+    padding: 10px 20px; /* Adjust padding for better spacing */
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center; /* Ensure text is centered horizontally */
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin: 10px;
+    line-height: normal; /* Reset line-height to default */
+    white-space: nowrap; /* Prevent text from wrapping */
+    margin-left:-20px;
+}
+
+.profile-edit:hover {
+    background-color: #45a1b1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profile-edit:active {
+    background-color: #357a8e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+        
     </style>
     <script>
         function showUpdateForm() {
@@ -282,20 +265,12 @@ ob_end_flush();
                 </div>
             <?php endif; ?>
             
-            <button id="updateButton" onclick="showUpdateForm()">Update Profile</button>
-
-            <form id="updateForm" class="update-form" method="post" action="">
-                <div class="profile-info">
-                    <label for="first_name">First Name:</label>
-                    <input type="text" name="first_name" id="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
-                </div>
-                <div class="profile-info">
-                    <label for="last_name">Last Name:</label>
-                    <input type="text" name="last_name" id="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required>
-                </div>
-                <button type="submit">Save Changes</button>
-            </form>
+            <!-- Button to request a name change -->
+   <button class="profile-edit" onclick="location.href='request_name_change.php'">Request Name Change</button>
+   
+           
         </div>
     </div>
 </body>
 </html>
+
