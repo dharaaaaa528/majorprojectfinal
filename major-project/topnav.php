@@ -242,6 +242,7 @@ if (isset($_GET['search'])) {
     </div>
     
     <a href="about.php">About</a>
+    <a href="faq.php">FAQ</a> <!-- Add the FAQ link here -->
 
     <!-- Search bar -->
     <div class="search-bar-container">
@@ -281,5 +282,3 @@ if (isset($_GET['search'])) {
 
 </body>
 </html>
-
-
