@@ -138,106 +138,124 @@ if (isset($_SESSION['successMessage'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Name Change</title>
     <style>
-    /* Basic reset for margins and padding */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+        /* Basic reset for margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Body styling */
-    body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        background-color: #f4f4f4;
-        padding: 20px;
-    }
+        /* Body styling */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
 
-    /* Content container */
-    .content {
-        max-width: 800px;
-        margin: 0 auto;
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        padding-top:30px;
-        margin-top:30px;
-    }
+        /* Content container */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding-top:30px;
+            margin-top:30px;
+        }
 
-    /* Header styling */
-    h1 {
-        color: black; /* Change header color to black */
-        margin-bottom: 20px;
-    }
+        /* Header styling */
+        h1 {
+            color: black; /* Change header color to black */
+            margin-bottom: 20px;
+        }
 
-    /* Form styling */
-    .update-form {
-        display: flex;
-        flex-direction: column;
-    }
+        /* Form styling */
+        .update-form {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .update-form label {
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: black; /* Change label color to black */
-    }
+        .update-form label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: black; /* Change label color to black */
+        }
 
-    .update-form input[type="text"],
-    .update-form textarea,
-    .update-form input[type="file"] {
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        color: black; /* Change input and textarea text color to black */
-    }
-
-    .update-form textarea {
-        resize: vertical;
-    }
-
-    .update-form button {
-        padding: 10px 15px;
-        background-color: #5cb85c;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .update-form button:hover {
-        background-color: #4cae4c;
-    }
-
-    /* Error and success messages */
-    .error-message,
-    .success-message {
-        padding: 10px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        color: black; /* Change error and success message text color to black */
-    }
-
-    .error-message {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-    }
-
-    .success-message {
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
         .update-form input[type="text"],
         .update-form textarea,
         .update-form input[type="file"] {
-            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: black; /* Change input and textarea text color to black */
         }
-    }
+
+        .update-form textarea {
+            resize: vertical;
+        }
+
+        .update-form button,
+        .cancel-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px; /* Space between buttons */
+            margin-top: 10px;
+            
+        }
+
+        .update-form button {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .update-form button:hover {
+            background-color: #4cae4c;
+        }
+
+        .cancel-button {
+            background-color: #d9534f; /* Red background for cancel button */
+            color: white;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .cancel-button:hover {
+            background-color: #c9302c;
+        }
+
+        /* Error and success messages */
+        .error-message,
+        .success-message {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: black; /* Change error and success message text color to black */
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .update-form input[type="text"],
+            .update-form textarea,
+            .update-form input[type="file"] {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -271,6 +289,7 @@ if (isset($_SESSION['successMessage'])) {
                 <input type="file" name="document" id="document" accept=".pdf" required>
                 
                 <button type="submit">Submit Request</button>
+                <a href="profile.php" class="cancel-button">Cancel</a>
             </form>
         </div>
     </div>

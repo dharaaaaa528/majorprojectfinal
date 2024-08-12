@@ -174,10 +174,10 @@ if (isset($_GET['search'])) {
         }
 
         .topnav a[href="about.php"] {
-            margin-left: 50px; /* Adjust as needed */
+            margin-left: 30px; /* Adjust as needed */
         }
          .topnav a[href="faq.php"] {
-            margin-left: 50px; /* Adjust as needed */
+            margin-left: 30px; /* Adjust as needed */
         }
 
         .topnav .search-bar {

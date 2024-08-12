@@ -34,8 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            background-size: cover;
+            
+            
         }
 
         .faq-container {
@@ -46,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             color: #000; /* Ensures all text within faq-container is black */
+            margin-top:30px;
         }
 
         .faq-container h2 {
