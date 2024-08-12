@@ -176,6 +176,9 @@ if (isset($_GET['search'])) {
         .topnav a[href="about.php"] {
             margin-left: 50px; /* Adjust as needed */
         }
+         .topnav a[href="faq.php"] {
+            margin-left: 50px; /* Adjust as needed */
+        }
 
         .topnav .search-bar {
             margin-left: 100px; /* Add space between About link and search bar */
@@ -187,7 +190,7 @@ if (isset($_GET['search'])) {
             border: none;
             border-radius: 20px;
             margin-right: 10px;
-            width: 300px; /* Make the search bar longer */
+            width: 250px; /* Make the search bar longer */
         }
 
         .topnav .search-bar input[type="submit"] {
