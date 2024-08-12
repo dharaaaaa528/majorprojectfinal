@@ -10,21 +10,14 @@ session_start();
 date_default_timezone_set('Asia/Singapore');
 
 // Handle OTP verification
-// Handle OTP verification
 if (isset($_POST["verify"])) {
     $entered_otp = trim($_POST["otp"]);
     $currentTime = time();
     $otpGeneratedTime = isset($_SESSION['otp_generated_at']) ? $_SESSION['otp_generated_at'] : 0;
     $otp = trim(isset($_SESSION['otp']) ? $_SESSION['otp'] : '');
-    
-    // Debugging output
-    echo "Entered OTP: " . htmlspecialchars($entered_otp) . "<br>";
-    echo "Stored OTP: " . htmlspecialchars($otp) . "<br>";
-    echo "OTP Generated At: " . date('Y-m-d H:i:s', $otpGeneratedTime) . "<br>";
-    echo "Current Time: " . date('Y-m-d H:i:s', $currentTime) . "<br>";
-    
+
     // Check if OTP is expired (3 minutes = 180 seconds)
-    if (($currentTime - $otpGeneratedTime) > 60) {
+    if (($currentTime - $otpGeneratedTime) > 180) {
         echo "<script>alert('OTP has expired. Please request a new one.');</script>";
         unset($_SESSION['otp']);
         unset($_SESSION['otp_generated_at']);
@@ -45,7 +38,7 @@ if (isset($_POST["verify"])) {
             $_SESSION['password'],
             $_SESSION['phoneno'],
             $_SESSION['created_at']
-            );
+        );
         if ($insertQuery->execute()) {
             // Registration successful, get the user id
             $userId = $insertQuery->insert_id;
@@ -76,7 +69,6 @@ if (isset($_POST["verify"])) {
         echo "<script>alert('Invalid OTP. Please try again.');</script>";
     }
 }
-
 
 // Handle OTP resending
 if (isset($_POST["resend"])) {
@@ -117,6 +109,7 @@ if (isset($_POST["resend"])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
