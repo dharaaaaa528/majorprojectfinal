@@ -289,7 +289,7 @@ if (isset($_SESSION['successMessage'])) {
                 <input type="file" name="document" id="document" accept=".pdf" required>
                 
                 <button type="submit">Submit Request</button>
-                <a href="profile.php" class="cancel-button">Cancel</a>
+                <a href="certificate_details.php" class="cancel-button">Cancel</a>
             </form>
         </div>
     </div>
