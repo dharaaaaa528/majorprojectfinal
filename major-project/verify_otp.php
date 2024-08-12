@@ -1,23 +1,41 @@
 <?php
 require_once 'config.php';
+require 'vendor/autoload.php'; // Include Composer autoload
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 session_start();
 
 // Set the default timezone to Singapore
 date_default_timezone_set('Asia/Singapore');
 
 // Handle OTP verification
+// Handle OTP verification
 if (isset($_POST["verify"])) {
     $entered_otp = trim($_POST["otp"]);
-
-    // Check if entered OTP matches the generated OTP
-    if ($entered_otp == $_SESSION['otp']) {
+    $currentTime = time();
+    $otpGeneratedTime = isset($_SESSION['otp_generated_at']) ? $_SESSION['otp_generated_at'] : 0;
+    $otp = trim(isset($_SESSION['otp']) ? $_SESSION['otp'] : '');
+    
+    // Debugging output
+    echo "Entered OTP: " . htmlspecialchars($entered_otp) . "<br>";
+    echo "Stored OTP: " . htmlspecialchars($otp) . "<br>";
+    echo "OTP Generated At: " . date('Y-m-d H:i:s', $otpGeneratedTime) . "<br>";
+    echo "Current Time: " . date('Y-m-d H:i:s', $currentTime) . "<br>";
+    
+    // Check if OTP is expired (3 minutes = 180 seconds)
+    if (($currentTime - $otpGeneratedTime) > 60) {
+        echo "<script>alert('OTP has expired. Please request a new one.');</script>";
+        unset($_SESSION['otp']);
+        unset($_SESSION['otp_generated_at']);
+    } elseif ($entered_otp === $otp) {
         // Insert new user into the database
         $insertQuery = $conn->prepare("INSERT INTO userinfo (first_name, last_name, username, email, password, phoneno, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?)");
         if ($insertQuery === false) {
             die("MySQL prepare statement error (insert): " . $conn->error);
         }
-
+        
         $insertQuery->bind_param(
             "sssssss",
             $_SESSION['first_name'],
@@ -27,17 +45,17 @@ if (isset($_POST["verify"])) {
             $_SESSION['password'],
             $_SESSION['phoneno'],
             $_SESSION['created_at']
-        );
+            );
         if ($insertQuery->execute()) {
             // Registration successful, get the user id
             $userId = $insertQuery->insert_id;
-
+            
             // Set session variables
             $_SESSION["login"] = true;
             $_SESSION["userid"] = $userId;
             $_SESSION["username"] = $_SESSION['username'];
             $_SESSION["email"] = $_SESSION['email'];
-
+            
             // Clear sensitive session data
             unset($_SESSION['otp']);
             unset($_SESSION['first_name']);
@@ -45,17 +63,57 @@ if (isset($_POST["verify"])) {
             unset($_SESSION['password']);
             unset($_SESSION['phoneno']);
             unset($_SESSION['created_at']);
-
+            
             // Redirect to usermain.php
             header("Location: usermain.php");
             exit();
         } else {
             die("Error executing query: " . $insertQuery->error);
         }
-
+        
         $insertQuery->close();
     } else {
         echo "<script>alert('Invalid OTP. Please try again.');</script>";
+    }
+}
+
+
+// Handle OTP resending
+if (isset($_POST["resend"])) {
+    // Generate new OTP
+    $otp = rand(100000, 999999);
+
+    // Store new OTP and generation time in session
+    $_SESSION['otp'] = $otp;
+    $_SESSION['otp_generated_at'] = time();
+
+    // Send new OTP to user's email
+    $mail = new PHPMailer(true);
+    try {
+        // Server settings
+        $mail->SMTPDebug = 0; // Set to 0 for no debugging output, 2 for detailed debugging output
+        $mail->isSMTP();
+        $mail->Host = 'smtp.mail.yahoo.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'dgandhi50@yahoo.com'; 
+        $mail->Password = 'hkrnqbzyizzxtcsi';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+
+        // Recipients
+        $mail->setFrom('dgandhi50@yahoo.com', 'dhara gandhi');
+        $mail->addAddress($_SESSION['email'], $_SESSION['username']);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Your OTP Code';
+        $mail->Body    = "Your new OTP code is <b>$otp</b>. Please note that this OTP will expire in 3 minutes.";
+        $mail->AltBody = "Your new OTP code is $otp. Please note that this OTP will expire in 3 minutes.";
+
+        $mail->send();
+        echo "<script>alert('New OTP has been sent to your email.');</script>";
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }
 ?>
@@ -134,6 +192,7 @@ if (isset($_POST["verify"])) {
             background-color: #6200ea;
             color: #fff;
             cursor: pointer;
+            margin: 5px;
         }
 
         .container button:hover {
@@ -150,6 +209,9 @@ if (isset($_POST["verify"])) {
                 <input type="text" name="otp" id="otp" required>
             </div>
             <button type="submit" name="verify">Verify</button>
+        </form>
+        <form action="verify_otp.php" method="post" autocomplete="off" style="margin-top: 10px;">
+            <button type="submit" name="resend">Resend OTP</button>
         </form>
     </div>
 </body>

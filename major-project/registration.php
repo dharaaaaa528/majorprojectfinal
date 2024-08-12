@@ -14,22 +14,29 @@ function sendOtp($email, $username, $otp) {
     $mail = new PHPMailer(true);
     
     try {
-        $mail->SMTPDebug = 0;
+        // Server settings
+        $mail->SMTPDebug = 0; // Set to 0 for no debugging output, 2 for detailed debugging output
         $mail->isSMTP();
         $mail->Host = 'smtp.mail.yahoo.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'dgandhi50@yahoo.com';
+        
+        // Replace with your actual email and app-specific password
+        $mail->Username = 'dgandhi50@yahoo.com'; 
         $mail->Password = 'hkrnqbzyizzxtcsi';
+        
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
-        
+
+        // Recipients
         $mail->setFrom('dgandhi50@yahoo.com', 'dhara gandhi');
         $mail->addAddress($email, $username);
+
+        // Content
         $mail->isHTML(true);
         $mail->Subject = 'Your OTP Code';
-        $mail->Body    = "Your OTP code is <b>$otp</b>";
-        $mail->AltBody = "Your OTP code is $otp";
-        
+        $mail->Body    = "Your OTP code is <b>$otp</b>. This code will expire in 3 minutes.";
+        $mail->AltBody = "Your OTP code is $otp. This code will expire in 3 minutes.";
+
         $mail->send();
         return true;
     } catch (Exception $e) {
@@ -58,11 +65,7 @@ if (isset($_POST["submit"])) {
         echo "<script>alert('First name and Last name must be at least 2 characters long');</script>";
     } else {
         // Check for duplicate entries
-        $duplicate = $conn->prepare("
-            SELECT * FROM userinfo 
-            WHERE username = ? OR email = ? OR phoneno = ? 
-            OR (first_name = ? AND last_name = ?)
-        ");
+        $duplicate = $conn->prepare("SELECT * FROM userinfo WHERE username = ? OR email = ? OR phoneno = ? OR (first_name = ? AND last_name = ?)");
         if ($duplicate === false) {
             die("MySQL prepare statement error (duplicate): " . $conn->error);
         }
@@ -73,31 +76,26 @@ if (isset($_POST["submit"])) {
         if ($duplicate->num_rows > 0) {
             echo "<script>alert('Username, Email, Phone Number, First Name, or Last Name is already taken');</script>";
         } else {
-            // Check if OTP was sent in the last 30 seconds
-            if (isset($_SESSION['otp_sent_time']) && (time() - $_SESSION['otp_sent_time'] < 30)) {
-                echo "<script>alert('Please wait for 30 seconds before requesting a new OTP.');</script>";
+            // Generate OTP
+            $otp = rand(100000, 999999);
+
+            // Store data in session variables
+            $_SESSION['otp'] = $otp;
+            $_SESSION['otp_generated_at'] = time(); // Store the current timestamp
+            $_SESSION['first_name'] = $firstname;
+            $_SESSION['last_name'] = $lastname;
+            $_SESSION['username'] = $username;
+            $_SESSION['email'] = $email;
+            $_SESSION['password'] = password_hash($password, PASSWORD_DEFAULT);
+            $_SESSION['phoneno'] = $phoneno;
+            $_SESSION['created_at'] = date('Y-m-d H:i:s'); // Get current datetime in Singapore time
+
+            // Send OTP to user's email
+            if (sendOtp($email, $username, $otp)) {
+                header("Location: verify_otp.php");
+                exit();
             } else {
-                // Generate OTP
-                $otp = rand(100000, 999999);
-
-                // Store data in session variables
-                $_SESSION['otp'] = $otp;
-                $_SESSION['otp_sent_time'] = time();
-                $_SESSION['first_name'] = $firstname;
-                $_SESSION['last_name'] = $lastname;
-                $_SESSION['username'] = $username;
-                $_SESSION['email'] = $email;
-                $_SESSION['password'] = password_hash($password, PASSWORD_DEFAULT);
-                $_SESSION['phoneno'] = $phoneno;
-                $_SESSION['created_at'] = date('Y-m-d H:i:s'); // Get current datetime in Singapore time
-
-                // Send OTP to user's email
-                if (sendOtp($email, $username, $otp)) {
-                    header("Location: verify_otp.php");
-                    exit();
-                } else {
-                    echo "<script>alert('Failed to send OTP. Please try again later.');</script>";
-                }
+                echo "<script>alert('Failed to send OTP. Please try again later.');</script>";
             }
         }
         $duplicate->close();
@@ -221,15 +219,14 @@ if (isset($_POST["submit"])) {
     <div class="container">
         <h1>Registration</h1>
         <form action="" method="post" autocomplete="off">
-        <div>
-    <label for="first_name">First Name:</label>
-    <input type="text" name="first_name" id="first_name" required minlength="2">
-</div>
-<div>
-    <label for="last_name">Last Name:</label>
-    <input type="text" name="last_name" id="last_name" required minlength="2">
-</div>
-        
+            <div>
+                <label for="first_name">First Name:</label>
+                <input type="text" name="first_name" id="first_name" required minlength="2">
+            </div>
+            <div>
+                <label for="last_name">Last Name:</label>
+                <input type="text" name="last_name" id="last_name" required minlength="2">
+            </div>
             <div>
                 <label for="username">Username:</label>
                 <input type="text" name="username" id="username" required minlength="5">
@@ -260,20 +257,21 @@ if (isset($_POST["submit"])) {
             Register with Google
         </a>
     </div>
-    <script>
-    	function togglePasswordVisibility() {
-            var passwordField = document.getElementById("password");
-            var toggleButton = document.querySelector(".toggle-password");
 
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                toggleButton.innerHTML = "<img src='eye-slash.png' alt='Hide password'>";
+    <script>
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const passwordToggleIcon = document.querySelector('.toggle-password img');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordToggleIcon.src = 'eye-off.png'; // Update with path to your eye-off icon
             } else {
-                passwordField.type = "password";
-                toggleButton.innerHTML = "<img src='eye.png' alt='Show password'>";
+                passwordField.type = 'password';
+                passwordToggleIcon.src = 'eye.png'; // Update with path to your eye icon
             }
         }
     </script>
 </body>
 </html>
+
 
