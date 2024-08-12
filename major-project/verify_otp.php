@@ -110,7 +110,6 @@ if (isset($_POST["resend"])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -191,7 +190,35 @@ if (isset($_POST["resend"])) {
         .container button:hover {
             background-color: #3700b3;
         }
+
+        #resendButton:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
     </style>
+    <script>
+        let countdownTime = 30;
+
+        function startTimer() {
+            const resendButton = document.getElementById('resendButton');
+            const timerDisplay = document.getElementById('timerDisplay');
+
+            resendButton.disabled = true;
+
+            const countdownInterval = setInterval(() => {
+                countdownTime--;
+                timerDisplay.textContent = `(${countdownTime}s)`;
+
+                if (countdownTime <= 0) {
+                    clearInterval(countdownInterval);
+                    resendButton.disabled = false;
+                    timerDisplay.textContent = '';
+                }
+            }, 1000);
+        }
+
+        window.onload = startTimer;
+    </script>
 </head>
 <body>
     <div class="container">
@@ -204,7 +231,7 @@ if (isset($_POST["resend"])) {
             <button type="submit" name="verify">Verify</button>
         </form>
         <form action="verify_otp.php" method="post" autocomplete="off" style="margin-top: 10px;">
-            <button type="submit" name="resend">Resend OTP</button>
+            <button type="submit" name="resend" id="resendButton">Resend OTP <span id="timerDisplay"></span></button>
         </form>
     </div>
 </body>
