@@ -117,6 +117,7 @@ if (isset($_GET['search'])) {
             float: left;
             overflow: hidden;
             margin-left: 50px; /* Add margin between dropdowns */
+            
         }
 
         /* Style the dropdown button */
@@ -267,7 +268,33 @@ if (isset($_GET['search'])) {
     vertical-align: middle; /* Align text vertically */
     margin-top:10px;
 }
+.topnav .tooltip {
+            position: absolute;
+            bottom: 100%; /* Position above the dropdown */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px; /* Adjust font size */
+            z-index: 10; /* Ensure it appears above other elements */
+        }
+   .topnav .dropdown:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
 
+        /* Lock indicator styling */
+        .lock-indicator {
+            font-size: 14px; /* Adjust font size */
+            color: red; /* Change color to indicate lock status */
+            margin-left: 10px; /* Space between text and lock indicator */
+        }
 
 
 
@@ -296,10 +323,18 @@ if (isset($_GET['search'])) {
         </div>
     </div>
     <!-- Assessments dropdown -->
-    <div class="dropdown">
-        <button class="dropbtn">Assessments 
-            <i class="fa fa-caret-down"></i>
+     <div class="dropdown">
+        <button class="dropbtn">
+            Assessments
+            <span class="lock-indicator"><?php if (!$isCompletedSQL && !$isCompletedXSS) echo '🔒'; ?></span>
         </button>
+        <div class="tooltip">
+            <?php if (!$isCompletedSQL && !$isCompletedXSS): ?>
+                <p>You need to complete all quizzes before accessing the tests.</p>
+            <?php else: ?>
+                <p>Assessments are available.</p>
+            <?php endif; ?>
+        </div>
         <div class="dropdown-content">
             <?php if ($isCompletedSQL || $role == 'admin'): ?>
                 <a href="sqltest.php">SQL Tests</a>
@@ -309,7 +344,6 @@ if (isset($_GET['search'])) {
             <?php endif; ?>
         </div>
     </div>
-    
     <a href="about.php">About</a>
     <a href="faq.php">FAQ</a> <!-- Add the FAQ link here -->
 

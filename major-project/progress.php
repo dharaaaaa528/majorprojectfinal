@@ -235,7 +235,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
         <p>All XSS Quizzes are completed!</p>
     <?php endif; ?>
 
-    <h2>SQL Tests</h2>
+    <h2>SQL Tests (Will unlock after all the SQL quizzes are completed)</h2>
     <div class="progress-bar-container">
         <div class="progress-bar" style="width: <?= ($completed_sql_tests / $total_sql_tests) * 100 ?>%">
             <span><?= $completed_sql_tests ?> / <?= $total_sql_tests ?> completed</span>
@@ -252,7 +252,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
         <p>All SQL Tests are completed!</p>
     <?php endif; ?>
 
-    <h2>XSS Tests</h2>
+    <h2>XSS Tests (Will unlock after all the XSS quizzes are completed)</h2>
     <div class="progress-bar-container">
         <div class="progress-bar" style="width: <?= ($completed_xss_tests / $total_xss_tests) * 100 ?>%">
             <span><?= $completed_xss_tests ?> / <?= $total_xss_tests ?> completed</span>
