@@ -25,16 +25,18 @@ if (isset($_POST['submit'])) {
             $userid = $row['userid'];
             $email = $row['email'];
 
+            // Store the email in session
+            $_SESSION['reset_email'] = $email;
+
             // Generate OTP
             $otp = rand(100000, 999999);
             $_SESSION['otp'] = $otp;
-            $_SESSION['otp_expiry'] = time() + 300;
+            $_SESSION['otp_expiry'] = time() + 60; // OTP valid for 5 minutes
             $_SESSION['reset_username'] = $username;
 
             // Send OTP email using PHPMailer
             $mail = new PHPMailer(true);
             try {
-                // Server settings
                 $mail->isSMTP();
                 $mail->Host = 'smtp.mail.yahoo.com';
                 $mail->SMTPAuth = true;
@@ -43,14 +45,12 @@ if (isset($_POST['submit'])) {
                 $mail->SMTPSecure = 'tls'; // Enable TLS encryption
                 $mail->Port = 587;
 
-                // Recipients
                 $mail->setFrom('dgandhi50@yahoo.com', 'dhara gandhi');
                 $mail->addAddress($email);
 
-                // Content
                 $mail->isHTML(true);
                 $mail->Subject = 'Password Reset OTP';
-                $mail->Body = "Your OTP for password reset is: <b>$otp</b>";
+                $mail->Body = "Your OTP for password reset is: <b>$otp</b>. it is valid for 1 minute";
 
                 $mail->send();
                 header("Location: verify_otp1.php");
@@ -66,6 +66,7 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -162,3 +163,4 @@ if (isset($_POST['submit'])) {
     </div>
 </body>
 </html>
+
