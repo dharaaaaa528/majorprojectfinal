@@ -99,25 +99,25 @@ include 'topnav.php';  // Make sure this path is correct
                 case "SQL Injection Based on 1=1 is Always True":
                     url = "sql1quiz.php";
                     break;
-                case "SQL Technique 2":
+                case "SQL Injection Based on &quot;&quot;=&quot;&quot; is Always True":
                     url = "sql2quiz.php";
                     break;
-                case "SQL Technique 3":
+                case "SQL Injection Based on Batched SQL Statements":
                     url = "sql3quiz.php";
                     break;
-                case "SQL Technique 4":
+                case "SQL Injection Based on Blind SQL Injection":
                     url = "sql4quiz.php";
                     break;
-                case "XS Script Technique 1":
+                case "Universal XSS":
                     url = "script1quiz.php";
                     break;
-                case "XS Script Technique 2":
+                case "Cookie XSS":
                     url = "script2quiz.php";
                     break;
-                case "XS Script Technique 3":
+                case "XSS with Header Injection in a 302 Response":
                     url = "script3quiz.php";
                     break;
-                case "XS Script Technique 4":
+                case "Stored XSS":
                     url = "script4quiz.php";
                     break;
                 default:
