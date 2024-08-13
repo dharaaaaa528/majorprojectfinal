@@ -149,27 +149,27 @@ $templateFile = '';
 $coordinates = [];
 switch ($templateId) {
     case 1:
-        $templateFile = 'templates/template1.pdf';
+        $templateFile = 'templates/template5.pdf';
         $coordinates = [
             'name' => [85, 135],
-            'course' => [35, 170],
-            'date' => [135, 170]
+            'course' => [45, 175],
+            'date' => [45, 193]
         ];
         break;
     case 2:
-        $templateFile = 'templates/template2.pdf';
+        $templateFile = 'templates/template6.pdf';
         $coordinates = [
-            'name' => [85, 140],
-            'course' => [30, 180],
-            'date' => [130, 180]
+            'name' => [85, 145],
+            'course' => [45, 185],
+            'date' => [45, 203]
         ];
         break;
     case 3:
-        $templateFile = 'templates/template3.pdf';
+        $templateFile = 'templates/template4.pdf';
         $coordinates = [
-            'name' => [30, 120],
-            'course' => [20, 180],
-            'date' => [80, 180]
+            'name' => [23, 120],
+            'course' => [23, 170],
+            'date' => [23, 195]
         ];
         break;
     default:

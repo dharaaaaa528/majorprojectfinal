@@ -96,7 +96,7 @@ include 'topnav.php';  // Make sure this path is correct
             var url = "";
 
             switch (technique) {
-                case "SQL Technique 1":
+                case "SQL Injection Based on 1=1 is Always True":
                     url = "sql1quiz.php";
                     break;
                 case "SQL Technique 2":

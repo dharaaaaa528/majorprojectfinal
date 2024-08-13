@@ -20,9 +20,9 @@ if ($quizId === 0) {
 }
 
 $templates = [
-    ['id' => 1, 'name' => 'Template 1', 'image' => 'template1.jpg'],
-    ['id' => 2, 'name' => 'Template 2', 'image' => 'template2.jpg'],
-    ['id' => 3, 'name' => 'Template 3', 'image' => 'template3.jpg']
+    ['id' => 1, 'name' => 'Template 1', 'image' => 'template5.jpg'],
+    ['id' => 2, 'name' => 'Template 2', 'image' => 'template6.jpg'],
+    ['id' => 3, 'name' => 'Template 3', 'image' => 'template4.jpg']
 ];
 ?>
 
