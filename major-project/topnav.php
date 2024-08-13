@@ -211,6 +211,72 @@ if (isset($_GET['search'])) {
             pointer-events: none;
             color: #888;
         }
+        /* Style for the dropdown username */
+.dropdown .dropbtn .username {
+    color: #f2f2f2; /* Text color */
+    font-size: 18px; /* Font size */
+    font-weight: bold; /* Font weight */
+    margin-left: 10px; /* Space between the profile picture and username */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+.profile-pic {
+    width: 30px; /* Set the width of the profile picture */
+    height: 30px; /* Set the height of the profile picture */
+    border-radius: 50%; /* Make the image circular */
+    object-fit: cover; /* Ensure the image covers the circle */
+    margin-right: 0px; /* Add space between the image and text */
+    margin-top:10px;
+}
+.topnav .dropdown .dropbtn {
+    font-size: 20px; /* Increase font size */
+    border: none;
+    outline: none;
+    color: #f2f2f2;
+    padding: 14px 20px; /* Adjust padding for spacing */
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+    display: flex;
+    align-items: center; /* Center items vertically */
+    gap: 10px; /* Add space between the profile container and the caret icon */
+    height: 50px; /* Set a fixed height for the button */
+}
+
+/* Container for profile picture and username */
+.profile-container {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    gap: 0px; /* Space between the profile picture and username */
+}
+
+/* Profile picture styling */
+.profile-pic {
+    width: 30px; /* Set the width of the profile picture */
+    height: 30px; /* Set the height of the profile picture */
+    border-radius: 50%; /* Make the image circular */
+    object-fit: cover; /* Ensure the image covers the circle */
+    margin-top:10px;
+}
+
+/* Username styling */
+.username {
+    color: #f2f2f2; /* Text color */
+    font-size: 18px; /* Font size */
+    font-weight: bold; /* Font weight */
+    line-height: 30px; /* Match the height of the profile picture */
+    vertical-align: middle; /* Align text vertically */
+    margin-top:10px;
+}
+
+
+
+
+
+
+
+
+
+        
     </style>
 </head>
 <body>
@@ -262,24 +328,25 @@ if (isset($_GET['search'])) {
         </div>
     </div>
     
-    <div class="dropdown" style="margin-left: auto;">
+   <div class="dropdown" style="margin-left: auto;">
     <button class="dropbtn">
+        <div class="profile-container">
             <?php if (isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture'])): ?>
-                <img src="<?php echo htmlspecialchars($_SESSION['profile_picture']); ?>" alt="Profile Picture" width="30" height="30" style="border-radius: 50%;">
+                <img src="<?php echo htmlspecialchars($_SESSION['profile_picture']); ?>" alt="Profile Picture" class="profile-pic">
             <?php else: ?>
-                <img src="profile.png" alt="Default Profile Picture" width="30" height="30" style="border-radius: 50%;">
+                <img src="profile.png" alt="Default Profile Picture" class="profile-pic">
             <?php endif; ?>
-            <?= htmlspecialchars($username) ?> 
-       
-            <i class="fa fa-caret-down"></i>
-        </button>
-         <div class="dropdown-content" style="right: 0; left: auto;">
-            <a href="profile.php">Profile</a>
-            <a href="settings.php">Settings</a>
-            <a href="logout.php">Logout</a>
+            <span class="username"><?php echo htmlspecialchars($username); ?></span>
         </div>
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content" style="right: 0; left: auto;">
+        <a href="profile.php">Profile</a>
+        <a href="settings.php">Settings</a>
+        <a href="logout.php">Logout</a>
     </div>
-    
+</div>
+   
     
 </div>
 
