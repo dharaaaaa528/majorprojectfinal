@@ -21,7 +21,7 @@ if (!$user) {
 // Check if the user has the 'admin' role
 $isAdmin = ($user['role'] === 'admin');
 
-// Fetch only XSS quizzes from the database
+// Fetch only SQL quizzes from the database
 $query = $pdo->prepare('SELECT * FROM quizzes WHERE type = ?');
 $query->execute(['XSS']);
 $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -32,7 +32,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Quizzes</title>
+    <title>Inj3ctPractice</title>
     <link rel="stylesheet" href="#">
     <style>
         body {
@@ -53,7 +53,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             display: flex;
             flex-direction: column;
             height: 1070vh; /* Ensure the sidebar spans the full height of the viewport */
-            border-right: 2px solid white;/* Optional shadow for visual separation */
+            border-right: 2px solid white; /* Optional shadow for visual separation */
         }
         .sidebar ul {
             list-style-type: none;
@@ -77,15 +77,15 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             margin: 20px;
             color: #000; /* Black text for readability */
             overflow-y: auto; /* Ensure content scrolls if too long */
-            position: relative; /* For positioning the delete button */
+            position: relative; /* Position relative to place the delete button */
         }
         .technique {
+            position: relative;
             margin-bottom: 20px;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 10px;
             background-color: #fff; /* White background for each technique block */
-            position: relative; /* For positioning the delete button */
         }
         .technique h2 {
             margin-top: 0;
@@ -133,21 +133,30 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             position: absolute;
             top: 10px;
             right: 10px;
-            background: red;
-            color: white;
+            background-color: red;
+            color: #fff;
             border: none;
             border-radius: 50%;
             width: 30px;
             height: 30px;
-            text-align: center;
-            line-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            font-size: 20px;
             font-weight: bold;
         }
         .delete-btn:hover {
-            background: darkred;
+            background-color: darkred;
         }
     </style>
+    <script>
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this content?')) {
+                window.location.href = 'delete_content.php?id=' + id;
+            }
+        }
+    </script>
 </head>
 <body>
     <?php include 'topnav.php'; ?>
@@ -158,19 +167,18 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
                 <li><a href="contentpage.php">SQL techniques</a></li>
                 <li><a href="contentpage2.php">XSScript techniques</a></li>
             </ul>
-        </div>       
+        </div>
         <div class="content">
             <?php foreach ($quizzes as $quiz): ?>
             <div class="technique">
                 <?php if ($isAdmin): ?>
-                <!-- Delete button visible only to admin -->
                 <button class="delete-btn" onclick="confirmDelete(<?php echo htmlspecialchars($quiz['id']); ?>)">X</button>
                 <?php endif; ?>
                 <h2><?php echo htmlspecialchars($quiz['name']); ?></h2>
                 <p><?php echo $quiz['description']; // Render HTML content ?></p>
                 <div class="button-group">
                     <!-- Assign unique href based on quiz ID -->
-                    <form action="xsstest<?php echo htmlspecialchars($quiz['id']); ?>.php" method="get" style="margin: 0;">
+                    <form action="xsstry<?php echo htmlspecialchars($quiz['id']); ?>.php" method="get" style="margin: 0;">
                         <button type="submit">Try It Now!</button>
                     </form>
                     <form action="quizstart.php" method="get" style="margin: 0;">
@@ -178,7 +186,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
                         <button type="submit">Attempt Quiz</button>
                     </form>
                     <?php if ($isAdmin): ?>
-                    <form action="edit_content2.php" method="get" style="margin: 0;">
+                    <form action="edit_content.php" method="get" style="margin: 0;">
                         <input type="hidden" name="id" value="<?php echo htmlspecialchars($quiz['id']); ?>">
                         <button type="submit">Edit Content</button>
                     </form>
@@ -187,21 +195,14 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <?php endforeach; ?>
             <div class="create-quiz-button">
-                <?php if ($isAdmin): ?>
-                <a href="create_quiz.php" class="btn">Create Quiz</a>
-                <a href="add_content.php" class="btn">Add Content</a>
-                <?php endif; ?>
+                <?php
+                if ($isAdmin) {
+                    echo '<a href="create_quiz.php" class="btn">Create Quiz</a>';
+                    echo '<a href="add_content.php" class="btn">Add Content</a>';
+                }
+                ?>
             </div>
         </div>
     </div>
-
-    <!-- JavaScript to handle confirmation dialog -->
-    <script>
-        function confirmDelete(id) {
-            if (confirm('Are you sure you want to delete this quiz?')) {
-                window.location.href = 'delete_content2.php?id=' + id;
-            }
-        }
-    </script>
 </body>
 </html>
