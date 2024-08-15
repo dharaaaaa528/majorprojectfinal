@@ -149,6 +149,12 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
         .delete-btn:hover {
             background-color: darkred;
         }
+        .video-container {
+            margin-bottom: 20px;
+        }
+        .video-container h2 {
+            color: #000;
+        }
     </style>
     <script>
         function confirmDelete(id) {
@@ -169,6 +175,12 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </div>
         <div class="content">
+            <!-- Embedded YouTube video -->
+            <div class="video-container">
+                <h2>Introduction to SQL Injections</h2>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/4hjrb2ztwM8" frameborder="0" allowfullscreen></iframe>
+            </div>
+
             <?php foreach ($quizzes as $quiz): ?>
             <div class="technique">
                 <?php if ($isAdmin): ?>
@@ -206,3 +218,5 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </body>
 </html>
+
+

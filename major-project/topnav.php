@@ -87,6 +87,10 @@ if (isset($_GET['search'])) {
             overflow: hidden;
             display: flex;
             align-items: center; /* Center items vertically */
+            position: fixed; /* Fixes the navigation bar at the top */
+            top: 0; /* Position at the top of the viewport */
+            width: 100%; /* Ensure it spans the entire width */
+            z-index: 1000; /* Ensure it appears above other content */
         }
 
         .topnav img.logo {
@@ -306,7 +310,7 @@ if (isset($_GET['search'])) {
         
     </style>
 </head>
-<body>
+<body style="padding-top: 60px;">
 
 <div class="topnav">
     <a href="usermain.php" class="branding">
@@ -381,8 +385,8 @@ if (isset($_GET['search'])) {
     </div>
 </div>
    
-    
 </div>
 
 </body>
+
 </html>

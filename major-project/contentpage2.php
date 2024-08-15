@@ -21,7 +21,7 @@ if (!$user) {
 // Check if the user has the 'admin' role
 $isAdmin = ($user['role'] === 'admin');
 
-// Fetch only SQL quizzes from the database
+// Fetch only XSS quizzes from the database
 $query = $pdo->prepare('SELECT * FROM quizzes WHERE type = ?');
 $query->execute(['XSS']);
 $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -169,6 +169,11 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </div>
         <div class="content">
+            <!-- Add the XSS tutorial video -->
+            <h2>Cross Site Scripting (XSS) Tutorial</h2>
+            <p>Learn the basics of Cross-Site Scripting (XSS) and how to prevent it.</p>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/bCP8_WYsvP4" title="XSS Tutorial for Beginners" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            
             <?php foreach ($quizzes as $quiz): ?>
             <div class="technique">
                 <?php if ($isAdmin): ?>
