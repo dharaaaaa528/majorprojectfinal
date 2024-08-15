@@ -53,7 +53,7 @@ include 'header.php';  // Make sure this path is correct
             border: 1px solid #ccc;
             border-radius: 4px;
             resize: vertical;
-            margin-left:-5px;
+            margin-left:-10px;
         }
 
         input[type="submit"] {
