@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 require_once 'header.php';
-require_once 'topnav.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -73,7 +72,7 @@ if ($stmt = $conn->prepare($sql)) {
             width: 200px;
             background-color: #000;
             height: calc(100vh - 20px);
-            position: absolute;
+            position: fixed;
             top: 99px;
             left: 0;
             padding-top: 20px;
@@ -112,6 +111,7 @@ if ($stmt = $conn->prepare($sql)) {
     </style>
 </head>
 <body>
+<br><br><br><br><br>
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
         <div class="sub-menu">
@@ -186,6 +186,7 @@ if ($stmt = $conn->prepare($sql)) {
             ?>
         </div>
     </div>
+    <?php include 'topnav.php';?>
 </body>
 </html>
 

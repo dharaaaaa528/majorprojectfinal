@@ -63,7 +63,7 @@ ob_end_flush();
             width: 200px;
             background-color: #000;
             height: calc(100vh - 20px);
-            position: absolute;
+            position: fixed;
             top: 99px;
             left: 0;
             padding-top: 20px;

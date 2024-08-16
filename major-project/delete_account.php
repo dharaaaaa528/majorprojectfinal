@@ -62,8 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             display: flex;
             flex-direction: column;
-             margin-left: 600px;
-             margin-top: 200px;
+            margin-left: 600px;
+            margin-top: 200px;
+            position: fixed;
         }
         .container h1 {
             margin-bottom: 20px;
@@ -99,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 200px;
             background-color: #000;
             height: calc(100vh - 20px);
-            position: absolute;
+            position: fixed;
             top: 99px;
             left: 0;
             padding-top: 20px;

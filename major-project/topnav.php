@@ -232,47 +232,44 @@ if (isset($_GET['search'])) {
             margin-right: 0px; /* Add space between the image and text */
             margin-top:10px;
         }
-.topnav .dropdown .dropbtn {
-    font-size: 20px; /* Increase font size */
-    border: none;
-    outline: none;
-    color: #f2f2f2;
-    padding: 14px 20px; /* Adjust padding for spacing */
-    background-color: inherit;
-    font-family: inherit;
-    margin: 0;
-    display: flex;
-    align-items: center; /* Center items vertically */
-    gap: 10px; /* Add space between the profile container and the caret icon */
-    height: 50px; /* Set a fixed height for the button */
-}
-
-/* Container for profile picture and username */
-.profile-container {
-    display: flex;
-    align-items: center; /* Center items vertically */
-    gap: 0px; /* Space between the profile picture and username */
-}
-
-/* Profile picture styling */
-.profile-pic {
-    width: 30px; /* Set the width of the profile picture */
-    height: 30px; /* Set the height of the profile picture */
-    border-radius: 50%; /* Make the image circular */
-    object-fit: cover; /* Ensure the image covers the circle */
-    margin-top:10px;
-}
-
-/* Username styling */
-.username {
-    color: #f2f2f2; /* Text color */
-    font-size: 18px; /* Font size */
-    font-weight: bold; /* Font weight */
-    line-height: 30px; /* Match the height of the profile picture */
-    vertical-align: middle; /* Align text vertically */
-    margin-top:10px;
-}
-.topnav .tooltip {
+        .topnav .dropdown .dropbtn {
+            font-size: 20px; /* Increase font size */
+            border: none;
+            outline: none;
+            color: #f2f2f2;
+            padding: 14px 20px; /* Adjust padding for spacing */
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+            display: flex;
+            align-items: center; /* Center items vertically */
+            gap: 10px; /* Add space between the profile container and the caret icon */
+            height: 50px; /* Set a fixed height for the button */
+         }
+         /* Container for profile picture and username */
+         .profile-container {
+            display: flex;
+            align-items: center; /* Center items vertically */
+            gap: 0px; /* Space between the profile picture and username */
+         }
+         /* Profile picture styling */
+         .profile-pic {
+            width: 30px; /* Set the width of the profile picture */
+            height: 30px; /* Set the height of the profile picture */
+            border-radius: 50%; /* Make the image circular */
+            object-fit: cover; /* Ensure the image covers the circle */
+            margin-top:10px;
+         }
+         /* Username styling */
+         .username {
+            color: #f2f2f2; /* Text color */
+            font-size: 18px; /* Font size */
+            font-weight: bold; /* Font weight */
+            line-height: 30px; /* Match the height of the profile picture */
+            vertical-align: middle; /* Align text vertically */
+            margin-top:10px;
+         }
+         .topnav .tooltip {
             position: absolute;
             bottom: 100%; /* Position above the dropdown */
             left: 50%;
@@ -288,26 +285,17 @@ if (isset($_GET['search'])) {
             font-size: 14px; /* Adjust font size */
             z-index: 10; /* Ensure it appears above other elements */
         }
-   .topnav .dropdown:hover .tooltip {
+        .topnav .dropdown:hover .tooltip {
             visibility: visible;
             opacity: 1;
         }
-
         /* Lock indicator styling */
         .lock-indicator {
             font-size: 14px; /* Adjust font size */
             color: red; /* Change color to indicate lock status */
             margin-left: 10px; /* Space between text and lock indicator */
         }
-
-
-
-
-
-
-
-
-        
+                
     </style>
 </head>
 <body>

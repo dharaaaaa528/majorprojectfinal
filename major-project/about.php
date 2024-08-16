@@ -73,6 +73,7 @@ include 'topnav.php';  // Make sure this path is correct
 
     <div class="content">
         <div class="about-container">
+        <br><br><br><br><br>
             <h1>About Us</h1>
             <p>Welcome to our website! We are a team of passionate individuals dedicated to providing the best services and experiences for our users. Our mission is to empower individuals with the knowledge and skills to protect themselves and their organizations from cyber threats, with a focus on SQL Injection and XSS Injection vulnerabilities.</p>
         </div>

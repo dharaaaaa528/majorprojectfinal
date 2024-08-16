@@ -1,6 +1,5 @@
 <?php
 require_once 'dbconfig.php';
-require_once 'topnav.php';
 require_once 'header.php';
 
 // Start session if not already started
@@ -139,7 +138,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
             width: 200px;
             background-color: #000;
             height: calc(100vh - 20px);
-            position: absolute;
+            position: fixed;
             top: 99px;
             left: 0;
             padding-top: 20px;
@@ -199,6 +198,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
     <a href="settings.php"><u>Settings</u></a>
 </div> 
 <div class="main-content">
+    <br><br><br><br><br>
     <h1>Progress</h1>
 
     <h2>SQL Quizzes</h2>
@@ -269,7 +269,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
         <p>All XSS Tests are completed!</p>
     <?php endif; ?>
 
-</div>
-
+</div> 
 </body>
 </html>
+<?php include 'topnav.php';?>

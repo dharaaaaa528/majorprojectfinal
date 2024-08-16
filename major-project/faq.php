@@ -112,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
 </head>
 <body>
+    <br><br><br><br><br>
     <div class="faq-container">
         <h2>Frequently Asked Questions</h2>
 

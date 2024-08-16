@@ -40,14 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .sidebar {
             
            width: 200px;
-            background-color: #000;
-            height: calc(100vh - 20px);
-            position: absolute;
-            top: 99px;
-            left: 0;
-            padding-top: 20px;
-            color: #fff;
-            border-right: 2px solid white;
+           background-color: #000;
+           height: calc(100vh - 20px);
+           position: fixed;
+           top: 99px;
+           left: 0;
+           padding-top: 20px;
+           color: #fff;
+           border-right: 2px solid white;
         }
 
         .sidebar a {
@@ -61,13 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .sidebar a:hover {
             background-color: #575757;
         }
-         .sidebar a.settings-link {
+        .sidebar a.settings-link {
             color: #56C2DD;
         }
 
-      .content {
-             
-          
+        .content {         
             margin-left: 200px; /* Space for the side navigation */
             padding: 20px;
             width: calc(100% - 200px); /* Adjust width based on sidebar */
@@ -75,63 +73,54 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             height: calc(100vh - 50px); /* Adjust based on top nav height */
             overflow-y: auto;
             background-color: rgba(0, 0, 0, 0.7);
-            height: 100vh;
-        
-            
+            height: 100vh;            
        }
        .theme-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.theme-option {
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.theme-option img {
-    width: 400px; /* Adjust the width as needed */
-    height: 400px; /* Adjust the height as needed */
-    object-fit: cover; /* Ensure images cover the specified dimensions */
-    border-radius: 5px;
-    border: 8px solid white;
-    
-}
-
-.theme-option.selected {
-    border-color: #;
-}
-
-.settings-container .submit-button {
-    width: 200px;
-    height: 60px;
-    background-color: #007bff; /* Blue color for the button */
-    color: white; /* White text color */
-    font-size: 18px; /* Increase the text size */
-    border: none; /* Remove the border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Change cursor to pointer on hover */
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
-    align-self: flex-end; /* Align the button to the end of the flex container */
-    margin: 0; /* Remove any margin */
-    margin-top: 30px;
-}
-
-.settings-container .submit-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
- .sub-menu {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+       }
+       .theme-option {
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+       }
+       .theme-option img {
+            width: 400px; /* Adjust the width as needed */
+            height: 400px; /* Adjust the height as needed */
+            object-fit: cover; /* Ensure images cover the specified dimensions */
+            border-radius: 5px;
+            border: 8px solid white;
+       }
+       .theme-option.selected {
+            border-color: #;
+       }
+       .settings-container .submit-button {
+            width: 200px;
+            height: 60px;
+            background-color: #007bff; /* Blue color for the button */
+            color: white; /* White text color */
+            font-size: 18px; /* Increase the text size */
+            border: none; /* Remove the border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            transition: background-color 0.3s ease; /* Smooth transition for background color */
+            align-self: flex-end; /* Align the button to the end of the flex container */
+            margin: 0; /* Remove any margin */
+            margin-top: 30px;
+       }
+       .settings-container .submit-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+       }
+       .sub-menu {
             padding-left: 30px;
-        }
-
-        .sub-menu a {
+       }
+       .sub-menu a {
             font-size: 16px;
-        }
+       }
 
 
        
@@ -139,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
 </head>
 <body>
+<br><br><br><br><br>
     <div class="sidebar">
         <a href="profile.php" class="profile-link"><u>Profile</u></a>
         <div class="sub-menu">
