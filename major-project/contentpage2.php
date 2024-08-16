@@ -54,6 +54,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             flex-direction: column;
             height: 1070vh; /* Ensure the sidebar spans the full height of the viewport */
             border-right: 2px solid white; /* Optional shadow for visual separation */
+            position: fixed;
         }
         .sidebar ul {
             list-style-type: none;
@@ -74,7 +75,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
             padding: 20px;
             background-color: #fff; /* White background for content area */
             border-radius: 10px;
-            margin: 20px;
+            margin-left: 200px;
             color: #000; /* Black text for readability */
             overflow-y: auto; /* Ensure content scrolls if too long */
             position: relative; /* Position relative to place the delete button */
@@ -159,8 +160,8 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
     </script>
 </head>
 <body>
-    <?php include 'topnav.php'; ?>
-    <div class="container">
+    <br><br><br><br><br>
+        <div class="container">
         <div class="sidebar">
             <ul>
                 <li><a href="profile.php">Profile</a></li>
@@ -208,6 +209,7 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
                 ?>
             </div>
         </div>
+        <?php include 'topnav.php'; ?>
     </div>
 </body>
 </html>

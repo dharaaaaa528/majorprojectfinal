@@ -87,7 +87,9 @@ if (isset($_GET['search'])) {
             overflow: hidden;
             display: flex;
             align-items: center; /* Center items vertically */
-            
+            position: fixed;
+            top: 0;
+           
         }
 
         .topnav img.logo {
@@ -141,6 +143,7 @@ if (isset($_GET['search'])) {
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
+            position: fixed;
         }
 
         /* Links inside the dropdown */
@@ -214,21 +217,21 @@ if (isset($_GET['search'])) {
             color: #888;
         }
         /* Style for the dropdown username */
-.dropdown .dropbtn .username {
-    color: #f2f2f2; /* Text color */
-    font-size: 18px; /* Font size */
-    font-weight: bold; /* Font weight */
-    margin-left: 10px; /* Space between the profile picture and username */
-    white-space: nowrap; /* Prevent text from wrapping */
-}
-.profile-pic {
-    width: 30px; /* Set the width of the profile picture */
-    height: 30px; /* Set the height of the profile picture */
-    border-radius: 50%; /* Make the image circular */
-    object-fit: cover; /* Ensure the image covers the circle */
-    margin-right: 0px; /* Add space between the image and text */
-    margin-top:10px;
-}
+       .dropdown .dropbtn .username {
+            color: #f2f2f2; /* Text color */
+            font-size: 18px; /* Font size */
+            font-weight: bold; /* Font weight */
+            margin-left: 10px; /* Space between the profile picture and username */
+            white-space: nowrap; /* Prevent text from wrapping */
+        }
+       .profile-pic {
+            width: 30px; /* Set the width of the profile picture */
+            height: 30px; /* Set the height of the profile picture */
+            border-radius: 50%; /* Make the image circular */
+            object-fit: cover; /* Ensure the image covers the circle */
+            margin-right: 0px; /* Add space between the image and text */
+            margin-top:10px;
+        }
 .topnav .dropdown .dropbtn {
     font-size: 20px; /* Increase font size */
     border: none;
@@ -382,8 +385,8 @@ if (isset($_GET['search'])) {
     </div>
 </div>
    
+    
 </div>
 
 </body>
-
 </html>
