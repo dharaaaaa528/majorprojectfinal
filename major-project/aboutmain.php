@@ -128,10 +128,10 @@
             <h2>Testimonials</h2>
             <p>Here's what our users have to say about us:</p>
             <blockquote>
-                "This organization has transformed the way we approach our work. Their dedication and expertise are unmatched." - User A
+                "This organization has transformed the way we approach our work. Their dedication and expertise are unmatched." - Jack
             </blockquote>
             <blockquote>
-                "We have seen significant improvements in our processes thanks to their innovative solutions." - User B
+                "We have seen significant improvements in our processes thanks to their innovative solutions." - Emily
             </blockquote>
         </div>
     </div>
