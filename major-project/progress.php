@@ -113,6 +113,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
             border-radius: 25px;
             margin: 20px 0;
             position: relative;
+            
         }
 
         .progress-bar {
@@ -132,6 +133,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
             text-align: center;
             white-space: nowrap;
             z-index: 1;
+           
         }
 
         .sidebar {
@@ -171,6 +173,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
             overflow-y: auto;
             background-color: rgba(0, 0, 0, 0.7);
             height: 100vh;
+            
         }
 
         .sub-menu {
@@ -179,6 +182,10 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
 
         .sub-menu a {
             font-size: 16px;
+        }
+         .topnav {
+            
+            z-index: 1000;
         }
     </style>
 </head>

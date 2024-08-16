@@ -89,6 +89,7 @@ if (isset($_GET['search'])) {
             align-items: center; /* Center items vertically */
             position: fixed;
             top: 0;
+            width:1550px;
            
         }
 
