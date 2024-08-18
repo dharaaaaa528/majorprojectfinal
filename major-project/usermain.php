@@ -43,6 +43,12 @@ if (!$modalShown) {
     <title>User Main</title>
     <style>
         /* Existing CSS */
+        .html, body {
+    overflow: hidden; /* Hide overflow on both html and body */
+    height: 100%;     /* Ensure full height */
+    margin: 0;        /* Remove default margin */
+}
+        
         
         .modal {
             display: none;
@@ -91,6 +97,7 @@ if (!$modalShown) {
             max-width: 800px;
             margin: 20px auto;
             color: #f2f2f2;
+            margin-top:230px
         }
 
         .button-container {
@@ -100,6 +107,7 @@ if (!$modalShown) {
             bottom: 150px;
             width: 100%;
             padding-left: 0px;
+            
         }
 
         .button {
@@ -118,13 +126,15 @@ if (!$modalShown) {
         .main-content {
             text-align: center;
             padding: 20px;
-            margin-top: 80px;
+            margin-top: 50px;
             background-color: rgba(0, 0, 0, 0.4);
+            
         }
 
         .main-content h1 {
             font-size: 50px;
             margin-bottom: 20px;
+            margin-top: 150px;
         }
 
         .main-content p {

@@ -144,25 +144,28 @@ if (isset($_SESSION['successMessage'])) {
             padding: 0;
             box-sizing: border-box;
         }
+    
 
         /* Body styling */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             background-color: #f4f4f4;
-            padding: 20px;
+            padding: 30px 20px 20px 20px;
+           
         }
 
         /* Content container */
         .content {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 30px auto;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding-top:30px;
-            margin-top:30px;
+            padding-top:100px;
+            top:50px;
+            
         }
 
         /* Header styling */
