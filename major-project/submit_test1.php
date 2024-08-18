@@ -94,6 +94,26 @@ if ($stmt = $conn->prepare($sql)) {
     exit();
 }
 
+// Get the test category
+$category = '';
+$sql = "SELECT category FROM tests WHERE test_id = ?";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $testId);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $category = $row['category'];
+        }
+        $stmt->close();
+    } else {
+        echo "Error executing statement: " . $stmt->error;
+        exit();
+    }
+} else {
+    echo "Error preparing statement: " . $conn->error;
+    exit();
+}
+
 // Check if score is 40 or more and insert or update in test_progress
 if ($score >= 40) {
     $status = 'Completed';
@@ -169,15 +189,28 @@ $totalAttemptsAllowed = 3;
 $attemptsCount = count($attempts);
 $remainingAttempts = $totalAttemptsAllowed - $attemptsCount;
 
+// Fetch quiz IDs based on the test category
+$quizIds = [];
+$sql = "SELECT id FROM quizzes WHERE type = ?";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("s", $category);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $quizIds[] = $row['id'];
+        }
+        $stmt->close();
+    } else {
+        echo "Error executing statement: " . $stmt->error;
+        exit();
+    }
+} else {
+    echo "Error preparing statement: " . $conn->error;
+    exit();
+}
+
 // If the user fails the quiz three times, delete all relevant records
 if ($failedAttemptsCount >= 3 && $score < 40) {
-    $quizIds = [];
-    if (in_array($testId, [1, 2, 3, 4])) {
-        $quizIds = [1, 2, 3, 4];
-    } elseif (in_array($testId, [5, 6, 7, 8])) {
-        $quizIds = [5, 6, 7, 8];
-    }
-    
     if (!empty($quizIds)) {
         $quizIdsPlaceholder = implode(',', array_fill(0, count($quizIds), '?'));
         
@@ -215,9 +248,9 @@ if ($failedAttemptsCount >= 3 && $score < 40) {
     }
 }
 
-
 // Display the results page
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -352,7 +385,7 @@ if ($failedAttemptsCount >= 3 && $score < 40) {
         </table>
 
         <div class="button-container">
-            <?php if ($score >= 40): ?>
+            <?php if ($score >= 0): ?>
                 <a href="choose_certificate1.php?test_id=<?php echo $testId; ?>" class="button">Generate Certificate</a>
             <?php endif; ?>
             <a href="contentpage.php" class="button reload">Reload</a>

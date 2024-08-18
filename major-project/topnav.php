@@ -34,6 +34,14 @@ if (isset($_SESSION["google_loggedin"]) && $_SESSION["google_loggedin"] === TRUE
 // Debugging: Log session data
 error_log("Session Data: " . print_r($_SESSION, true));
 
+// Function to get quiz IDs by type
+function getQuizIdsByType($pdo, $type) {
+    $stmt = $pdo->prepare('SELECT id FROM quizzes WHERE type = ?');
+    $stmt->execute([$type]);
+    $quiz_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    return $quiz_ids;
+}
+
 // Function to check if user has completed specific quizzes
 function hasCompletedQuizzes($pdo, $user_id, $quiz_ids) {
     foreach ($quiz_ids as $quiz_id) {
@@ -48,9 +56,13 @@ function hasCompletedQuizzes($pdo, $user_id, $quiz_ids) {
     return true;
 }
 
+// Fetch quiz IDs for SQL and XSS types
+$sqlQuizIds = getQuizIdsByType($pdo, 'sql');
+$xssQuizIds = getQuizIdsByType($pdo, 'xss');
+
 // Check if user has completed quizzes for SQL and XSS tests
-$isCompletedSQL = hasCompletedQuizzes($pdo, $_SESSION['userid'], [1, 2, 3, 4]);
-$isCompletedXSS = hasCompletedQuizzes($pdo, $_SESSION['userid'], [5, 6, 7, 8]);
+$isCompletedSQL = hasCompletedQuizzes($pdo, $_SESSION['userid'], $sqlQuizIds);
+$isCompletedXSS = hasCompletedQuizzes($pdo, $_SESSION['userid'], $xssQuizIds);
 
 // Handle search functionality
 if (isset($_GET['search'])) {
@@ -75,6 +87,7 @@ if (isset($_GET['search'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

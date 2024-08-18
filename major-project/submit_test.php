@@ -103,6 +103,47 @@ if ($stmt = $conn->prepare($sql)) {
     exit();
 }
 
+// Fetch test category and related quiz IDs
+$quizIds = [];
+$category = '';
+$sql = "SELECT category FROM tests WHERE test_id = ?";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $testId);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $category = $row['category'];
+        }
+        $stmt->close();
+    } else {
+        echo "Error executing statement: " . $stmt->error;
+        exit();
+    }
+} else {
+    echo "Error preparing statement: " . $conn->error;
+    exit();
+}
+
+if ($category) {
+    $sql = "SELECT id FROM quizzes WHERE type = ?";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("s", $category);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $quizIds[] = $row['id'];
+            }
+            $stmt->close();
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            exit();
+        }
+    } else {
+        echo "Error preparing statement: " . $conn->error;
+        exit();
+    }
+}
+
 // Check if score is 40 or more and insert or update in test_progress
 if ($score >= 40) {
     $status = 'Completed';
@@ -177,24 +218,39 @@ $totalAttemptsAllowed = 3;
 $attemptsCount = count($attempts);
 $remainingAttempts = $totalAttemptsAllowed - $attemptsCount;
 
-// Determine the quiz IDs to delete based on the test_id
-$quizIds = [];
-if (in_array($testId, [1, 2, 3, 4])) {
-    $quizIds = [1, 2, 3, 4];
-} elseif (in_array($testId, [5, 6, 7, 8])) {
-    $quizIds = [5, 6, 7, 8];
-}
-
 // If the user fails the quiz three times, delete all relevant records
 if ($failedAttemptsCount >= 3 && $score < 40 && !empty($quizIds)) {
     $quizIdsPlaceholder = implode(',', array_fill(0, count($quizIds), '?'));
 
     // Delete from userprogress table
+    // Create placeholders for the quiz IDs
+    $quizIdsPlaceholder = implode(',', array_fill(0, count($quizIds), '?'));
+    
+    // Delete from userprogress table
     $sql = "DELETE FROM userprogress WHERE user_id = ? AND quiz_id IN ($quizIdsPlaceholder)";
     if ($stmt = $conn->prepare($sql)) {
-        $types = str_repeat('i', count($quizIds) + 1);
+        // Create an array with the userId and quizIds for bind_param
         $params = array_merge([$userId], $quizIds);
+        // Create a string of types for bind_param
+        $types = str_repeat('i', count($params));
+        // Call bind_param with dynamic parameters
         $stmt->bind_param($types, ...$params);
+        if ($stmt->execute()) {
+            $stmt->close();
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            exit();
+        }
+    } else {
+        echo "Error preparing statement: " . $conn->error;
+        exit();
+    }
+    
+
+    // Delete from test_progress table
+    $sql = "DELETE FROM test_progress WHERE user_id = ? AND test_id = ?";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("ii", $userId, $testId);
         if ($stmt->execute()) {
             $stmt->close();
         } else {
@@ -207,7 +263,7 @@ if ($failedAttemptsCount >= 3 && $score < 40 && !empty($quizIds)) {
     }
 
     // Delete from test_attempts table
-    $sql = "DELETE FROM test_attempts WHERE user_id = ? AND test_id = ? AND score < 40";
+    $sql = "DELETE FROM test_attempts WHERE user_id = ? AND test_id = ?";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ii", $userId, $testId);
         if ($stmt->execute()) {
@@ -222,8 +278,9 @@ if ($failedAttemptsCount >= 3 && $score < 40 && !empty($quizIds)) {
     }
 }
 
-// Display the results page
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

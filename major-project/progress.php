@@ -13,93 +13,53 @@ if (!isset($_SESSION["login"]) && !isset($_SESSION["google_loggedin"])) {
     exit();
 }
 
-// Function to fetch completed quizzes count and last completed quiz ID
-function getCompletedQuizzesCount($pdo, $user_id, $quiz_ids) {
-    $inClause = implode(',', array_fill(0, count($quiz_ids), '?'));
-    $stmt = $pdo->prepare("SELECT COUNT(*) as count, MAX(quiz_id) as max_quiz_id FROM userprogress WHERE user_id = ? AND quiz_id IN ($inClause) AND status = 'completed'");
-    $stmt->execute(array_merge([$user_id], $quiz_ids));
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-// Function to fetch completed tests count from test_progress table
-function getCompletedTestsCount($pdo, $user_id, $test_ids) {
-    $inClause = implode(',', array_fill(0, count($test_ids), '?'));
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM test_progress WHERE user_id = ? AND test_id IN ($inClause) AND status = 'completed'");
-    $stmt->execute(array_merge([$user_id], $test_ids));
-    return $stmt->fetchColumn();
-}
-
-// Function to get the list of incomplete quizzes
-function getIncompleteQuizzes($pdo, $user_id, $quiz_ids) {
-    $inClause = implode(',', array_fill(0, count($quiz_ids), '?'));
-    $stmt = $pdo->prepare("SELECT id, name FROM quizzes WHERE id IN ($inClause) AND id NOT IN (SELECT quiz_id FROM userprogress WHERE user_id = ? AND status = 'completed')");
-    $stmt->execute(array_merge($quiz_ids, [$user_id]));
+// Function to fetch quizzes based on type
+function getQuizzesByType($pdo, $user_id, $type) {
+    $stmt = $pdo->prepare("SELECT q.id, q.name, 
+                            (SELECT COUNT(*) FROM userprogress up WHERE up.quiz_id = q.id AND up.user_id = ? AND up.status = 'completed') AS completed
+                           FROM quizzes q 
+                           WHERE q.type = ?");
+    $stmt->execute([$user_id, $type]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Function to get the list of incomplete tests
-function getIncompleteTests($pdo, $user_id, $test_ids) {
-    $inClause = implode(',', array_fill(0, count($test_ids), '?'));
-    $stmt = $pdo->prepare("SELECT test_id, name FROM tests WHERE test_id IN ($inClause) AND test_id NOT IN (SELECT test_id FROM test_progress WHERE user_id = ? AND status = 'completed')");
-    $stmt->execute(array_merge($test_ids, [$user_id]));
+// Function to fetch tests based on category
+function getTestsByCategory($pdo, $user_id, $category) {
+    $stmt = $pdo->prepare("SELECT t.test_id, t.name, 
+                            (SELECT COUNT(*) FROM test_progress tp WHERE tp.test_id = t.test_id AND tp.user_id = ? AND tp.status = 'completed') AS completed
+                           FROM tests t 
+                           WHERE t.category = ?");
+    $stmt->execute([$user_id, $category]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Define quiz and test IDs for SQL and XSS
-$sql_quiz_ids = [1, 2, 3, 4];
-$xss_quiz_ids = [5, 6, 7, 8];
-$sql_test_ids = [1, 2, 3];
-$xss_test_ids = [5, 6, 7];
-
-// Fetch completed quizzes and tests counts
+// Fetch user ID
 $user_id = $_SESSION['userid'];
 
-// Fetch completed quizzes and last completed quiz ID for SQL
-$sql_quiz_data = getCompletedQuizzesCount($pdo, $user_id, $sql_quiz_ids);
-$completed_sql_quizzes = $sql_quiz_data['count'];
-$last_completed_sql_quiz_id = $sql_quiz_data['max_quiz_id'];
+// Fetch quizzes by type
+$sql_quizzes = getQuizzesByType($pdo, $user_id, 'sql');
+$xss_quizzes = getQuizzesByType($pdo, $user_id, 'xss');
 
-// Fetch completed quizzes and last completed quiz ID for XSS
-$xss_quiz_data = getCompletedQuizzesCount($pdo, $user_id, $xss_quiz_ids);
-$completed_xss_quizzes = $xss_quiz_data['count'];
-$last_completed_xss_quiz_id = $xss_quiz_data['max_quiz_id'];
+// Fetch tests by category
+$sql_tests = getTestsByCategory($pdo, $user_id, 'sql');
+$xss_tests = getTestsByCategory($pdo, $user_id, 'xss');
 
-$completed_sql_tests = getCompletedTestsCount($pdo, $user_id, $sql_test_ids);
-$completed_xss_tests = getCompletedTestsCount($pdo, $user_id, $xss_test_ids);
+// Calculate completed and incomplete quizzes and tests
+$completed_sql_quizzes = count(array_filter($sql_quizzes, fn($quiz) => $quiz['completed'] > 0));
+$completed_xss_quizzes = count(array_filter($xss_quizzes, fn($quiz) => $quiz['completed'] > 0));
+$completed_sql_tests = count(array_filter($sql_tests, fn($test) => $test['completed'] > 0));
+$completed_xss_tests = count(array_filter($xss_tests, fn($test) => $test['completed'] > 0));
 
-// Fetch incomplete quizzes and tests
-$incomplete_sql_quizzes = getIncompleteQuizzes($pdo, $user_id, $sql_quiz_ids);
-$incomplete_xss_quizzes = getIncompleteQuizzes($pdo, $user_id, $xss_quiz_ids);
-$incomplete_sql_tests = getIncompleteTests($pdo, $user_id, $sql_test_ids);
-$incomplete_xss_tests = getIncompleteTests($pdo, $user_id, $xss_test_ids);
+$total_sql_quizzes = count($sql_quizzes);
+$total_xss_quizzes = count($xss_quizzes);
+$total_sql_tests = count($sql_tests);
+$total_xss_tests = count($xss_tests);
 
-// Total quizzes and tests counts
-$total_sql_quizzes = count($sql_quiz_ids);
-$total_xss_quizzes = count($xss_quiz_ids);
-$total_sql_tests = count($sql_test_ids);
-$total_xss_tests = count($xss_test_ids);
+$incomplete_sql_quizzes = array_filter($sql_quizzes, fn($quiz) => $quiz['completed'] == 0);
+$incomplete_xss_quizzes = array_filter($xss_quizzes, fn($quiz) => $quiz['completed'] == 0);
+$incomplete_sql_tests = array_filter($sql_tests, fn($test) => $test['completed'] == 0);
+$incomplete_xss_tests = array_filter($xss_tests, fn($test) => $test['completed'] == 0);
 
-// Initialize last completed quiz IDs in session if not set
-if (!isset($_SESSION['completed_sql_quiz_ids'])) {
-    $_SESSION['completed_sql_quiz_ids'] = [];
-}
-if (!isset($_SESSION['completed_xss_quiz_ids'])) {
-    $_SESSION['completed_xss_quiz_ids'] = [];
-}
-
-// Update session if quiz ID changes
-$update_sql_progress = false;
-$update_xss_progress = false;
-
-if ($last_completed_sql_quiz_id && !in_array($last_completed_sql_quiz_id, $_SESSION['completed_sql_quiz_ids'])) {
-    $_SESSION['completed_sql_quiz_ids'][] = $last_completed_sql_quiz_id;
-    $update_sql_progress = true;
-}
-
-if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESSION['completed_xss_quiz_ids'])) {
-    $_SESSION['completed_xss_quiz_ids'][] = $last_completed_xss_quiz_id;
-    $update_xss_progress = true;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,7 +67,7 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
     <meta charset="UTF-8">
     <title>Progress</title>
     <style>
-        .progress-bar-container {
+     .progress-bar-container {
             width: 80%;
             background-color: #f3f3f3;
             border-radius: 25px;
@@ -187,6 +147,8 @@ if ($last_completed_xss_quiz_id && !in_array($last_completed_xss_quiz_id, $_SESS
             
             z-index: 1000;
         }
+        /* Styles go here */
+        /* Same as before */
     </style>
 </head>
 <body>
