@@ -385,7 +385,7 @@ if ($failedAttemptsCount >= 3 && $score < 40) {
         </table>
 
         <div class="button-container">
-            <?php if ($score >= 0): ?>
+            <?php if ($score >= 40): ?>
                 <a href="choose_certificate1.php?test_id=<?php echo $testId; ?>" class="button">Generate Certificate</a>
             <?php endif; ?>
             <a href="contentpage.php" class="button reload">Reload</a>
