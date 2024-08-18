@@ -15,14 +15,9 @@ if ((!isset($_SESSION["login"]) || $_SESSION["login"] !== true) && (!isset($_SES
 // Get the user ID from the session
 $userId = $_SESSION["userid"];
 
-// Fetch all certificates for the user with quiz type, technique number, and creation date, sorted by date
+// Fetch all certificates for the user with quiz type, course name, and creation date, sorted by date
 $sql = "
-    SELECT c.id, c.quiz_id, c.file_path, c.created_at, q.name AS course_name, q.id AS technique, 
-           CASE 
-               WHEN q.id IN (1, 2, 3, 4) THEN 'SQL' 
-               WHEN q.id IN (5, 6, 7, 8) THEN 'XSS' 
-               ELSE 'Unknown' 
-           END AS category
+    SELECT c.id, c.quiz_id, c.file_path, c.created_at, q.name AS course_name, q.type AS category
     FROM certificates c
     JOIN quizzes q ON c.quiz_id = q.id
     WHERE c.user_id = ?
@@ -130,8 +125,8 @@ if ($stmt = $conn->prepare($sql)) {
             <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
         </div>
         <div class="sub-menu">
-        <a href="delete_account.php" class="details1-link"><u>Delete Account</u></a>
-    </div>
+            <a href="delete_account.php" class="details1-link"><u>Delete Account</u></a>
+        </div>
         <a href="progress.php" class="progress-link"><u>Progress</u></a>
         <a href="certificate.php" class="certificate-link"><u>Quiz Certifications</u></a>
         <a href="test_certificate.php"><u>Test Certifications</u></a>
@@ -141,38 +136,67 @@ if ($stmt = $conn->prepare($sql)) {
         <div class="certificate-container">
             <h1>Your Certificates</h1>
             <?php
-            // Initialize category variables
-            $categories = ['SQL', 'XSS'];
+            // Initialize arrays to hold certificates by category
+            $sqlCertificates = [];
+            $xssCertificates = [];
             
-            foreach ($categories as $category) {
-                echo "<h2>$category Certificates</h2>";
-                echo "<table class='certificate-table'>";
-                echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
-                echo "<tbody>";
-
-                $hasCategoryCertificates = false;
-                foreach ($certificates as $certificate) {
-                    if ($certificate['category'] === $category) {
-                        $hasCategoryCertificates = true;
-                        $createdAt = date('d-m-Y H:i:s', strtotime($certificate['created_at'])); // Format date and time
-                        echo "<tr>";
-                        echo "<td><img src='" . htmlspecialchars($certificate['file_path']) . "' alt='Certificate Image' class='certificate-image' onclick=\"window.open('" . htmlspecialchars($certificate['file_path']) . "', '_blank')\"></td>";
-                        echo "<td>" . htmlspecialchars($certificate['course_name']) . "</td>";
-                        echo "<td>" . htmlspecialchars($createdAt) . "</td>";
-                        echo "<td><a href='" . htmlspecialchars($certificate['file_path']) . "' download>Download</a></td>";
-                        echo "</tr>";
-                    }
+            foreach ($certificates as $certificate) {
+                $category = $certificate['category'];
+                if ($category === 'SQL') {
+                    $sqlCertificates[] = $certificate;
+                } elseif ($category === 'XSS') {
+                    $xssCertificates[] = $certificate;
                 }
-
-                if (!$hasCategoryCertificates) {
-                    echo "<tr><td colspan='4'>No certificates found for this category.</td></tr>";
-                }
-
-                echo "</tbody></table>";
             }
+
+            // Display SQL certificates
+            echo "<h2>SQL Certificates</h2>";
+            echo "<table class='certificate-table'>";
+            echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
+            echo "<tbody>";
+
+            if (count($sqlCertificates) > 0) {
+                foreach ($sqlCertificates as $certificate) {
+                    $createdAt = date('d-m-Y H:i:s', strtotime($certificate['created_at'])); // Format date and time
+                    echo "<tr>";
+                    echo "<td><img src='" . htmlspecialchars($certificate['file_path']) . "' alt='Certificate Image' class='certificate-image' onclick=\"window.open('" . htmlspecialchars($certificate['file_path']) . "', '_blank')\"></td>";
+                    echo "<td>" . htmlspecialchars($certificate['course_name']) . "</td>";
+                    echo "<td>" . htmlspecialchars($createdAt) . "</td>";
+                    echo "<td><a href='" . htmlspecialchars($certificate['file_path']) . "' download>Download</a></td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='4'>No SQL certificates found.</td></tr>";
+            }
+
+            echo "</tbody></table>";
+
+            // Display XSS certificates
+            echo "<h2>XSS Certificates</h2>";
+            echo "<table class='certificate-table'>";
+            echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
+            echo "<tbody>";
+
+            if (count($xssCertificates) > 0) {
+                foreach ($xssCertificates as $certificate) {
+                    $createdAt = date('d-m-Y H:i:s', strtotime($certificate['created_at'])); // Format date and time
+                    echo "<tr>";
+                    echo "<td><img src='" . htmlspecialchars($certificate['file_path']) . "' alt='Certificate Image' class='certificate-image' onclick=\"window.open('" . htmlspecialchars($certificate['file_path']) . "', '_blank')\"></td>";
+                    echo "<td>" . htmlspecialchars($certificate['course_name']) . "</td>";
+                    echo "<td>" . htmlspecialchars($createdAt) . "</td>";
+                    echo "<td><a href='" . htmlspecialchars($certificate['file_path']) . "' download>Download</a></td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='4'>No XSS certificates found.</td></tr>";
+            }
+
+            echo "</tbody></table>";
             ?>
         </div>
     </div>
     <?php include 'topnav.php';?>
 </body>
 </html>
+
+

@@ -32,9 +32,27 @@ function getLatestCompletionTime($conn, $userId, $quizIds) {
     return $row['latest_completion'];
 }
 
+// Fetch quiz IDs based on type
+function fetchQuizIdsByType($conn, $type) {
+    $sql = "SELECT id FROM quizzes WHERE type = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $type);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $quizIds = [];
+    while ($row = $result->fetch_assoc()) {
+        $quizIds[] = $row['id'];
+    }
+    return $quizIds;
+}
+
+// Get quiz IDs by type
+$sqlQuizIds = fetchQuizIdsByType($conn, 'SQL');
+$xssQuizIds = fetchQuizIdsByType($conn, 'XSS');
+
 // Get the latest completion times for SQL and XSS quizzes
-$latestSQLCompletion = getLatestCompletionTime($conn, $userId, [1, 2, 3, 4]);
-$latestXSSCompletion = getLatestCompletionTime($conn, $userId, [5, 6, 7, 8]);
+$latestSQLCompletion = getLatestCompletionTime($conn, $userId, $sqlQuizIds);
+$latestXSSCompletion = getLatestCompletionTime($conn, $userId, $xssQuizIds);
 
 // Initialize pop-up scripts
 $sqlPopupScript = '';
@@ -43,14 +61,13 @@ $xssPopupScript = '';
 // Check if SQL quizzes completion pop-up should be shown
 if ($latestSQLCompletion > $_SESSION['last_sql_check']) {
     // Check if all SQL quizzes are completed
-    $sqlQuizzes = [1, 2, 3, 4];
-    $sql = "SELECT COUNT(*) as completed FROM userprogress WHERE user_id = ? AND quiz_id IN (" . implode(',', $sqlQuizzes) . ")";
+    $sql = "SELECT COUNT(*) as completed FROM userprogress WHERE user_id = ? AND quiz_id IN (" . implode(',', $sqlQuizIds) . ")";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    $completedSQLQuizzes = $row['completed'] == count($sqlQuizzes);
+    $completedSQLQuizzes = $row['completed'] == count($sqlQuizIds);
 
     if ($completedSQLQuizzes) {
         $sqlPopupScript = '<script>alert("The SQL test is now unlocked!");</script>';
@@ -61,14 +78,13 @@ if ($latestSQLCompletion > $_SESSION['last_sql_check']) {
 // Check if XSS quizzes completion pop-up should be shown
 if ($latestXSSCompletion > $_SESSION['last_xss_check']) {
     // Check if all XSS quizzes are completed
-    $xssQuizzes = [5, 6, 7, 8];
-    $sql = "SELECT COUNT(*) as completed FROM userprogress WHERE user_id = ? AND quiz_id IN (" . implode(',', $xssQuizzes) . ")";
+    $sql = "SELECT COUNT(*) as completed FROM userprogress WHERE user_id = ? AND quiz_id IN (" . implode(',', $xssQuizIds) . ")";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    $completedXSSQuizzes = $row['completed'] == count($xssQuizzes);
+    $completedXSSQuizzes = $row['completed'] == count($xssQuizIds);
 
     if ($completedXSSQuizzes) {
         $xssPopupScript = '<script>alert("The XSS test is now unlocked!");</script>';

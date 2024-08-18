@@ -30,6 +30,38 @@ if ($stmt = $conn->prepare($sql)) {
     echo "Error fetching certificates: " . $conn->error;
     exit();
 }
+
+// Fetch all test categories
+$categories = [];
+$sql = "SELECT test_id, category FROM tests WHERE test_id IN (SELECT test_id FROM test_certificates WHERE user_id = ?)";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $categories[$row['test_id']] = $row['category'];
+    }
+    $stmt->close();
+} else {
+    echo "Error fetching test categories: " . $conn->error;
+    exit();
+}
+
+// Organize certificates by category
+$certificatesByCategory = [
+    'SQL' => [],
+    'XSS' => []
+];
+
+foreach ($certificates as $certificate) {
+    $testId = $certificate['test_id'];
+    if (isset($categories[$testId])) {
+        $category = $categories[$testId];
+        if (array_key_exists($category, $certificatesByCategory)) {
+            $certificatesByCategory[$category][] = $certificate;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -118,10 +150,10 @@ if ($stmt = $conn->prepare($sql)) {
             <a href="certificate_details.php" class="details-link"><u>Certificate Details</u></a>
         </div>
         <div class="sub-menu">
-        <a href="delete_account.php" class="details1-link"><u>Delete Account</u></a>
-    </div>
+            <a href="delete_account.php" class="details1-link"><u>Delete Account</u></a>
+        </div>
         <a href="progress.php" class="progress-link"><u>Progress</u></a>
-        <a href="certificate.php" ><u>Quiz Certifications</u></a>
+        <a href="certificate.php"><u>Quiz Certifications</u></a>
         <a href="test_certificate.php" class="certificate-link"><u>Test Certifications</u></a>
         <a href="settings.php"><u>Settings</u></a>
     </div>
@@ -129,23 +161,16 @@ if ($stmt = $conn->prepare($sql)) {
         <div class="certificate-container">
             <h1>Your Certificates</h1>
             <?php
-            // Initialize categories
-            $categories = [
-                'SQL' => [1, 2, 3, 4],
-                'XSS' => [5, 6, 7, 8]
-            ];
-
-            foreach ($categories as $category => $testIds) {
+            foreach ($certificatesByCategory as $category => $certificates) {
                 echo "<h2>$category Certificates</h2>";
                 echo "<table class='certificate-table'>";
                 echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
                 echo "<tbody>";
 
-                $hasCategoryCertificates = false;
-                foreach ($certificates as $certificate) {
-                    if (in_array($certificate['test_id'], $testIds)) {
-                        $hasCategoryCertificates = true;
-
+                if (empty($certificates)) {
+                    echo "<tr><td colspan='4'>No certificates found for this category.</td></tr>";
+                } else {
+                    foreach ($certificates as $certificate) {
                         // Fetch the course name
                         $courseSql = "SELECT name FROM tests WHERE test_id = ?";
                         if ($courseStmt = $conn->prepare($courseSql)) {
@@ -177,10 +202,6 @@ if ($stmt = $conn->prepare($sql)) {
                     }
                 }
 
-                if (!$hasCategoryCertificates) {
-                    echo "<tr><td colspan='4'>No certificates found for this category.</td></tr>";
-                }
-
                 echo "</tbody></table>";
             }
             ?>
@@ -189,4 +210,3 @@ if ($stmt = $conn->prepare($sql)) {
     <?php include 'topnav.php';?>
 </body>
 </html>
-
