@@ -18,10 +18,12 @@ include 'topnav.php';  // Make sure this path is correct
             padding: 0;
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.9);
+            
         }
 
         html, body {
-            height: 100%;
+            height: 110%;
+            
         }
         .content {
             display: flex;
@@ -35,6 +37,7 @@ include 'topnav.php';  // Make sure this path is correct
             background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             padding: 20px;
+            margin-top:100px;
         }
         .quiz-details h1 {
             margin-bottom: 10px;
@@ -58,6 +61,10 @@ include 'topnav.php';  // Make sure this path is correct
         }
         .start-button button:hover {
             background-color: darkgray;
+        }
+        .topnav {
+            
+            z-index: 1000;
         }
     </style>
 </head>

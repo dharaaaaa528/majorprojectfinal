@@ -36,6 +36,7 @@ include 'topnav.php';  // Make sure this path is correct
             background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             padding: 20px;
+            margin-top:100px;
         }
 
         .quiz-details h1 {
@@ -64,6 +65,10 @@ include 'topnav.php';  // Make sure this path is correct
 
         .start-button button:hover {
             background-color: darkgray;
+        }
+        .topnav {
+            
+            z-index: 1000;
         }
     </style>
 </head>

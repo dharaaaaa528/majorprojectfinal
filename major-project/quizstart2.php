@@ -34,6 +34,7 @@
             background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for content */
             border-radius: 10px; /* Rounded corners for the content area */
             padding: 20px; /* Padding inside the content area */
+             margin-top:100px;
         }
         .quiz-details {
             margin: 0;
@@ -60,6 +61,10 @@
         }
         .start-button button:hover {
             background-color: darkgray;
+        }
+        .topnav {
+            
+            z-index: 1000;
         }
     </style>
 </head>
