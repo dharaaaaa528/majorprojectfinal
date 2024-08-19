@@ -123,7 +123,7 @@ include 'topnav.php';  // Make sure this path is correct
             </ul>
 
             <h2>Contact Us</h2>
-            <p>If you have any questions or would like to learn more about our services, please don't hesitate to contact us at Support@InjectPractice.com.</p>
+            <p>If you have any questions or would like to learn more about our services, please don't hesitate to contact us as our email Support@InjectPractice.com.</p>
 
             <h2>Testimonials</h2>
             <p>Here's what our users have to say about us:</p>

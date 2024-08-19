@@ -37,12 +37,12 @@ function getTestsByCategory($pdo, $user_id, $category) {
 $user_id = $_SESSION['userid'];
 
 // Fetch quizzes by type
-$sql_quizzes = getQuizzesByType($pdo, $user_id, 'sql');
-$xss_quizzes = getQuizzesByType($pdo, $user_id, 'xss');
+$sql_quizzes = getQuizzesByType($pdo, $user_id, 'SQL');
+$xss_quizzes = getQuizzesByType($pdo, $user_id, 'XSS');
 
 // Fetch tests by category
-$sql_tests = getTestsByCategory($pdo, $user_id, 'sql');
-$xss_tests = getTestsByCategory($pdo, $user_id, 'xss');
+$sql_tests = getTestsByCategory($pdo, $user_id, 'SQL');
+$xss_tests = getTestsByCategory($pdo, $user_id, 'XSS');
 
 // Calculate completed and incomplete quizzes and tests
 $completed_sql_quizzes = count(array_filter($sql_quizzes, fn($quiz) => $quiz['completed'] > 0));
