@@ -205,6 +205,8 @@ $quizzes = $query->fetchAll(PDO::FETCH_ASSOC);
                 if ($isAdmin) {
                     echo '<a href="create_quiz.php" class="btn">Create Quiz</a>';
                     echo '<a href="add_content.php" class="btn">Add Content</a>';
+                    echo '<a href="create_testquestion.php" class="btn">Create Test Question</a>'; // Add the Create Test button
+                    echo '<a href="add_test.php" class="btn">Add Test</a>';
                 }
                 ?>
             </div>
