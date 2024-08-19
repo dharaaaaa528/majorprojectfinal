@@ -96,16 +96,15 @@ if (isset($_GET['search'])) {
     <style>
         /* Basic styling for the navigation */
         .topnav {
-            background-color: #333;
-            overflow: hidden;
-            display: flex;
-            align-items: center; /* Center items vertically */
-            position: fixed;
-            top: 0;
-            width:1550px;
-           
-        }
-
+    background-color: #333;
+    overflow: hidden;
+    display: flex;
+    align-items: center; /* Center items vertically */
+    position: fixed;
+    top: 0;
+    width: 100%; /* Make the width dynamic */
+}
+        
         .topnav img.logo {
             margin-right: 20px; /* Adjust margin as needed */
             width: 80px; /* Increase width */
