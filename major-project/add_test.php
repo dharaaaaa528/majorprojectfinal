@@ -168,10 +168,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-size: 16px;
             transition: background-color 0.3s;
         }
+         input[type="button"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--button-background-light);
+            color: var(--button-text-light);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
 
         input[type="submit"]:hover {
             background-color: var(--button-background-dark);
         }
+         input[type="button"]:hover {
+            background-color: var(--button-background-dark);
+        }
+        
 
         .success-message {
             background-color: var(--success-background);
@@ -190,7 +205,81 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-bottom: 15px;
             text-align: center;
         }
+        .back-button-link {
+            text-decoration: none;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            text-align: center;
+            width: 200px;
+            border: none;
+            border-radius: 2em;
+            height: 56px;
+            font-family: sans-serif;
+            color: #000000;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+            z-index: 1;
+        }
+
+        .back-button:hover {
+            background-color: #f4f4f5;
+        }
+        .icon {
+            background-color: #4caf50;
+            border-radius: 1em;
+            height: 40px;
+            width: 25%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: width 0.5s;
+            z-index: 2;
+        }
+
+        .back-button:hover .icon {
+            width: 90%;
+        }
+
+        .icon svg {
+            fill: #000000;
+        }
+         .slider:before {
+            position: absolute;
+            content: "";
+            height: var(--size-of-icon);
+            width: var(--size-of-icon);
+            border-radius: 20px;
+            left: var(--slider-offset);
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(40deg, #ff0080, #ff8c00 70%);
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #303136;
+        }
+
+        input:checked + .slider:before {
+            left: calc(100% - (var(--size-of-icon) + var(--slider-offset)));
+            background: #303136;
+            box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
+        }
+        
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -232,6 +321,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="hidden" name="created_at" value="<?php echo date('Y-m-d H:i:s'); ?>">
             <input type="hidden" name="created_by" value="<?php echo htmlspecialchars($created_by_id); ?>">
             <input type="submit" value="Create Test">
+           <button class="back-button">
+                    <div class="icon">
+                        <svg width="25px" height="25px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#000000" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"></path>
+                            <path fill="#000000" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"></path>
+                        </svg>
+                    </div>
+                    
+                </button>
         </form>
     </div>
 </body>
