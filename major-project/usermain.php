@@ -3,6 +3,7 @@ require_once 'dbconfig.php'; // Include your database configuration file
 require_once 'topnav.php'; // Include your top navigation bar
 require_once 'sessiontimeout.php';
 require_once 'header.php';
+require_once 'chatbot.php';
 // Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
