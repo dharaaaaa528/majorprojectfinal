@@ -90,10 +90,16 @@ foreach ($certificates as $certificate) {
             background-color: #f2f2f2;
             color: black;
         }
-        .certificate-image {
-            width: 150px; /* Adjust size as needed */
-            height: auto;
-            cursor: pointer; /* Indicate that the image is clickable */
+        .preview-button {
+            padding: 8px 16px;
+            background-color: #56C2DD;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .preview-button:hover {
+            background-color: #3b9db1;
         }
         .course-name {
             margin-top: 10px;
@@ -164,7 +170,7 @@ foreach ($certificates as $certificate) {
             foreach ($certificatesByCategory as $category => $certificates) {
                 echo "<h2>$category Certificates</h2>";
                 echo "<table class='certificate-table'>";
-                echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
+                echo "<thead><tr><th>Preview</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
                 echo "<tbody>";
 
                 if (empty($certificates)) {
@@ -194,7 +200,7 @@ foreach ($certificates as $certificate) {
                         $createdAt = date('d-m-Y H:i:s', strtotime($certificate['certificate_date'])); // Format date and time
 
                         echo "<tr>";
-                        echo "<td><img src='" . htmlspecialchars($filePath) . "' alt='Certificate Image' class='certificate-image' onclick=\"window.open('" . htmlspecialchars($filePath) . "', '_blank')\"></td>";
+                        echo "<td><button class='preview-button' onclick=\"window.open('" . htmlspecialchars($filePath) . "', '_blank')\">Click here to preview</button></td>";
                         echo "<td>" . htmlspecialchars($courseName) . "</td>";
                         echo "<td>" . htmlspecialchars($createdAt) . "</td>";
                         echo "<td><a href='" . htmlspecialchars($filePath) . "' download>Download</a></td>";

@@ -65,10 +65,16 @@ if ($stmt = $conn->prepare($sql)) {
             background-color: #f2f2f2;
             color: black;
         }
-        .certificate-image {
-            width: 150px; /* Adjust size as needed */
-            height: auto;
-            cursor: pointer; /* Indicate that the image is clickable */
+        .preview-button {
+            padding: 8px 16px;
+            background-color: #56C2DD;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .preview-button:hover {
+            background-color: #3b9db1;
         }
         .course-name {
             margin-top: 10px;
@@ -152,14 +158,14 @@ if ($stmt = $conn->prepare($sql)) {
             // Display SQL certificates
             echo "<h2>SQL Certificates</h2>";
             echo "<table class='certificate-table'>";
-            echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
+            echo "<thead><tr><th>Preview</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
             echo "<tbody>";
 
             if (count($sqlCertificates) > 0) {
                 foreach ($sqlCertificates as $certificate) {
                     $createdAt = date('d-m-Y H:i:s', strtotime($certificate['created_at'])); // Format date and time
                     echo "<tr>";
-                    echo "<td><img src='" . htmlspecialchars($certificate['file_path']) . "' alt='Certificate Image' class='certificate-image' onclick=\"window.open('" . htmlspecialchars($certificate['file_path']) . "', '_blank')\"></td>";
+                    echo "<td><button class='preview-button' onclick=\"window.open('" . htmlspecialchars($certificate['file_path']) . "', '_blank')\">Click here to preview</button></td>";
                     echo "<td>" . htmlspecialchars($certificate['course_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($createdAt) . "</td>";
                     echo "<td><a href='" . htmlspecialchars($certificate['file_path']) . "' download>Download</a></td>";
@@ -174,14 +180,14 @@ if ($stmt = $conn->prepare($sql)) {
             // Display XSS certificates
             echo "<h2>XSS Certificates</h2>";
             echo "<table class='certificate-table'>";
-            echo "<thead><tr><th>Certificate</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
+            echo "<thead><tr><th>Preview</th><th>Course</th><th>Date Issued</th><th>Download</th></tr></thead>";
             echo "<tbody>";
 
             if (count($xssCertificates) > 0) {
                 foreach ($xssCertificates as $certificate) {
                     $createdAt = date('d-m-Y H:i:s', strtotime($certificate['created_at'])); // Format date and time
                     echo "<tr>";
-                    echo "<td><img src='" . htmlspecialchars($certificate['file_path']) . "' alt='Certificate Image' class='certificate-image' onclick=\"window.open('" . htmlspecialchars($certificate['file_path']) . "', '_blank')\"></td>";
+                    echo "<td><button class='preview-button' onclick=\"window.open('" . htmlspecialchars($certificate['file_path']) . "', '_blank')\">Click here to preview</button></td>";
                     echo "<td>" . htmlspecialchars($certificate['course_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($createdAt) . "</td>";
                     echo "<td><a href='" . htmlspecialchars($certificate['file_path']) . "' download>Download</a></td>";
@@ -198,5 +204,4 @@ if ($stmt = $conn->prepare($sql)) {
     <?php include 'topnav.php';?>
 </body>
 </html>
-
 
