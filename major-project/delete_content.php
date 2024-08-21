@@ -33,7 +33,7 @@ if (isset($_GET['id'])) {
     $stmt->execute([$id]);
     
     // Redirect to the previous page or an appropriate page
-    header('Location: testpage.php');
+    header('Location: contentpage.php');
     exit;
 } else {
     exit('Invalid ID');

@@ -37,9 +37,9 @@ $result = $query->execute([$quizId]);
 
 if ($result) {
     // Redirect back to the quizzes page with a success message
-    header('Location: testpage2.php?message=Quiz deleted successfully');
+    header('Location: contentpage2.php?message=Quiz deleted successfully');
 } else {
     // Redirect back to the quizzes page with an error message
-    header('Location: testpage2.php?message=Failed to delete quiz');
+    header('Location: contentpage2.php?message=Failed to delete quiz');
 }
 exit;

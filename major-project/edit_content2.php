@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare('UPDATE quizzes SET name = ?, description = ? WHERE id = ?');
     $stmt->execute([$name, $description, $id]);
     
-    // Redirect to testpage2.php
-    header('Location: testpage2.php');
+
+    header('Location: contentpage2.php');
     exit;
 }
 

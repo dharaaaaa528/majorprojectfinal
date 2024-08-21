@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$name, $description, $id]);
     
     // Redirect to content page or another relevant page
-    header('Location: testpage.php');
+    header('Location: contentpage.php');
     exit;
 }
 
