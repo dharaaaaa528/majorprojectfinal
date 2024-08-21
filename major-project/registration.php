@@ -264,7 +264,7 @@ if (isset($_POST["submit"])) {
             const passwordToggleIcon = document.querySelector('.toggle-password img');
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
-                passwordToggleIcon.src = 'eye-off.png'; // Update with path to your eye-off icon
+                passwordToggleIcon.src = 'eye-slash.png'; // Update with path to your eye-off icon
             } else {
                 passwordField.type = 'password';
                 passwordToggleIcon.src = 'eye.png'; // Update with path to your eye icon
