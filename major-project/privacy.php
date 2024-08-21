@@ -112,7 +112,7 @@ require_once 'topnavmain.php';
     <p>We may update our Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date.</p>
     
     <h2>Contact Us</h2>
-    <p>If you have any questions about this Privacy Policy or our data practices, please contact us at [your contact email].</p>
+    <p>If you have any questions about this Privacy Policy or our data practices, please contact us at Support@InjectPractice.com.</p>
 </div>
 
 <footer>
