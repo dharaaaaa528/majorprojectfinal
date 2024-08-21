@@ -277,7 +277,7 @@ if (!$modalShown) {
     <div class="video-modal-content">
         <span class="close video-close">&times;</span>
         <video controls>
-            <source src="introductionvideo.mp4" type="video/mp4">
+            <source src="introduction_video1.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
