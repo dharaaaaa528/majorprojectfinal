@@ -1,47 +1,53 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    ini_set('session.gc_maxlifetime', 7200); // 7200 seconds = 2 hours
-    session_set_cookie_params(7200);
-    session_start();
+session_start();
+
+// Set session timeout period (1 hour)
+$timeout_duration = 3600; // 1 hour in seconds
+
+// Check if the user is logged in and if a timeout session exists
+if (isset($_SESSION['LAST_ACTIVITY'])) {
+    $inactive = time() - $_SESSION['LAST_ACTIVITY'];
+    if ($inactive >= $timeout_duration) {
+        // Session timed out
+        session_unset();
+        session_destroy();
+        header("Location: login.php"); // Redirect to login page
+        exit();
+    }
 }
+
+// Update last activity time
+$_SESSION['LAST_ACTIVITY'] = time();
 ?>
-
-<!-- session_timeout.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+<script>
+// Set the timeout period (1 hour)
+const timeoutDuration = 3600000; // 1 hour in milliseconds
+
+let timeout;
+const resetTimer = () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(logoutUser, timeoutDuration);
+};
+
+const logoutUser = () => {
+    window.location.href = 'login.php'; // Redirect to login page
+};
+
+// Events to reset the timer
+window.onload = resetTimer;
+window.onmousemove = resetTimer;
+window.onmousedown = resetTimer; // touchscreen presses
+window.ontouchstart = resetTimer; // touchscreen swipes
+window.onclick = resetTimer;
+window.onkeydown = resetTimer;
+window.addEventListener('scroll', resetTimer);
+
+// Start the timer
+resetTimer();
+</script>
 </head>
-<body>
-    <script>
-        let inactivityTime = function () {
-            let time;
-            window.onload = resetTimer;
-            document.onmousemove = resetTimer;
-            document.onkeypress = resetTimer;
-
-            function logoutUser() {
-                window.location.href = 'logout.php';
-            }
-
-            function resetTimer() {
-                clearTimeout(time);
-                time = setTimeout(() => {
-                    let logout = confirm("You have been inactive for 1 hour. Do you want to stay logged in?");
-                    if (logout) {
-                        // Set a new timer for 2 hours after user confirms to stay logged in
-                        clearTimeout(time);
-                        time = setTimeout(logoutUser, 7200000); // 7200000 ms = 2 hours
-                    } else {
-                        logoutUser();
-                    }
-                }, 3600000);  // 3600000 ms = 1 hour
-            }
-        };
-
-        inactivityTime();
-    </script>
-</body>
 </html>
+

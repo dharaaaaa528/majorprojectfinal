@@ -3,6 +3,7 @@ ob_start();
 require_once 'dbconfig.php';  // Make sure this file contains your database connection setup
 require_once 'header.php';    // Include header with theme setting logic
 require_once 'topnav.php';
+require_once 'sessiontimeout.php';
 // Initialize the session theme if not set
 if (!isset($_SESSION['theme'])) {
     $_SESSION['theme'] = 'default'; // Set a default theme if none is selected

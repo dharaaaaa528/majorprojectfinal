@@ -3,7 +3,7 @@ session_start();
 include 'server.php';
 include 'header.php'; // Ensure this file includes the database connection
 include 'check_completion.php';
-
+require_once 'sessiontimeout.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['userid'])) {

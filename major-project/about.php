@@ -1,5 +1,6 @@
 <?php
 include 'topnav.php';  // Make sure this path is correct
+require_once 'sessiontimeout.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

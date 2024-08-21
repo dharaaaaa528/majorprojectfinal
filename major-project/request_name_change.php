@@ -4,6 +4,7 @@ require 'vendor/autoload.php';  // Include Composer's autoloader
 require_once 'server1.php'; // Ensure this file defines DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE
 require_once 'topnav.php';
 require_once 'header.php';
+require_once 'sessiontimeout.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
