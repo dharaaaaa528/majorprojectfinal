@@ -4,7 +4,7 @@ require 'vendor/autoload.php';  // Include Composer's autoloader
 require_once 'server1.php'; // Ensure this file defines DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE
 require_once 'topnav.php';
 require_once 'header.php';
-require_once 'sessiontimeout.php';
+
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $newLastName = trim(htmlspecialchars($_POST['last_name']));
     $reason = trim(htmlspecialchars($_POST['reason']));
     $document = $_FILES['document'];
-
+    
     // Validation function
     function validateName($name) {
         if (strlen($name) < 2 || strlen($name) > 50) {
@@ -56,11 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         return true;
     }
-
+    
     // Validate first and last names
     $firstNameError = validateName($newFirstName);
     $lastNameError = validateName($newLastName);
-
+    
     // Validate file upload (only PDF)
     if ($document['error'] == UPLOAD_ERR_OK) {
         $allowedMimeTypes = ['application/pdf'];
@@ -70,14 +70,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $error = 'Document upload error.';
     }
-
+    
     if ($firstNameError === true && $lastNameError === true && $error === '') {
-        // Proceed with file upload and email sending
-        $uploadDir = 'documents/';
-        $uploadFile = $uploadDir . basename($document['name']);
-
-        // Move the uploaded file
-        if (move_uploaded_file($document['tmp_name'], $uploadFile)) {
+        // Connect to the database
+        $mysqli = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+        if ($mysqli->connect_error) {
+            die('Connection failed: ' . $mysqli->connect_error);
+        }
+        
+        // Save the document to the database
+        $documentName = $document['name'];
+        $documentType = $document['type'];
+        $documentData = file_get_contents($document['tmp_name']);
+        
+        $query = "INSERT INTO user_documents (userid, document_name, document_type, document_data) VALUES (?, ?, ?, ?)";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param("isss", $userId, $documentName, $documentType, $documentData);
+        
+        if ($stmt->execute()) {
+            // Document saved successfully, proceed with sending email
+            $uploadFile = $documentName; // For email content
+            
             // Prepare PHPMailer
             $mail = new PHPMailer(true);
             try {
@@ -89,12 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $mail->Password = 'hkrnqbzyizzxtcsi'; // Your Yahoo App password
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Use TLS encryption
                 $mail->Port = 587; // TCP port to connect to
-
+                
                 // Recipients
                 $mail->setFrom('dgandhi50@yahoo.com', 'Name Change Request'); // Fixed From address
                 $mail->addAddress('dgandhi50@yahoo.com'); // Receiver email
                 $mail->addReplyTo($userEmail, 'User Name'); // Reply-To header with user's email address
-
+                
                 // Content
                 $mail->isHTML(false);
                 $mail->Subject = 'Name Change Request';
@@ -104,29 +117,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 . "New Last Name: $newLastName\n"
                 . "Reason for Change:\n$reason\n\n"
                 . "Document: $uploadFile";
-
+                
                 // Attachments
-                $mail->addAttachment($uploadFile);
-
+                $mail->addStringAttachment($documentData, $documentName); // Attach the document from the database
+                
                 $mail->send();
                 $_SESSION['successMessage'] = 'Request sent successfully!';
-
+                
                 // Redirect to prevent form resubmission
                 header("Location: request_name_change.php");
                 exit();
             } catch (Exception $e) {
                 $error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
-
         } else {
-            $error = 'Failed to upload document. Please try again.';
+            $error = 'Failed to save document to the database.';
         }
+        
+        $stmt->close();
+        $mysqli->close();
     } else {
         $error = $firstNameError !== true ? $firstNameError : ($lastNameError !== true ? $lastNameError : $error);
     }
 }
-
-// Retrieve success message from session
 if (isset($_SESSION['successMessage'])) {
     $successMessage = $_SESSION['successMessage'];
     unset($_SESSION['successMessage']);
