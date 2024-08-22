@@ -29,8 +29,9 @@ if (isset($_SESSION['quiz_submitted']) && $_SESSION['quiz_submitted'] === true) 
 $_SESSION['quiz_submitted'] = true;
 
 // Handle quiz completion and score calculations
+// Handle quiz completion and score calculations
 $correctAnswers = [];
-$sql = "SELECT question_id, correct_option FROM test_options WHERE test_id = ?";
+$sql = "SELECT question_id, correct_option FROM test_options WHERE test_id = ? LIMIT 50";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $testId);
     if ($stmt->execute()) {

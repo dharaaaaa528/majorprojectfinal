@@ -28,9 +28,9 @@ if (isset($_SESSION['quiz_submitted']) && $_SESSION['quiz_submitted'] === true) 
 // Initialize flag for redirection
 $_SESSION['quiz_submitted'] = true;
 
-// Fetch questions and expected keywords from test_questions table
+// Fetch a maximum of 50 questions and expected keywords from the test_questions table
 $correctAnswers = [];
-$sql = "SELECT question_id, expected_keywords FROM test_questions WHERE test_id = ?";
+$sql = "SELECT question_id, expected_keywords FROM test_questions WHERE test_id = ? LIMIT 50";
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $testId);
     if ($stmt->execute()) {
@@ -50,7 +50,7 @@ if ($stmt = $conn->prepare($sql)) {
 
 // Calculate score based on matching expected keywords
 $score = 0;
-$totalQuestions = count($correctAnswers);
+$totalQuestions = min(count($correctAnswers), 50); // Ensure the total questions do not exceed 50
 foreach ($correctAnswers as $questionId => $expectedKeywords) {
     $userAnswer = isset($_POST["question_$questionId"]) ? $_POST["question_$questionId"] : '';
 
