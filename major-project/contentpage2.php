@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 include 'server.php';
 include 'header.php'; // Ensure this file includes the database connection
 require_once 'sessiontimeout.php';

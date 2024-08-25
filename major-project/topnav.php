@@ -1,6 +1,6 @@
 <?php
 require_once 'dbconfig.php';
-
+ob_start();
 // Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
