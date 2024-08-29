@@ -66,7 +66,7 @@ if (!$quiz) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Content</title>
-    <script src="https://cdn.tiny.cloud/1/7ftyh23mussj5lq3rapie4ao0yw95h1pp6jrgbr7uoxzo6gs/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="" referrerpolicy="origin"></script>
     <script>
         tinymce.init({
             selector: '#editor',
