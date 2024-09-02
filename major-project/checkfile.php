@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once 'configg.php';
 
 function importTable($conn) {
     $filename = 'users.sql';
@@ -21,7 +21,7 @@ function importTable($conn) {
 }
 
 // Select the database
-$conn->query("USE majorproject");
+$conn->query("USE testt");
 
 // Check if the table exists
 $result = $conn->query("SHOW TABLES LIKE 'users'");

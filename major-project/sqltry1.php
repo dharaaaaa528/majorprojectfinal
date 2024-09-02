@@ -1,6 +1,6 @@
 <?php
 require_once 'checkfile.php'; // Adjust paths as per your project structure
-require_once 'config.php';
+require_once 'configg.php';
 require_once 'header.php';
 // Adjust paths as per your project structure
 
